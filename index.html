@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda Digital Cedeño | Catálogo Oficial</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+  <header class="navbar">
+    <div class="container nav-content">
+      <h1 class="logo">Tienda Digital <span>Cedeño</span></h1>
+      <a href="#catalogo" class="btn-contacto" id="nav-whatsapp" target="_blank">Contacto Directo</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <span class="badge">Entrega Inmediata y Garantizada</span>
+      <h2>Tus plataformas, software y recargas al mejor precio</h2>
+      <p>Explora nuestro catálogo digital, elige lo que necesitas y haz tu pedido en un clic directo por WhatsApp.</p>
+      <a href="#catalogo" class="btn-principal">Ver Catálogo</a>
+    </div>
+  </section>
+
+  <main id="catalogo" class="container">
+    
+    <div class="controles">
+      <input type="text" id="buscador" placeholder="Buscar producto (ej. Netflix, Canva, Robux)...">
+      
+      <div class="filtros">
+        <button class="btn-filtro activo" data-categoria="todos">Todos</button>
+        <button class="btn-filtro" data-categoria="streaming">Streaming</button>
+        <button class="btn-filtro" data-categoria="software">Diseño y Software</button>
+        <button class="btn-filtro" data-categoria="gaming">Gaming</button>
+      </div>
+    </div>
+
+    <div id="contenedor-productos" class="grid-productos"></div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 Tienda Digital Cedeño. Todos los derechos reservados.</p>
+      <p class="footer-sub">Atención rápida y soporte garantizado.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

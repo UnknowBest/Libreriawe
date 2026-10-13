@@ -5,7 +5,7 @@ const NUMERO_WHATSAPP = "593999999999"; // Tu número con código de país (sin 
 const CLAVE_ADMIN = "tole123";         // Tu contraseña para abrir el panel Admin
 
 // OPCIONAL: Si conectas una Hoja de Cálculo de Google publicada como CSV, pega el link aquí:
-const GOOGLE_SHEET_CSV_URL = ""; 
+const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNz682jLUpz3P7eKqahpH2NiLqctI5V1B2utHZ2ZMS4rsmYSwd0huivG5Qt_sM4FyxHtvS7AliVNm9/pub?gid=0&single=true&output=csv"; 
 
 // ==========================================
 // 2. CATÁLOGO BASE DE PRODUCTOS

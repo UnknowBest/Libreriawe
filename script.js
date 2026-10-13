@@ -380,27 +380,21 @@ async function cargarDesdeGoogleSheets() {
 
       if (index === 0 && col[0].toLowerCase() === "nombre") return;
 
-      if (col[0]) {
-        const cEsPrecio = /\d/.test(col[2] || "") && (col[2] || "").length <= 12;
-        let precioBruto = cEsPrecio ? col[2] : col[3];
-        let descripcion = cEsPrecio ? (col[4] || col[3] || "") : col[2];
-        let periodo = cEsPrecio ? (col[3] || "/ mes") : (col[4] || "/ mes");
-
-        precioBruto = (precioBruto || "0.00").replace(/\\/g, "").trim();
-        if (!precioBruto.startsWith("\$")) {
-          precioBruto = "\$" + precioBruto;
+if (col[0]) {
+        let precioBruto = (col[2] || "$0.00").replace(/\\/g, "").trim();
+        if (!precioBruto.startsWith("$")) {
+          precioBruto = "$" + precioBruto;
         }
 
         listaSheet.push({
           nombre: col[0],
           categoria: (col[1] || "otros").trim().toLowerCase(),
           precio: precioBruto,
-          periodo: periodo,
-          descripcion: descripcion
+          periodo: (col[3] || "/ mes").trim(),
+          descripcion: (col[4] || "").trim()
         });
       }
-    });
-
+      
     if (listaSheet.length > 0) {
       productos = listaSheet;
     }

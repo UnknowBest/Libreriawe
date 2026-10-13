@@ -12,7 +12,12 @@
   <header class="navbar">
     <div class="container nav-content">
       <h1 class="logo">Tienda Digital <span>Cedeño</span></h1>
-      <a href="#catalogo" class="btn-contacto" id="nav-whatsapp" target="_blank">Contacto Directo</a>
+      <div class="nav-acciones">
+        <a href="#catalogo" class="btn-contacto" id="nav-whatsapp" target="_blank">Soporte</a>
+        <button id="btn-abrir-carrito" class="btn-carrito">
+          🛒 Carrito <span id="contador-carrito">0</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -21,7 +26,7 @@
     <div class="container">
       <span class="badge">Entrega Inmediata y Garantizada</span>
       <h2>Tus plataformas, software y recargas al mejor precio</h2>
-      <p>Explora nuestro catálogo digital, elige lo que necesitas y haz tu pedido en un clic directo por WhatsApp.</p>
+      <p>Agrega tus productos al carrito, transfiere a Banco Pichincha o Deuna! y verifica tu pago al instante.</p>
       <a href="#catalogo" class="btn-principal">Ver Catálogo</a>
     </div>
   </section>
@@ -39,11 +44,64 @@
     <div id="contenedor-productos" class="grid-productos"></div>
   </main>
 
+  <!-- MODAL DEL CARRITO Y PAGO BANCO PICHINCHA -->
+  <div id="modal-carrito" class="modal-fondo oculto">
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h3>🛒 Tu Carrito de Compras</h3>
+        <button id="btn-cerrar-carrito" class="btn-cerrar">&times;</button>
+      </div>
+
+      <!-- Lista de productos en el carrito -->
+      <div id="lista-carrito" class="lista-carrito"></div>
+
+      <!-- Resumen y Pago -->
+      <div id="seccion-pago" class="seccion-pago oculto">
+        <div class="fila-total">
+          <span>Total a pagar:</span>
+          <strong id="total-carrito">$0.00</strong>
+        </div>
+
+        <!-- Caja Banco Pichincha / Deuna -->
+        <div class="caja-pichincha">
+          <div class="pichincha-titulo">
+            <span class="icono-banco">🏦</span>
+            <div>
+              <h4>Transferencia Banco Pichincha / Deuna!</h4>
+              <p>Realiza el pago exacto a la siguiente cuenta:</p>
+            </div>
+          </div>
+
+          <div class="datos-cuenta">
+            <p><strong>Banco:</strong> <span id="banco-tipo">Cuenta de Ahorros - Banco Pichincha</span></p>
+            <p><strong>N° de Cuenta:</strong> <span id="banco-numero">2213128245</span> 
+              <button type="button" id="btn-copiar-cuenta" class="btn-copiar">Copiar</button>
+            </p>
+            <p><strong>Titular:</strong> <span id="banco-titular">Jostin Alejandro Cedeño López</span></p>
+          </div>
+
+          <div class="campo-comprobante">
+            <label for="input-comprobante">N° de Comprobante / Documento de transferencia:</label>
+            <div class="fila-verificacion">
+              <input type="text" id="input-comprobante" placeholder="Ej: 48291032">
+              <button type="button" id="btn-verificar-pago" class="btn-verificar">🔍 Verificar</button>
+            </div>
+            <p id="estado-verificacion" class="estado-verificacion oculto"></p>
+          </div>
+        </div>
+
+        <button id="btn-finalizar-pedido" class="btn-whatsapp-pago">
+          ✅ Enviar Pedido por WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Pie de página -->
   <footer class="footer">
     <div class="container">
       <p>© 2026 Tienda Digital Cedeño. Todos los derechos reservados.</p>
-      <p class="footer-sub">Atención rápida y soporte garantizado.</p>
+      <p class="footer-sub">Pagos seguros vía Banco Pichincha (Cta: 2213128245) y Deuna!</p>
     </div>
   </footer>
 

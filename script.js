@@ -3,7 +3,9 @@
 // ==========================================
 const NUMERO_WHATSAPP = "593963259492"; 
 const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNz682jLUpz3P7eKqahpH2NiLqctI5V1B2utHZ2ZMS4rsmYSwd0huivG5Qt_sM4FyxHtvS7AliVNm9/pub?gid=0&single=true&output=csv";
-const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwmO7jW90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMAUdpx1ttutlRY/exec";
+
+// Si al darle a "Implementar > Nueva implementación" te dio una URL nueva, reemplázala aquí:
+const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwgazS1VD6Ax8Wq-1CCiogUKD0xKFG9hr-teXJmr4FB0_CT5YkCNaJgdu7z85H8kRFP/exec";
 
 const DATOS_BANCO = {
   tipoCuenta: "Cuenta de Ahorros - Banco Pichincha",
@@ -211,8 +213,22 @@ inputComprobante.addEventListener("input", () => {
   estadoVerificacion.classList.add("oculto");
 });
 
-// Conector anti-bloqueo (JSONP) compatible con Brave y cualquier navegador
-function consultarAppsScript(url) {
+// Conector doble (Fetch directo + respaldo JSONP) compatible con todos los navegadores
+async function consultarAppsScript(url) {
+  // 1. Intento directo estándar (sin cookies para evitar bloqueo CORS/Brave)
+  try {
+    const respuesta = await fetch(url, {
+      method: "GET",
+      redirect: "follow",
+      credentials: "omit"
+    });
+    const texto = await respuesta.text();
+    return JSON.parse(texto);
+  } catch (e) {
+    console.warn("Intentando método secundario JSONP...");
+  }
+
+  // 2. Respaldo JSONP
   return new Promise((resolve, reject) => {
     const nombreCallback = "cb_" + Math.floor(Math.random() * 1000000);
     const script = document.createElement("script");
@@ -227,7 +243,7 @@ function consultarAppsScript(url) {
     script.onerror = () => {
       delete window[nombreCallback];
       script.remove();
-      reject(new Error("Fallo de red"));
+      reject(new Error("Fallo de red o bloqueo del navegador"));
     };
 
     script.src = `${url}${separador}callback=${nombreCallback}`;
@@ -253,7 +269,7 @@ btnVerificarPago.addEventListener("click", async () => {
   estadoVerificacion.textContent = "🔄 Verificando transferencia con Banco Pichincha...";
 
   try {
-    const url = `${URL_VERIFICADOR_PICHINCHA}?comprobante=${encodeURIComponent(comprobante)}&monto=${encodeURIComponent(monto)}`;
+    const url = `${URL_VERIFICADOR_PICHINCHA}?comprobante=${encodeURIComponent(comprobante)}&monto=${encodeURIComponent(monto)}&t=${Date.now()}`;
     const data = await consultarAppsScript(url);
 
     estadoVerificacion.textContent = data.mensaje;
@@ -265,7 +281,7 @@ btnVerificarPago.addEventListener("click", async () => {
       estadoVerificacion.classList.add("error");
     }
   } catch (err) {
-    estadoVerificacion.textContent = "⚠️ No se pudo conectar. Asegúrate de actualizar la versión en el botón Implementar de Apps Script.";
+    estadoVerificacion.textContent = "⚠️ Verifica que la URL en la línea 8 sea la última de 'Administrar implementaciones' o desactiva el escudo de Brave.";
     estadoVerificacion.classList.add("error");
   } finally {
     btnVerificarPago.disabled = false;

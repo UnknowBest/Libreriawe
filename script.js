@@ -238,47 +238,77 @@ botonesFiltro.forEach((boton) => {
 
 buscador.addEventListener("input", filtrarCatalogo);
 
+// Función inteligente para leer una fila CSV respetando comas dentro de textos
+function dividirFilaCSV(fila) {
+  const resultado = [];
+  let actual = "";
+  let dentroDeComillas = false;
+
+  for (let i = 0; i < fila.length; i++) {
+    const letra = fila[i];
+    if (letra === '"') {
+      dentroDeComillas = !dentroDeComillas;
+    } else if (letra === "," && !dentroDeComillas) {
+      resultado.push(actual.trim());
+      actual = "";
+    } else {
+      actual += letra;
+    }
+  }
+  resultado.push(actual.trim());
+  return resultado;
+}
+
 async function cargarDesdeGoogleSheets() {
   if (!GOOGLE_SHEET_CSV_URL) {
     mostrarProductos(productos);
     return;
   }
   try {
-    // Evita que el navegador guarde una versión vieja del catálogo
-    const urlSinCache = GOOGLE_SHEET_CSV_URL + "&t=" + new Date().getTime();
+    const urlSinCache = GOOGLE_SHEET_CSV_URL + (GOOGLE_SHEET_CSV_URL.includes("?") ? "&" : "?") + "t=" + new Date().getTime();
     const res = await fetch(urlSinCache);
     const csv = await res.text();
-    const filas = csv.split(/\r?\n/).slice(1); // Salta la Fila 1 de títulos
+    const filas = csv.split(/\r?\n/);
     const listaSheet = [];
 
-    filas.forEach((fila) => {
+    filas.forEach((fila, index) => {
       if (!fila.trim()) return;
-      const col = fila.split(",").map(c => c.replace(/^"|"$/g, "").trim());
+      const col = dividirFilaCSV(fila);
+
+      // Si la Fila 1 tiene la palabra "nombre" como título, la salta; si tiene un producto, lo lee
+      if (index === 0 && col[0].toLowerCase() === "nombre") return;
+
       if (col[0]) {
-        let precioFormateado = col[2] || "$0.00";
-        if (!precioFormateado.startsWith("$")) {
-          precioFormateado = "$" + precioFormateado;
+        // Detecta si pusiste el precio en la Columna C (col[2]) o en la Columna D (col[3])
+        const cEsPrecio = /\d/.test(col[2] || "") && (col[2] || "").length <= 12;
+        let precioBruto = cEsPrecio ? col[2] : col[3];
+        let descripcion = cEsPrecio ? (col[4] || col[3] || "") : col[2];
+        let periodo = cEsPrecio ? (col[3] || "/ mes") : (col[4] || "/ mes");
+
+        // Limpia barras invertidas como \$3.00 y asegura el signo $
+        precioBruto = (precioBruto || "0.00").replace(/\\/g, "").trim();
+        if (!precioBruto.startsWith("$")) {
+          precioBruto = "$" + precioBruto;
         }
+
         listaSheet.push({
           nombre: col[0],
           categoria: (col[1] || "otros").toLowerCase(),
-          precio: precioFormateado,
-          periodo: col[3] || "/ mes",
-          descripcion: col[4] || ""
+          precio: precioBruto,
+          periodo: periodo,
+          descripcion: descripcion
         });
       }
     });
 
     if (listaSheet.length > 0) {
       productos = listaSheet;
-      localStorage.removeItem("catalogo_tienda"); // Da prioridad a tu Excel
+      localStorage.removeItem("catalogo_tienda");
     }
   } catch (err) {
     console.error("Error cargando Google Sheet:", err);
   }
   mostrarProductos(productos);
 }
-
-cargarDesdeGoogleSheets();
 
 cargarDesdeGoogleSheets();

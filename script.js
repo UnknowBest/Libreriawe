@@ -211,6 +211,30 @@ inputComprobante.addEventListener("input", () => {
   estadoVerificacion.classList.add("oculto");
 });
 
+// Conector anti-bloqueo (JSONP) compatible con Brave y cualquier navegador
+function consultarAppsScript(url) {
+  return new Promise((resolve, reject) => {
+    const nombreCallback = "cb_" + Math.floor(Math.random() * 1000000);
+    const script = document.createElement("script");
+    const separador = url.includes("?") ? "&" : "?";
+
+    window[nombreCallback] = (datos) => {
+      delete window[nombreCallback];
+      script.remove();
+      resolve(datos);
+    };
+
+    script.onerror = () => {
+      delete window[nombreCallback];
+      script.remove();
+      reject(new Error("Fallo de red"));
+    };
+
+    script.src = `${url}${separador}callback=${nombreCallback}`;
+    document.body.appendChild(script);
+  });
+}
+
 // Botón para verificar comprobante en Gmail vía Google Apps Script
 btnVerificarPago.addEventListener("click", async () => {
   const comprobante = inputComprobante.value.trim();
@@ -230,8 +254,7 @@ btnVerificarPago.addEventListener("click", async () => {
 
   try {
     const url = `${URL_VERIFICADOR_PICHINCHA}?comprobante=${encodeURIComponent(comprobante)}&monto=${encodeURIComponent(monto)}`;
-    const res = await fetch(url);
-    const data = await res.json();
+    const data = await consultarAppsScript(url);
 
     estadoVerificacion.textContent = data.mensaje;
     if (data.verificado) {
@@ -242,7 +265,7 @@ btnVerificarPago.addEventListener("click", async () => {
       estadoVerificacion.classList.add("error");
     }
   } catch (err) {
-    estadoVerificacion.textContent = "⚠️ No se pudo conectar al verificador. Puedes enviar el comprobante por WhatsApp.";
+    estadoVerificacion.textContent = "⚠️ No se pudo conectar. Asegúrate de actualizar la versión en el botón Implementar de Apps Script.";
     estadoVerificacion.classList.add("error");
   } finally {
     btnVerificarPago.disabled = false;

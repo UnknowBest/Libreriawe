@@ -7,14 +7,88 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  
+
+  <!-- Encabezado -->
   <header class="navbar">
     <div class="container nav-content">
       <h1 class="logo">Tienda Digital <span>Cedeño</span></h1>
-      <a href="#catalogo" class="btn-contacto" id="nav-whatsapp" target="_blank">Contacto Directo</a>
+      <div class="nav-botones">
+        <button id="btn-admin-login" class="btn-admin-acceso">🔒 Admin</button>
+        <a href="#catalogo" class="btn-contacto" id="nav-whatsapp" target="_blank">Contacto Directo</a>
+      </div>
     </div>
   </header>
 
+  <!-- PANEL DE ADMINISTRADOR (Oculto para clientes) -->
+  <section id="panel-admin" class="panel-admin oculto">
+    <div class="container">
+      <div class="admin-header">
+        <div>
+          <h2>⚙️ Panel de Administración</h2>
+          <p>Agrega, edita o carga tus productos en lote.</p>
+        </div>
+        <button id="btn-cerrar-admin" class="btn-secundario">Cerrar Sesión Admin</button>
+      </div>
+
+      <div class="admin-grid">
+        <!-- Columna 1: Formulario individual -->
+        <div class="admin-caja">
+          <h3 id="titulo-form">➕ Añadir / Editar Producto</h3>
+          <form id="form-producto">
+            <input type="hidden" id="edit-index" value="-1">
+            
+            <label>Nombre del producto</label>
+            <input type="text" id="prod-nombre" placeholder="Ej: Netflix 1 Pantalla HD" required>
+
+            <div class="fila-doble">
+              <div>
+                <label>Categoría</label>
+                <select id="prod-categoria">
+                  <option value="streaming">Streaming</option>
+                  <option value="software">Diseño y Software</option>
+                  <option value="gaming">Gaming</option>
+                  <option value="otros">Otros</option>
+                </select>
+              </div>
+              <div>
+                <label>Precio</label>
+                <input type="text" id="prod-precio" placeholder="Ej: $3.50" required>
+              </div>
+            </div>
+
+            <label>Periodo o detalle de precio</label>
+            <input type="text" id="prod-periodo" placeholder="Ej: / mes, pago único, desde..." value="/ mes" required>
+
+            <label>Descripción corta</label>
+            <textarea id="prod-desc" rows="2" placeholder="Ej: Perfil privado con PIN por 30 días y garantía." required></textarea>
+
+            <div class="botones-form">
+              <button type="submit" class="btn-guardar">Guardar Producto</button>
+              <button type="button" id="btn-cancelar-edicion" class="btn-secundario oculto">Cancelar</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Columna 2: Carga masiva y publicación -->
+        <div class="admin-caja">
+          <h3>🚀 Carga Masiva (Pegar varios de golpe)</h3>
+          <p class="texto-ayuda">Escribe un producto por línea separado por <strong>|</strong> con este formato:<br>
+          <code>Nombre | categoria | Precio | Periodo | Descripción</code></p>
+          
+          <textarea id="texto-masivo" rows="4" placeholder="Canva Pro | software | $3.00 | / mes | Acceso completo por 30 días&#10;Robux 400 | gaming | $5.50 | recarga | Entrega rápida en tu cuenta"></textarea>
+          <button type="button" id="btn-carga-masiva" class="btn-secundario w-100">Añadir toda la lista al catálogo</button>
+
+          <hr class="divisor">
+
+          <h3>🌐 Hacer visible para todos los clientes</h3>
+          <p class="texto-ayuda">Cuando termines de armar tu catálogo aquí, haz clic abajo para copiar la lista lista y pegarla en GitHub (o usa Google Sheets):</p>
+          <button type="button" id="btn-exportar-codigo" class="btn-publicar w-100">📋 Copiar Catálogo Listo para Publicar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Banner Principal (Hero) -->
   <section class="hero">
     <div class="container">
       <span class="badge">Entrega Inmediata y Garantizada</span>
@@ -24,8 +98,8 @@
     </div>
   </section>
 
+  <!-- Sección del Catálogo -->
   <main id="catalogo" class="container">
-    
     <div class="controles">
       <input type="text" id="buscador" placeholder="Buscar producto (ej. Netflix, Canva, Robux)...">
       
@@ -34,13 +108,14 @@
         <button class="btn-filtro" data-categoria="streaming">Streaming</button>
         <button class="btn-filtro" data-categoria="software">Diseño y Software</button>
         <button class="btn-filtro" data-categoria="gaming">Gaming</button>
+        <button class="btn-filtro" data-categoria="otros">Otros</button>
       </div>
     </div>
 
     <div id="contenedor-productos" class="grid-productos"></div>
-
   </main>
 
+  <!-- Pie de página -->
   <footer class="footer">
     <div class="container">
       <p>© 2026 Tienda Digital Cedeño. Todos los derechos reservados.</p>

@@ -365,24 +365,38 @@ async function cargarDesdeGoogleSheets() {
     const filas = csv.split(/\r?\n/);
     const listaSheet = [];
 
-    filas.forEach((fila, index) => {
+filas.forEach((fila, index) => {
       if (!fila.trim()) return;
       const col = dividirFilaCSV(fila);
 
       if (index === 0 && col[0].toLowerCase() === "nombre") return;
 
       if (col[0]) {
-        let precioBruto = (col[2] || "\$0.00").replace(/\\/g, "").trim();
-        if (!precioBruto.startsWith("\$")) {
-          precioBruto = "\$" + precioBruto;
+        // Detecta automáticamente dónde está el precio buscando números y quitando las barras \
+        let col2Limpia = (col[2] || "").replace(/\\/g, "").trim();
+        let col3Limpia = (col[3] || "").replace(/\\/g, "").trim();
+        
+        let esPrecioEnC = /\d/.test(col2Limpia) && col2Limpia.length <= 10;
+        
+        let precioBruto = esPrecioEnC ? col2Limpia : col3Limpia;
+        if (!precioBruto.startsWith("$")) {
+          precioBruto = "$" + precioBruto.replace("$", "");
+        }
+
+        let periodoTexto = esPrecioEnC ? (col[3] || "/ mes") : (col[4] || "/ mes");
+        let descripcionTexto = esPrecioEnC ? (col[4] || "") : (col[2] || "");
+
+        // Limpia el signo $ si se coló al inicio de la descripción
+        if (descripcionTexto.startsWith("$")) {
+          descripcionTexto = descripcionTexto.substring(1).trim();
         }
 
         listaSheet.push({
           nombre: col[0],
           categoria: (col[1] || "otros").trim().toLowerCase(),
           precio: precioBruto,
-          periodo: (col[3] || "/ mes").trim(),
-          descripcion: (col[4] || "").trim()
+          periodo: periodoTexto.trim(),
+          descripcion: descripcionTexto.trim()
         });
       }
     });

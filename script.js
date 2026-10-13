@@ -1,10 +1,16 @@
 // ==========================================
-// 1. CONFIGURACIÓN PRINCIPAL DE TU TIENDA
+// 1. CONFIGURACIÓN PRINCIPAL Y DATOS BANCARIOS
 // ==========================================
 const NUMERO_WHATSAPP = "593963259492"; 
 const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNz682jLUpz3P7eKqahpH2NiLqctI5V1B2utHZ2ZMS4rsmYSwd0huivG5Qt_sM4FyxHtvS7AliVNm9/pub?gid=0&single=true&output=csv";
+const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwgazS1VD6Ax8Wq-1CCiogUKD0xKFG9hr-teXJmr4FB0_CT5YkCNaJgdu7z85H8kRFP/exec";
 
-// Catálogo de respaldo mientras carga Google Sheets
+const DATOS_BANCO = {
+  tipoCuenta: "Cuenta de Ahorros - Banco Pichincha",
+  numeroCuenta: "2213128245",
+  titular: "Jostin Alejandro Cedeño López"
+};
+
 let productos = [
   {
     nombre: "Canva Pro (30 Días)",
@@ -15,7 +21,9 @@ let productos = [
   }
 ];
 
+let carrito = JSON.parse(localStorage.getItem("carrito_cedeño")) || [];
 let categoriaActual = "todos";
+let pagoVerificadoAutomaticamente = false;
 
 // Referencias del DOM
 const contenedor = document.getElementById("contenedor-productos");
@@ -23,11 +31,41 @@ const contenedorFiltros = document.getElementById("contenedor-filtros");
 const buscador = document.getElementById("buscador");
 const navWhatsapp = document.getElementById("nav-whatsapp");
 
+// Referencias del Carrito
+const modalCarrito = document.getElementById("modal-carrito");
+const btnAbrirCarrito = document.getElementById("btn-abrir-carrito");
+const btnCerrarCarrito = document.getElementById("btn-cerrar-carrito");
+const listaCarrito = document.getElementById("lista-carrito");
+const contadorCarrito = document.getElementById("contador-carrito");
+const totalCarrito = document.getElementById("total-carrito");
+const seccionPago = document.getElementById("seccion-pago");
+const inputComprobante = document.getElementById("input-comprobante");
+const btnVerificarPago = document.getElementById("btn-verificar-pago");
+const estadoVerificacion = document.getElementById("estado-verificacion");
+const btnFinalizarPedido = document.getElementById("btn-finalizar-pedido");
+
+// Mostrar datos bancarios
+document.getElementById("banco-tipo").textContent = DATOS_BANCO.tipoCuenta;
+document.getElementById("banco-numero").textContent = DATOS_BANCO.numeroCuenta;
+document.getElementById("banco-titular").textContent = DATOS_BANCO.titular;
+
 navWhatsapp.href = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent("¡Hola! Quiero consultar sobre el catálogo de Tienda Digital Cedeño.")}`;
+
+// Copiar número de cuenta 2213128245
+document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
+  navigator.clipboard.writeText(DATOS_BANCO.numeroCuenta);
+  e.target.textContent = "¡Copiado!";
+  setTimeout(() => (e.target.textContent = "Copiar"), 2000);
+});
 
 // ==========================================
 // 2. MOSTRAR PRODUCTOS Y CATEGORÍAS
 // ==========================================
+function obtenerPrecioNumerico(precioTexto) {
+  const limpio = String(precioTexto).replace(/[^0-9.,]/g, "").replace(",", ".");
+  return parseFloat(limpio) || 0;
+}
+
 function actualizarBotonesFiltro() {
   if (!contenedorFiltros) return;
 
@@ -64,8 +102,8 @@ function mostrarProductos(lista) {
   }
 
   lista.forEach((prod) => {
-    const mensaje = `¡Hola! Me interesa pedir: *${prod.nombre}* (${prod.precio} ${prod.periodo})`;
-    const urlWhatsapp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+    const mensajeDirecto = `¡Hola! Me interesa comprar: *${prod.nombre}* (${prod.precio} ${prod.periodo})`;
+    const urlWhatsapp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeDirecto)}`;
 
     const tarjeta = document.createElement("div");
     tarjeta.className = "tarjeta";
@@ -77,15 +115,180 @@ function mostrarProductos(lista) {
       </div>
       <div>
         <div class="precio">${prod.precio} <span>${prod.periodo}</span></div>
-        <a href="${urlWhatsapp}" target="_blank" class="btn-comprar">Pedir por WhatsApp</a>
+        <div class="botones-tarjeta">
+          <button class="btn-agregar-carrito">🛒 Añadir al carrito</button>
+          <a href="${urlWhatsapp}" target="_blank" class="btn-comprar-directo">Comprar directo</a>
+        </div>
       </div>
     `;
+
+    tarjeta.querySelector(".btn-agregar-carrito").addEventListener("click", (e) => {
+      agregarAlCarrito(prod);
+      const btn = e.target;
+      btn.textContent = "✔ ¡Añadido!";
+      setTimeout(() => (btn.textContent = "🛒 Añadir al carrito"), 1000);
+    });
+
     contenedor.appendChild(tarjeta);
   });
 }
 
 // ==========================================
-// 3. BUSCADOR Y FILTROS
+// 3. CARRITO Y VERIFICADOR BANCO PICHINCHA
+// ==========================================
+function agregarAlCarrito(prod) {
+  const existente = carrito.find(item => item.nombre === prod.nombre);
+  if (existente) {
+    existente.cantidad += 1;
+  } else {
+    carrito.push({
+      nombre: prod.nombre,
+      precioTexto: prod.precio,
+      precioNum: obtenerPrecioNumerico(prod.precio),
+      periodo: prod.periodo,
+      cantidad: 1
+    });
+  }
+  actualizarVistaCarrito();
+}
+
+window.cambiarCantidad = function(index, cambio) {
+  carrito[index].cantidad += cambio;
+  if (carrito[index].cantidad <= 0) {
+    carrito.splice(index, 1);
+  }
+  actualizarVistaCarrito();
+};
+
+function calcularSumaTotal() {
+  return carrito.reduce((acc, item) => acc + (item.precioNum * item.cantidad), 0);
+}
+
+function actualizarVistaCarrito() {
+  localStorage.setItem("carrito_cedeño", JSON.stringify(carrito));
+
+  const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+  contadorCarrito.textContent = totalItems;
+
+  listaCarrito.innerHTML = "";
+
+  if (carrito.length === 0) {
+    listaCarrito.innerHTML = `<p class="carrito-vacio">Tu carrito está vacío. Añade productos del catálogo.</p>`;
+    seccionPago.classList.add("oculto");
+    return;
+  }
+
+  seccionPago.classList.remove("oculto");
+  let sumaTotal = 0;
+
+  carrito.forEach((item, index) => {
+    const subtotal = item.precioNum * item.cantidad;
+    sumaTotal += subtotal;
+
+    const div = document.createElement("div");
+    div.className = "item-carrito";
+    div.innerHTML = `
+      <div class="item-info">
+        <h4>${item.nombre}</h4>
+        <span>${item.precioTexto} c/u</span>
+      </div>
+      <div class="item-controles">
+        <button onclick="cambiarCantidad(${index}, -1)">-</button>
+        <span>${item.cantidad}</span>
+        <button onclick="cambiarCantidad(${index}, 1)">+</button>
+        <strong class="item-subtotal">$${subtotal.toFixed(2)}</strong>
+      </div>
+    `;
+    listaCarrito.appendChild(div);
+  });
+
+  totalCarrito.textContent = `$${sumaTotal.toFixed(2)}`;
+}
+
+// Resetear estado si cambia el número de comprobante
+inputComprobante.addEventListener("input", () => {
+  pagoVerificadoAutomaticamente = false;
+  estadoVerificacion.classList.add("oculto");
+});
+
+// Botón para verificar comprobante en Gmail vía Google Apps Script
+btnVerificarPago.addEventListener("click", async () => {
+  const comprobante = inputComprobante.value.trim();
+  const monto = calcularSumaTotal().toFixed(2);
+
+  estadoVerificacion.classList.remove("oculto", "exito", "error");
+
+  if (!comprobante) {
+    estadoVerificacion.textContent = "⚠️ Escribe el número de comprobante de tu transferencia.";
+    estadoVerificacion.classList.add("error");
+    return;
+  }
+
+  btnVerificarPago.disabled = true;
+  btnVerificarPago.textContent = "Buscando...";
+  estadoVerificacion.textContent = "🔄 Verificando transferencia con Banco Pichincha...";
+
+  try {
+    const url = `${URL_VERIFICADOR_PICHINCHA}?comprobante=${encodeURIComponent(comprobante)}&monto=${encodeURIComponent(monto)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    estadoVerificacion.textContent = data.mensaje;
+    if (data.verificado) {
+      pagoVerificadoAutomaticamente = true;
+      estadoVerificacion.classList.add("exito");
+    } else {
+      pagoVerificadoAutomaticamente = false;
+      estadoVerificacion.classList.add("error");
+    }
+  } catch (err) {
+    estadoVerificacion.textContent = "⚠️ No se pudo conectar al verificador. Puedes enviar el comprobante por WhatsApp.";
+    estadoVerificacion.classList.add("error");
+  } finally {
+    btnVerificarPago.disabled = false;
+    btnVerificarPago.textContent = "🔍 Verificar";
+  }
+});
+
+// Abrir y cerrar modal del carrito
+btnAbrirCarrito.addEventListener("click", () => modalCarrito.classList.remove("oculto"));
+btnCerrarCarrito.addEventListener("click", () => modalCarrito.classList.add("oculto"));
+modalCarrito.addEventListener("click", (e) => {
+  if (e.target === modalCarrito) modalCarrito.classList.add("oculto");
+});
+
+// Enviar pedido por WhatsApp
+btnFinalizarPedido.addEventListener("click", () => {
+  if (carrito.length === 0) return;
+
+  let sumaTotal = 0;
+  let detalleProductos = "";
+
+  carrito.forEach((item) => {
+    const subtotal = item.precioNum * item.cantidad;
+    sumaTotal += subtotal;
+    detalleProductos += `• ${item.cantidad}x *${item.nombre}* ($${subtotal.toFixed(2)})\n`;
+  });
+
+  const comprobante = inputComprobante.value.trim() || "Enviaré captura en el chat";
+  const estadoPagoTexto = pagoVerificadoAutomaticamente
+    ? "✅ VERIFICADO EN SISTEMA"
+    : "⏳ Pendiente de revisión";
+
+  const mensaje = 
+    `¡Hola *Tienda Digital Cedeño*! 🛒 Quiero realizar este pedido:\n\n` +
+    `${detalleProductos}\n` +
+    `💰 *Total a pagar:* $${sumaTotal.toFixed(2)}\n` +
+    `🏦 *Cuenta Pichincha:* ${DATOS_BANCO.numeroCuenta}\n` +
+    `🧾 *N° Comprobante:* ${comprobante}\n` +
+    `📌 *Estado:* ${estadoPagoTexto}`;
+
+  const url = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, "_blank");
+});
+
+// ==========================================
+// 4. BUSCADOR, FILTROS Y GOOGLE SHEETS
 // ==========================================
 function filtrarCatalogo() {
   const texto = buscador.value.toLowerCase();
@@ -99,9 +302,6 @@ function filtrarCatalogo() {
 
 buscador.addEventListener("input", filtrarCatalogo);
 
-// ==========================================
-// 4. LECTOR AUTOMÁTICO DE GOOGLE SHEETS
-// ==========================================
 function dividirFilaCSV(fila) {
   const resultado = [];
   let actual = "";
@@ -139,7 +339,6 @@ async function cargarDesdeGoogleSheets() {
       if (!fila.trim()) return;
       const col = dividirFilaCSV(fila);
 
-      // Si la Fila 1 tiene la palabra "nombre" como título, la salta; si tiene un producto, lo muestra
       if (index === 0 && col[0].toLowerCase() === "nombre") return;
 
       if (col[0]) {
@@ -173,4 +372,5 @@ async function cargarDesdeGoogleSheets() {
   filtrarCatalogo();
 }
 
+actualizarVistaCarrito();
 cargarDesdeGoogleSheets();

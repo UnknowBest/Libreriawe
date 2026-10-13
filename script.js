@@ -380,7 +380,7 @@ async function cargarDesdeGoogleSheets() {
 
       if (index === 0 && col[0].toLowerCase() === "nombre") return;
 
-if (col[0]) {
+      if (col[0]) {
         let precioBruto = (col[2] || "$0.00").replace(/\\/g, "").trim();
         if (!precioBruto.startsWith("$")) {
           precioBruto = "$" + precioBruto;
@@ -394,13 +394,15 @@ if (col[0]) {
           descripcion: (col[4] || "").trim()
         });
       }
-      
+    });
+
     if (listaSheet.length > 0) {
       productos = listaSheet;
     }
   } catch (err) {
     console.error("Error cargando Google Sheet:", err);
   }
+  
   actualizarBotonesFiltro();
   filtrarCatalogo();
 }

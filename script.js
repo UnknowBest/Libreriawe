@@ -3,7 +3,7 @@
 // ==========================================
 const NUMERO_WHATSAPP = "593963259492"; 
 const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNz682jLUpz3P7eKqahpH2NiLqctI5V1B2utHZ2ZMS4rsmYSwd0huivG5Qt_sM4FyxHtvS7AliVNm9/pub?gid=0&single=true&output=csv";
-const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwgazS1VD6Ax8Wq-1CCiogUKD0xKFG9hr-teXJmr4FB0_CT5YkCNaJgdu7z85H8kRFP/exec";
+const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwmO7jW90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMAUdpx1ttutlRY/exec";
 
 const DATOS_BANCO = {
   tipoCuenta: "Cuenta de Ahorros - Banco Pichincha",

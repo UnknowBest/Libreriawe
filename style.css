@@ -8,7 +8,6 @@
   --whatsapp: #22c55e;
   --whatsapp-hover: #16a34a;
   --borde: #334155;
-  --peligro: #ef4444;
 }
 
 * {
@@ -28,10 +27,6 @@ body {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 20px;
-}
-
-.oculto {
-  display: none !important;
 }
 
 /* Barra de Navegación */
@@ -60,27 +55,6 @@ body {
   color: var(--acento);
 }
 
-.nav-botones {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.btn-admin-acceso {
-  background: transparent;
-  color: var(--texto-secundario);
-  border: 1px dashed var(--borde);
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.85rem;
-}
-
-.btn-admin-acceso:hover {
-  color: var(--texto);
-  border-color: var(--acento);
-}
-
 .btn-contacto {
   background-color: var(--fondo-tarjeta);
   color: var(--texto);
@@ -90,150 +64,11 @@ body {
   border: 1px solid var(--borde);
   font-size: 0.9rem;
   font-weight: 600;
+  transition: 0.2s;
 }
 
-/* PANEL DE ADMINISTRADOR */
-.panel-admin {
-  background-color: #111827;
-  border-bottom: 2px solid var(--acento);
-  padding: 30px 0;
-}
-
-.admin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.admin-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
-}
-
-.admin-caja {
-  background-color: var(--fondo-tarjeta);
-  border: 1px solid var(--borde);
-  border-radius: 12px;
-  padding: 20px;
-}
-
-.admin-caja h3 {
-  margin-bottom: 14px;
-  font-size: 1.1rem;
-}
-
-.admin-caja label {
-  display: block;
-  font-size: 0.85rem;
-  color: var(--texto-secundario);
-  margin-bottom: 4px;
-  margin-top: 10px;
-}
-
-.admin-caja input,
-.admin-caja select,
-.admin-caja textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--borde);
-  background-color: var(--fondo);
-  color: var(--texto);
-  font-size: 0.95rem;
-}
-
-.fila-doble {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.botones-form {
-  display: flex;
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.btn-guardar {
-  background-color: var(--acento);
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  flex: 1;
-}
-
-.btn-secundario {
-  background-color: transparent;
-  color: var(--texto);
-  border: 1px solid var(--borde);
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.btn-publicar {
-  background-color: var(--whatsapp);
-  color: white;
-  border: none;
-  padding: 12px 18px;
-  border-radius: 8px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.w-100 {
-  width: 100%;
-  margin-top: 10px;
-}
-
-.texto-ayuda {
-  font-size: 0.82rem;
-  color: var(--texto-secundario);
-  margin-bottom: 8px;
-}
-
-.divisor {
-  border: none;
-  border-top: 1px solid var(--borde);
-  margin: 18px 0;
-}
-
-/* Acciones Admin en cada Tarjeta */
-.acciones-admin {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px dashed var(--borde);
-}
-
-.btn-editar, .btn-borrar {
-  flex: 1;
-  padding: 6px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.btn-editar {
-  background-color: #3b82f6;
-  color: white;
-}
-
-.btn-borrar {
-  background-color: var(--peligro);
-  color: white;
+.btn-contacto:hover {
+  border-color: var(--acento);
 }
 
 /* Hero y Catálogo */
@@ -275,6 +110,12 @@ body {
   padding: 12px 28px;
   border-radius: 10px;
   font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-principal:hover {
+  background-color: var(--acento-hover);
+  transform: translateY(-2px);
 }
 
 .controles {
@@ -292,6 +133,11 @@ body {
   background-color: var(--fondo-tarjeta);
   color: var(--texto);
   font-size: 1rem;
+  outline: none;
+}
+
+#buscador:focus {
+  border-color: var(--acento);
 }
 
 .filtros {
@@ -308,6 +154,7 @@ body {
   border-radius: 20px;
   cursor: pointer;
   font-weight: 600;
+  transition: 0.2s;
 }
 
 .btn-filtro.activo, .btn-filtro:hover {
@@ -331,6 +178,12 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.tarjeta:hover {
+  transform: translateY(-4px);
+  border-color: var(--acento);
 }
 
 .etiqueta-cat {
@@ -375,6 +228,11 @@ body {
   padding: 12px;
   border-radius: 10px;
   font-weight: 700;
+  transition: background-color 0.2s;
+}
+
+.btn-comprar:hover {
+  background-color: var(--whatsapp-hover);
 }
 
 .footer {
@@ -383,4 +241,9 @@ body {
   border-top: 1px solid var(--borde);
   color: var(--texto-secundario);
   font-size: 0.9rem;
+}
+
+.footer-sub {
+  font-size: 0.8rem;
+  margin-top: 4px;
 }

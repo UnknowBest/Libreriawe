@@ -11,11 +11,12 @@ const DATOS_BANCO = {
   titular: "Jostin Alejandro Cedeño López"
 };
 
-let productos = [
+// Productos por defecto mientras carga la nube (carga inmediata)
+let productos = JSON.parse(localStorage.getItem("productos_cedeño_cache")) || [
   {
     nombre: "Canva Pro (30 Días)",
     categoria: "software",
-    descripcion: "Acceso a todas las plantillas premium, quitafondos y herramientas de diseño.",
+    descripcion: "Acceso a todas las plantillas premium y herramientas de diseño.",
     precio: "\$3.00",
     periodo: "/ mes"
   }
@@ -51,7 +52,6 @@ document.getElementById("banco-titular").textContent = DATOS_BANCO.titular;
 
 navWhatsapp.href = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent("¡Hola! Quiero consultar sobre el catálogo de Tienda Digital Cedeño.")}`;
 
-// Copiar número de cuenta
 document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
   navigator.clipboard.writeText(DATOS_BANCO.numeroCuenta);
   e.target.textContent = "¡Copiado!";
@@ -212,15 +212,11 @@ inputComprobante.addEventListener("input", () => {
 
 async function consultarAppsScript(url) {
   try {
-    const respuesta = await fetch(url, {
-      method: "GET",
-      redirect: "follow",
-      credentials: "omit"
-    });
+    const respuesta = await fetch(url, { method: "GET", redirect: "follow", credentials: "omit" });
     const texto = await respuesta.text();
     return JSON.parse(texto);
   } catch (e) {
-    console.warn("Intentando método secundario...");
+    console.warn("Intentando respaldo...");
   }
 
   return new Promise((resolve, reject) => {
@@ -365,29 +361,27 @@ async function cargarDesdeGoogleSheets() {
     const filas = csv.split(/\r?\n/);
     const listaSheet = [];
 
-filas.forEach((fila, index) => {
+    filas.forEach((fila, index) => {
       if (!fila.trim()) return;
       const col = dividirFilaCSV(fila);
 
       if (index === 0 && col[0].toLowerCase() === "nombre") return;
 
       if (col[0]) {
-        // Detecta automáticamente dónde está el precio buscando números y quitando las barras \
         let col2Limpia = (col[2] || "").replace(/\\/g, "").trim();
         let col3Limpia = (col[3] || "").replace(/\\/g, "").trim();
         
         let esPrecioEnC = /\d/.test(col2Limpia) && col2Limpia.length <= 10;
         
         let precioBruto = esPrecioEnC ? col2Limpia : col3Limpia;
-        if (!precioBruto.startsWith("$")) {
+        if (!precioBruto.startsWith("\$")) {
           precioBruto = "$" + precioBruto.replace("$", "");
         }
 
         let periodoTexto = esPrecioEnC ? (col[3] || "/ mes") : (col[4] || "/ mes");
         let descripcionTexto = esPrecioEnC ? (col[4] || "") : (col[2] || "");
 
-        // Limpia el signo $ si se coló al inicio de la descripción
-        if (descripcionTexto.startsWith("$")) {
+        if (descripcionTexto.startsWith("\$")) {
           descripcionTexto = descripcionTexto.substring(1).trim();
         }
 
@@ -403,6 +397,7 @@ filas.forEach((fila, index) => {
 
     if (listaSheet.length > 0) {
       productos = listaSheet;
+      localStorage.setItem("productos_cedeño_cache", JSON.stringify(productos)); // Guarda caché veloz
     }
   } catch (err) {
     console.error("Error cargando Google Sheet:", err);
@@ -412,5 +407,8 @@ filas.forEach((fila, index) => {
   filtrarCatalogo();
 }
 
+// Carga instantánea con caché y luego actualiza en segundo plano
+actualizarBotonesFiltro();
+filtrarCatalogo();
 actualizarVistaCarrito();
 cargarDesdeGoogleSheets();

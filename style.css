@@ -1,0 +1,252 @@
+
+:root {
+  --fondo: #0f172a;
+  --fondo-tarjeta: #1e293b;
+  --texto: #f8fafc;
+  --texto-secundario: #94a3b8;
+  --acento: #6366f1;
+  --acento-hover: #4f46e5;
+  --whatsapp: #22c55e;
+  --whatsapp-hover: #16a34a;
+  --borde: #334155;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: var(--fondo);
+  color: var(--texto);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.navbar {
+  background-color: rgba(15, 23, 42, 0.9);
+  border-bottom: 1px solid var(--borde);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+}
+
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.logo span {
+  color: var(--acento);
+}
+
+.btn-contacto {
+  background-color: var(--fondo-tarjeta);
+  color: var(--texto);
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--borde);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-contacto:hover {
+  border-color: var(--acento);
+}
+
+.hero {
+  text-align: center;
+  padding: 70px 20px 50px;
+  background: radial-gradient(circle at top, rgba(99, 102, 241, 0.18), transparent 60%);
+}
+
+.badge {
+  background-color: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 16px;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.hero h2 {
+  font-size: 2.4rem;
+  max-width: 700px;
+  margin: 0 auto 16px;
+  line-height: 1.2;
+}
+
+.hero p {
+  color: var(--texto-secundario);
+  max-width: 580px;
+  margin: 0 auto 28px;
+  font-size: 1.05rem;
+}
+
+.btn-principal {
+  display: inline-block;
+  background-color: var(--acento);
+  color: white;
+  text-decoration: none;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-principal:hover {
+  background-color: var(--acento-hover);
+  transform: translateY(-2px);
+}
+
+.controles {
+  margin: 20px 0 35px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+#buscador {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--borde);
+  background-color: var(--fondo-tarjeta);
+  color: var(--texto);
+  font-size: 1rem;
+  outline: none;
+}
+
+#buscador:focus {
+  border-color: var(--acento);
+}
+
+.filtros {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-filtro {
+  background-color: var(--fondo-tarjeta);
+  color: var(--texto-secundario);
+  border: 1px solid var(--borde);
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-filtro.activo,
+.btn-filtro:hover {
+  background-color: var(--acento);
+  color: white;
+  border-color: var(--acento);
+}
+
+.grid-productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  padding-bottom: 60px;
+}
+
+.tarjeta {
+  background-color: var(--fondo-tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.tarjeta:hover {
+  transform: translateY(-4px);
+  border-color: var(--acento);
+}
+
+.etiqueta-cat {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #818cf8;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.tarjeta h3 {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+}
+
+.tarjeta p {
+  color: var(--texto-secundario);
+  font-size: 0.92rem;
+  margin-bottom: 20px;
+}
+
+.precio {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--texto);
+  margin-bottom: 16px;
+}
+
+.precio span {
+  font-size: 0.85rem;
+  color: var(--texto-secundario);
+  font-weight: 400;
+}
+
+.btn-comprar {
+  display: block;
+  text-align: center;
+  background-color: var(--whatsapp);
+  color: white;
+  text-decoration: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: background-color 0.2s;
+}
+
+.btn-comprar:hover {
+  background-color: var(--whatsapp-hover);
+}
+
+.footer {
+  text-align: center;
+  padding: 30px 0;
+  border-top: 1px solid var(--borde);
+  color: var(--texto-secundario);
+  font-size: 0.9rem;
+}
+
+.footer-sub {
+  font-size: 0.8rem;
+  margin-top: 4px;
+}

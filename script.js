@@ -2,7 +2,7 @@
 // 1. CONFIGURACIÓN PRINCIPAL DE TU TIENDA
 // ==========================================
 const NUMERO_WHATSAPP = "593999999999"; // Tu número con código de país (sin +)
-const CLAVE_ADMIN = "admin123";         // Tu contraseña para abrir el panel Admin
+const CLAVE_ADMIN = "tole123";         // Tu contraseña para abrir el panel Admin
 
 // OPCIONAL: Si conectas una Hoja de Cálculo de Google publicada como CSV, pega el link aquí:
 const GOOGLE_SHEET_CSV_URL = ""; 

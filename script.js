@@ -3,8 +3,6 @@
 // ==========================================
 const NUMERO_WHATSAPP = "593963259492"; 
 const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNz682jLUpz3P7eKqahpH2NiLqctI5V1B2utHZ2ZMS4rsmYSwd0huivG5Qt_sM4FyxHtvS7AliVNm9/pub?gid=0&single=true&output=csv";
-
-// Si al darle a "Implementar > Nueva implementación" te dio una URL nueva, reemplázala aquí:
 const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwmO7jW90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMAUdpx1ttutlRY/exec";
 
 const DATOS_BANCO = {
@@ -53,7 +51,7 @@ document.getElementById("banco-titular").textContent = DATOS_BANCO.titular;
 
 navWhatsapp.href = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent("¡Hola! Quiero consultar sobre el catálogo de Tienda Digital Cedeño.")}`;
 
-// Copiar número de cuenta 2213128245
+// Copiar número de cuenta
 document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
   navigator.clipboard.writeText(DATOS_BANCO.numeroCuenta);
   e.target.textContent = "¡Copiado!";
@@ -207,15 +205,12 @@ function actualizarVistaCarrito() {
   totalCarrito.textContent = `$${sumaTotal.toFixed(2)}`;
 }
 
-// Resetear estado si cambia el número de comprobante
 inputComprobante.addEventListener("input", () => {
   pagoVerificadoAutomaticamente = false;
   estadoVerificacion.classList.add("oculto");
 });
 
-// Conector doble (Fetch directo + respaldo JSONP) compatible con todos los navegadores
 async function consultarAppsScript(url) {
-  // 1. Intento directo estándar (sin cookies para evitar bloqueo CORS/Brave)
   try {
     const respuesta = await fetch(url, {
       method: "GET",
@@ -225,10 +220,9 @@ async function consultarAppsScript(url) {
     const texto = await respuesta.text();
     return JSON.parse(texto);
   } catch (e) {
-    console.warn("Intentando método secundario JSONP...");
+    console.warn("Intentando método secundario...");
   }
 
-  // 2. Respaldo JSONP
   return new Promise((resolve, reject) => {
     const nombreCallback = "cb_" + Math.floor(Math.random() * 1000000);
     const script = document.createElement("script");
@@ -243,7 +237,7 @@ async function consultarAppsScript(url) {
     script.onerror = () => {
       delete window[nombreCallback];
       script.remove();
-      reject(new Error("Fallo de red o bloqueo del navegador"));
+      reject(new Error("Fallo de red"));
     };
 
     script.src = `${url}${separador}callback=${nombreCallback}`;
@@ -251,7 +245,6 @@ async function consultarAppsScript(url) {
   });
 }
 
-// Botón para verificar comprobante en Gmail vía Google Apps Script
 btnVerificarPago.addEventListener("click", async () => {
   const comprobante = inputComprobante.value.trim();
   const monto = calcularSumaTotal().toFixed(2);
@@ -281,7 +274,7 @@ btnVerificarPago.addEventListener("click", async () => {
       estadoVerificacion.classList.add("error");
     }
   } catch (err) {
-    estadoVerificacion.textContent = "⚠️ Verifica que la URL en la línea 8 sea la última de 'Administrar implementaciones' o desactiva el escudo de Brave.";
+    estadoVerificacion.textContent = "⚠️ No se pudo conectar con el verificador.";
     estadoVerificacion.classList.add("error");
   } finally {
     btnVerificarPago.disabled = false;
@@ -289,14 +282,12 @@ btnVerificarPago.addEventListener("click", async () => {
   }
 });
 
-// Abrir y cerrar modal del carrito
 btnAbrirCarrito.addEventListener("click", () => modalCarrito.classList.remove("oculto"));
 btnCerrarCarrito.addEventListener("click", () => modalCarrito.classList.add("oculto"));
 modalCarrito.addEventListener("click", (e) => {
   if (e.target === modalCarrito) modalCarrito.classList.add("oculto");
 });
 
-// Enviar pedido por WhatsApp
 btnFinalizarPedido.addEventListener("click", () => {
   if (carrito.length === 0) return;
 
@@ -381,9 +372,9 @@ async function cargarDesdeGoogleSheets() {
       if (index === 0 && col[0].toLowerCase() === "nombre") return;
 
       if (col[0]) {
-        let precioBruto = (col[2] || "$0.00").replace(/\\/g, "").trim();
-        if (!precioBruto.startsWith("$")) {
-          precioBruto = "$" + precioBruto;
+        let precioBruto = (col[2] || "\$0.00").replace(/\\/g, "").trim();
+        if (!precioBruto.startsWith("\$")) {
+          precioBruto = "\$" + precioBruto;
         }
 
         listaSheet.push({
@@ -402,7 +393,7 @@ async function cargarDesdeGoogleSheets() {
   } catch (err) {
     console.error("Error cargando Google Sheet:", err);
   }
-  
+
   actualizarBotonesFiltro();
   filtrarCatalogo();
 }

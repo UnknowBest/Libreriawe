@@ -238,25 +238,31 @@ botonesFiltro.forEach((boton) => {
 
 buscador.addEventListener("input", filtrarCatalogo);
 
-// Si configuraste un Google Sheet CSV, carga los productos en vivo desde ahí
 async function cargarDesdeGoogleSheets() {
   if (!GOOGLE_SHEET_CSV_URL) {
     mostrarProductos(productos);
     return;
   }
   try {
-    const res = await fetch(GOOGLE_SHEET_CSV_URL);
+    // Evita que el navegador guarde una versión vieja del catálogo
+    const urlSinCache = GOOGLE_SHEET_CSV_URL + "&t=" + new Date().getTime();
+    const res = await fetch(urlSinCache);
     const csv = await res.text();
-    const filas = csv.split("\n").slice(1); // Ignora la fila de títulos
+    const filas = csv.split(/\r?\n/).slice(1); // Salta la Fila 1 de títulos
     const listaSheet = [];
 
     filas.forEach((fila) => {
-      const col = fila.split(",").map(c => c.replace(/^"|"\$/g, "").trim());
+      if (!fila.trim()) return;
+      const col = fila.split(",").map(c => c.replace(/^"|"$/g, "").trim());
       if (col[0]) {
+        let precioFormateado = col[2] || "$0.00";
+        if (!precioFormateado.startsWith("$")) {
+          precioFormateado = "$" + precioFormateado;
+        }
         listaSheet.push({
           nombre: col[0],
           categoria: (col[1] || "otros").toLowerCase(),
-          precio: col[2] || "\$0.00",
+          precio: precioFormateado,
           periodo: col[3] || "/ mes",
           descripcion: col[4] || ""
         });
@@ -265,11 +271,14 @@ async function cargarDesdeGoogleSheets() {
 
     if (listaSheet.length > 0) {
       productos = listaSheet;
+      localStorage.removeItem("catalogo_tienda"); // Da prioridad a tu Excel
     }
   } catch (err) {
     console.error("Error cargando Google Sheet:", err);
   }
   mostrarProductos(productos);
 }
+
+cargarDesdeGoogleSheets();
 
 cargarDesdeGoogleSheets();

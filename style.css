@@ -8,6 +8,8 @@
   --whatsapp: #22c55e;
   --whatsapp-hover: #16a34a;
   --borde: #334155;
+  --pichincha-amarillo: #ffdd00;
+  --pichincha-azul: #0f265c;
 }
 
 * {
@@ -29,9 +31,13 @@ body {
   padding: 0 20px;
 }
 
+.oculto {
+  display: none !important;
+}
+
 /* Barra de Navegación */
 .navbar {
-  background-color: rgba(15, 23, 42, 0.9);
+  background-color: rgba(15, 23, 42, 0.92);
   border-bottom: 1px solid var(--borde);
   position: sticky;
   top: 0;
@@ -55,20 +61,42 @@ body {
   color: var(--acento);
 }
 
+.nav-acciones {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
 .btn-contacto {
   background-color: var(--fondo-tarjeta);
   color: var(--texto);
   text-decoration: none;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: 8px;
   border: 1px solid var(--borde);
   font-size: 0.9rem;
   font-weight: 600;
-  transition: 0.2s;
 }
 
-.btn-contacto:hover {
-  border-color: var(--acento);
+.btn-carrito {
+  background-color: var(--acento);
+  color: white;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+}
+
+.btn-carrito span {
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
 }
 
 /* Hero y Catálogo */
@@ -110,12 +138,6 @@ body {
   padding: 12px 28px;
   border-radius: 10px;
   font-weight: 600;
-  transition: 0.2s;
-}
-
-.btn-principal:hover {
-  background-color: var(--acento-hover);
-  transform: translateY(-2px);
 }
 
 .controles {
@@ -136,10 +158,6 @@ body {
   outline: none;
 }
 
-#buscador:focus {
-  border-color: var(--acento);
-}
-
 .filtros {
   display: flex;
   gap: 10px;
@@ -154,7 +172,6 @@ body {
   border-radius: 20px;
   cursor: pointer;
   font-weight: 600;
-  transition: 0.2s;
 }
 
 .btn-filtro.activo, .btn-filtro:hover {
@@ -219,19 +236,262 @@ body {
   font-weight: 400;
 }
 
-.btn-comprar {
-  display: block;
-  text-align: center;
-  background-color: var(--whatsapp);
-  color: white;
-  text-decoration: none;
-  padding: 12px;
-  border-radius: 10px;
-  font-weight: 700;
-  transition: background-color 0.2s;
+.botones-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.btn-comprar:hover {
+.btn-agregar-carrito {
+  width: 100%;
+  background-color: var(--acento);
+  color: white;
+  border: none;
+  padding: 11px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-agregar-carrito:hover {
+  background-color: var(--acento-hover);
+}
+
+.btn-comprar-directo {
+  display: block;
+  text-align: center;
+  background-color: transparent;
+  color: var(--whatsapp);
+  border: 1px solid var(--whatsapp);
+  text-decoration: none;
+  padding: 9px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* MODAL DEL CARRITO Y BANCO PICHINCHA */
+.modal-fondo {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.modal-contenido {
+  background-color: var(--fondo-tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--borde);
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+}
+
+.btn-cerrar {
+  background: none;
+  border: none;
+  color: var(--texto-secundario);
+  font-size: 1.8rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.carrito-vacio {
+  text-align: center;
+  color: var(--texto-secundario);
+  padding: 30px 0;
+}
+
+.item-carrito {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--borde);
+  gap: 10px;
+}
+
+.item-info h4 {
+  font-size: 0.95rem;
+}
+
+.item-info span {
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+}
+
+.item-controles {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.item-controles button {
+  background-color: var(--fondo);
+  color: var(--texto);
+  border: 1px solid var(--borde);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.item-subtotal {
+  min-width: 60px;
+  text-align: right;
+  color: #818cf8;
+}
+
+.fila-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.25rem;
+  margin: 18px 0;
+}
+
+.fila-total strong {
+  color: var(--whatsapp);
+  font-size: 1.5rem;
+}
+
+/* Estilo Caja Banco Pichincha */
+.caja-pichincha {
+  background-color: #0b132b;
+  border: 2px solid var(--pichincha-amarillo);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+.pichincha-titulo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.icono-banco {
+  font-size: 1.6rem;
+}
+
+.pichincha-titulo h4 {
+  color: var(--pichincha-amarillo);
+  font-size: 1rem;
+}
+
+.pichincha-titulo p {
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+}
+
+.datos-cuenta {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+}
+
+.datos-cuenta p {
+  margin-bottom: 6px;
+}
+
+.btn-copiar {
+  background-color: var(--pichincha-amarillo);
+  color: var(--pichincha-azul);
+  border: none;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.campo-comprobante label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--texto-secundario);
+  margin-bottom: 6px;
+}
+
+.fila-verificacion {
+  display: flex;
+  gap: 8px;
+}
+
+.fila-verificacion input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--borde);
+  background-color: var(--fondo);
+  color: var(--texto);
+  font-size: 0.9rem;
+}
+
+.btn-verificar {
+  background-color: var(--pichincha-amarillo);
+  color: var(--pichincha-azul);
+  border: none;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.estado-verificacion {
+  font-size: 0.82rem;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.estado-verificacion.exito {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.estado-verificacion.error {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.btn-whatsapp-pago {
+  width: 100%;
+  background-color: var(--whatsapp);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-whatsapp-pago:hover {
   background-color: var(--whatsapp-hover);
 }
 

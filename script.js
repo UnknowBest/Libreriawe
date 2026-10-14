@@ -75,105 +75,83 @@ document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
 // ==========================================
 // 2. MOTOR INTELIGENTE DE IMÁGENES POR PRODUCTO
 // ==========================================
+// ==========================================
+// 2. MOTOR INTELIGENTE DE LOGOS OFICIALES EN PNG
+// ==========================================
 function obtenerDisenoVisualProducto(prod) {
   const n = (prod.nombre || "").toLowerCase();
   const c = (prod.categoria || "").toLowerCase();
 
-  // Si pusiste un link personalizado en la Columna F de Google Sheets:
+  // Si pones un link personalizado en la Columna F de tu Google Sheets:
   if (prod.imagen && prod.imagen.startsWith("http")) {
     return {
       fondo: "linear-gradient(135deg, #1e293b, #0f172a)",
       imgUrl: prod.imagen,
-      esPortadaCompleta: true,
-      emoji: "✨"
+      esPortadaCompleta: true
     };
   }
 
-  // Marcas oficiales corregidas y optimizadas
+  // Logos oficiales estables en alta definición (PNG)
   const marcas = [
     { 
       claves: ["netflix"], 
       fondo: "linear-gradient(135deg, #000000 0%, #831010 55%, #e50914 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", 
-      emoji: "🎬" 
+      logo: "https://images.ctfassets.net/y2ske730sjqp/1aHzLmCuKqlCGAgtWxHxny/e640fa9646732536e7a130324913be1f/Netflix_Symbol_CMYK.png" 
     },
     { 
       claves: ["disney"], 
       fondo: "linear-gradient(135deg, #040714 0%, #0a1d56 55%, #113ccf 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg", 
-      emoji: "🏰" 
+      logo: "https://static.wikia.nocookie.net/logopedia/images/e/e3/Disney%2B_2024.svg" 
     },
     { 
       claves: ["hbo", "max"], 
       fondo: "linear-gradient(135deg, #090326 0%, #2e0f75 55%, #6610f2 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/c/ce/Max_logo_%282023%29.svg", 
-      emoji: "🍿" 
+      logo: "https://images.ctfassets.net/wrqd4vccibti/3q0sJ4q7X2K4e8a8yU2K2a/6e17812bc6c67ef8627bc88f0a3ecb99/Max_logo.png" 
     },
     { 
       claves: ["paramount"], 
       fondo: "linear-gradient(135deg, #001540 0%, #003899 55%, #0064ff 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Paramount%2B_logo_%282022%29.svg", 
-      emoji: "⛰️" 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Paramount_Pictures_2022_%28Dark_BG%29.png" 
     },
     { 
       claves: ["crunchyroll", "anime"], 
       fondo: "linear-gradient(135deg, #1f0c00 0%, #993d00 55%, #f47521 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Crunchyroll_Logo.svg", 
-      emoji: "🍥" 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/1/17/Crunchyroll_Logo_2024.png" 
     },
     { 
       claves: ["prime", "amazon"], 
       fondo: "linear-gradient(135deg, #051923 0%, #004e75 55%, #00a8e1 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video_logo_%282024%29.svg", 
-      emoji: "📺" 
-    },
-    { 
-      claves: ["vix"], 
-      fondo: "linear-gradient(135deg, #2b0c00 0%, #ff5100 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/7/7a/ViX_logo.svg", 
-      emoji: "📡" 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Amazon_Prime_Video_Logo_%282024%29.png" 
     },
     { 
       claves: ["spotify"], 
       fondo: "linear-gradient(135deg, #071f10 0%, #0f682f 55%, #1db954 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text_%282015%29.svg", 
-      emoji: "🎧" 
+      logo: "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Full_Logo_RGB_White.png" 
     },
     { 
       claves: ["youtube"], 
       fondo: "linear-gradient(135deg, #1f0000 0%, #8f0000 55%, #ff0000 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg", 
-      emoji: "▶️" 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo_%282015-2017%29.svg" 
     },
     { 
       claves: ["canva"], 
       fondo: "linear-gradient(135deg, #005163 0%, #00c4cc 50%, #7d2ae8 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg", 
-      emoji: "🎨" 
+      logo: "https://static.canva.com/web/images/12487a1e0770d29351bd4ce4f87ec8fe.svg" 
     },
     { 
       claves: ["chatgpt", "openai", "gpt"], 
       fondo: "linear-gradient(135deg, #052e24 0%, #0b6e56 55%, #10a37f 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg", 
-      emoji: "🤖" 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" 
     },
     { 
       claves: ["gemini", "google"], 
       fondo: "linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #9333ea 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg", 
-      emoji: "✨" 
+      logo: "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" 
     },
     { 
       claves: ["roblox", "robux"], 
       fondo: "linear-gradient(135deg, #111827 0%, #374151 55%, #ef4444 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black_%282022%29.svg", 
-      emoji: "🎮" 
-    },
-    { 
-      claves: ["minecraft"], 
-      fondo: "linear-gradient(135deg, #143601 0%, #245501 55%, #538d22 100%)", 
-      logo: "", 
-      emoji: "⛏️" 
+      logo: "https://images.rbxcdn.com/7b1652f9c3f3ea4d56d7879e63c0a230.svg" 
     }
   ];
 
@@ -181,18 +159,15 @@ function obtenerDisenoVisualProducto(prod) {
     if (m.claves.some(k => n.includes(k))) {
       return {
         fondo: m.fondo,
-        imgUrl: m.logo,
-        esPortadaCompleta: false,
-        emoji: m.emoji
+        imgUrl: m.logo
       };
     }
   }
 
+  // Respaldo por si agregas otro producto nuevo en tu Google Sheet
   return {
     fondo: "linear-gradient(135deg, #0f172a, #312e81, #6366f1)",
-    imgUrl: "",
-    esPortadaCompleta: false,
-    emoji: "⚡"
+    imgUrl: "https://cdn-icons-png.flaticon.com/512/3067/3067451.png"
   };
 }
 // ==========================================

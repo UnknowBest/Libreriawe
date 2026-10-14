@@ -72,11 +72,14 @@ document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
 // ==========================================
 // 2. MOTOR INTELIGENTE DE IMÁGENES POR PRODUCTO
 // ==========================================
+// ==========================================
+// 2. MOTOR INTELIGENTE DE IMÁGENES POR PRODUCTO
+// ==========================================
 function obtenerDisenoVisualProducto(prod) {
   const n = (prod.nombre || "").toLowerCase();
   const c = (prod.categoria || "").toLowerCase();
 
-  // Si pusiste un link de imagen personalizado en la Columna F de Google Sheets, lo usa directamente:
+  // Si pusiste un link personalizado en la Columna F de Google Sheets:
   if (prod.imagen && prod.imagen.startsWith("http")) {
     return {
       fondo: "linear-gradient(135deg, #1e293b, #0f172a)",
@@ -86,31 +89,92 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // Catálogo visual automático según lo que se vende
+  // Marcas oficiales corregidas y optimizadas
   const marcas = [
-    { claves: ["netflix"], fondo: "linear-gradient(135deg, #000000 0%, #831010 55%, #e50914 100%)", logo: "https://cdn.simpleicons.org/netflix/ffffff", emoji: "🎬" },
-    { claves: ["disney"], fondo: "linear-gradient(135deg, #040714 0%, #0a1d56 55%, #113ccf 100%)", logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg", emoji: "🏰" },
-    { claves: ["hbo", "max"], fondo: "linear-gradient(135deg, #090326 0%, #2e0f75 55%, #6610f2 100%)", logo: "https://cdn.simpleicons.org/hbo/ffffff", emoji: "🍿" },
-    { claves: ["paramount"], fondo: "linear-gradient(135deg, #001540 0%, #003899 55%, #0064ff 100%)", logo: "https://cdn.simpleicons.org/paramountplus/ffffff", emoji: "⛰️" },
-    { claves: ["crunchyroll", "anime"], fondo: "linear-gradient(135deg, #1f0c00 0%, #993d00 55%, #f47521 100%)", logo: "https://cdn.simpleicons.org/crunchyroll/ffffff", emoji: "🍥" },
-    { claves: ["prime", "amazon"], fondo: "linear-gradient(135deg, #051923 0%, #004e75 55%, #00a8e1 100%)", logo: "https://cdn.simpleicons.org/primevideo/ffffff", emoji: "📺" },
-    { claves: ["vix"], fondo: "linear-gradient(135deg, #2b0c00 0%, #ff5100 100%)", logo: "", emoji: "📡" },
-    { claves: ["spotify"], fondo: "linear-gradient(135deg, #071f10 0%, #0f682f 55%, #1db954 100%)", logo: "https://cdn.simpleicons.org/spotify/ffffff", emoji: "🎧" },
-    { claves: ["youtube"], fondo: "linear-gradient(135deg, #1f0000 0%, #8f0000 55%, #ff0000 100%)", logo: "https://cdn.simpleicons.org/youtube/ffffff", emoji: "▶️" },
-    { claves: ["apple", "music", "icloud"], fondo: "linear-gradient(135deg, #1c1c1e 0%, #8e2de2 50%, #fa243c 100%)", logo: "https://cdn.simpleicons.org/applemusic/ffffff", emoji: "🎵" },
-    { claves: ["deezer", "tidal"], fondo: "linear-gradient(135deg, #12072b 0%, #7928ca 55%, #ff0080 100%)", logo: "", emoji: "🎶" },
-    { claves: ["canva"], fondo: "linear-gradient(135deg, #005163 0%, #00c4cc 50%, #7d2ae8 100%)", logo: "https://cdn.simpleicons.org/canva/ffffff", emoji: "🎨" },
-    { claves: ["chatgpt", "openai", "gpt"], fondo: "linear-gradient(135deg, #052e24 0%, #0b6e56 55%, #10a37f 100%)", logo: "https://cdn.simpleicons.org/openai/ffffff", emoji: "🤖" },
-    { claves: ["gemini", "google"], fondo: "linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #9333ea 100%)", logo: "https://cdn.simpleicons.org/googlegemini/ffffff", emoji: "✨" },
-    { claves: ["capcut"], fondo: "linear-gradient(135deg, #090d16 0%, #334155 55%, #00f2fe 100%)", logo: "", emoji: "🎬" },
-    { claves: ["adobe", "photoshop", "illustrator"], fondo: "linear-gradient(135deg, #2b0000 0%, #990000 55%, #ff0000 100%)", logo: "https://cdn.simpleicons.org/adobe/ffffff", emoji: "🖌️" },
-    { claves: ["office", "microsoft", "windows", "365"], fondo: "linear-gradient(135deg, #0c2340 0%, #005a9e 55%, #00a4ef 100%)", logo: "", emoji: "💻" },
-    { claves: ["roblox", "robux"], fondo: "linear-gradient(135deg, #111827 0%, #374151 55%, #ef4444 100%)", logo: "https://cdn.simpleicons.org/roblox/ffffff", emoji: "🎮" },
-    { claves: ["minecraft"], fondo: "linear-gradient(135deg, #143601 0%, #245501 55%, #538d22 100%)", logo: "", emoji: "⛏️" },
-    { claves: ["free fire", "diamantes", "garena"], fondo: "linear-gradient(135deg, #3b1d00 0%, #b45309 55%, #f59e0b 100%)", logo: "", emoji: "💎" },
-    { claves: ["playstation", "psn", "ps4", "ps5"], fondo: "linear-gradient(135deg, #001233 0%, #00287a 55%, #00439c 100%)", logo: "https://cdn.simpleicons.org/playstation/ffffff", emoji: "🕹️" },
-    { claves: ["xbox", "game pass"], fondo: "linear-gradient(135deg, #062905 0%, #0e5c0c 55%, #107c10 100%)", logo: "https://cdn.simpleicons.org/xbox/ffffff", emoji: "🎮" },
-    { claves: ["steam"], fondo: "linear-gradient(135deg, #0b141e 0%, #1b2838 55%, #2a475e 100%)", logo: "https://cdn.simpleicons.org/steam/ffffff", emoji: "🎲" }
+    { 
+      claves: ["netflix"], 
+      fondo: "linear-gradient(135deg, #000000 0%, #831010 55%, #e50914 100%)", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", 
+      emoji: "🎬" 
+    },
+    { 
+      claves: ["disney"], 
+      fondo: "linear-gradient(135deg, #040714 0%, #0a1d56 55%, #113ccf 100%)", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg", 
+      emoji: "🏰" 
+    },
+    { 
+      claves: ["hbo", "max"], 
+      fondo: "linear-gradient(135deg, #090326 0%, #2e0f75 55%, #6610f2 100%)", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/c/ce/Max_logo_%282023%29.svg", 
+      emoji: "🍿" 
+    },
+    { 
+      claves: ["paramount"], 
+      fondo: "linear-gradient(135deg, #001540 0%, #003899 55%, #0064ff 100%)", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Paramount%2B_logo_%282022%29.svg", 
+      emoji: "⛰️" 
+    },
+    { 
+      claves: ["crunchyroll", "anime"], 
+      fondo: "linear-gradient(135deg, #1f0c00 0%, #993d00 55%, #f47521 100%)", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Crunchyroll_Logo.svg", 
+      emoji: "🍥" 
+    },
+    { 
+      claves: ["prime", "amazon"], 
+      fondo: "linear-gradient(135deg, #051923 0%, #004e75 55%, #00a8e1 100%)", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video_logo_%282024%29.svg", 
+      emoji: "📺" 
+    },
+    { 
+      claves: ["vix"], 
+      fondo: "linear-gradient(135deg, #2b0c00 0%, #ff5100 100%)", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/7/7a/ViX_logo.svg", 
+      emoji: "📡" 
+    },
+    { 
+      claves: ["spotify"], 
+      fondo: "linear-gradient(135deg, #071f10 0%, #0f682f 55%, #1db954 100%)", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text_%282015%29.svg", 
+      emoji: "🎧" 
+    },
+    { 
+      claves: ["youtube"], 
+      fondo: "linear-gradient(135deg, #1f0000 0%, #8f0000 55%, #ff0000 100%)", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg", 
+      emoji: "▶️" 
+    },
+    { 
+      claves: ["canva"], 
+      fondo: "linear-gradient(135deg, #005163 0%, #00c4cc 50%, #7d2ae8 100%)", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg", 
+      emoji: "🎨" 
+    },
+    { 
+      claves: ["chatgpt", "openai", "gpt"], 
+      fondo: "linear-gradient(135deg, #052e24 0%, #0b6e56 55%, #10a37f 100%)", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg", 
+      emoji: "🤖" 
+    },
+    { 
+      claves: ["gemini", "google"], 
+      fondo: "linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #9333ea 100%)", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg", 
+      emoji: "✨" 
+    },
+    { 
+      claves: ["roblox", "robux"], 
+      fondo: "linear-gradient(135deg, #111827 0%, #374151 55%, #ef4444 100%)", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black_%282022%29.svg", 
+      emoji: "🎮" 
+    },
+    { 
+      claves: ["minecraft"], 
+      fondo: "linear-gradient(135deg, #143601 0%, #245501 55%, #538d22 100%)", 
+      logo: "", 
+      emoji: "⛏️" 
+    }
   ];
 
   for (const m of marcas) {
@@ -124,17 +188,6 @@ function obtenerDisenoVisualProducto(prod) {
     }
   }
 
-  // Respaldo por categoría si es un producto nuevo
-  if (c.includes("stream")) {
-    return { fondo: "linear-gradient(135deg, #1e1b4b, #6d28d9, #db2777)", imgUrl: "", esPortadaCompleta: false, emoji: "🍿" };
-  }
-  if (c.includes("musica") || c.includes("música")) {
-    return { fondo: "linear-gradient(135deg, #064e3b, #059669, #10b981)", imgUrl: "", esPortadaCompleta: false, emoji: "🎧" };
-  }
-  if (c.includes("juego") || c.includes("game") || c.includes("recarga")) {
-    return { fondo: "linear-gradient(135deg, #31102f, #be123c, #f43f5e)", imgUrl: "", esPortadaCompleta: false, emoji: "🎮" };
-  }
-
   return {
     fondo: "linear-gradient(135deg, #0f172a, #312e81, #6366f1)",
     imgUrl: "",
@@ -142,7 +195,6 @@ function obtenerDisenoVisualProducto(prod) {
     emoji: "⚡"
   };
 }
-
 // ==========================================
 // 3. MOSTRAR PRODUCTOS Y SELECTOR DE MESES
 // ==========================================

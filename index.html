@@ -24,9 +24,9 @@
   <!-- Banner Principal (Hero) -->
   <section class="hero">
     <div class="container">
-      <span class="badge">Entrega Inmediata y Garantizada</span>
+      <span class="badge">🔥 5% OFF automático llevando 3 productos con Streaming</span>
       <h2>Tus plataformas, software y recargas al mejor precio</h2>
-      <p>Agrega tus productos al carrito, transfiere a Banco Pichincha o Deuna! y verifica tu pago al instante.</p>
+      <p>Agrega tus productos al carrito, aplica tus cupones y verifica tu pago con Banco Pichincha o Deuna! al instante.</p>
       <a href="#catalogo" class="btn-principal">Ver Catálogo</a>
     </div>
   </section>
@@ -41,14 +41,14 @@
       </div>
     </div>
 
-<div id="contenedor-productos" class="grid-productos">
+    <div id="contenedor-productos" class="grid-productos">
       <p id="mensaje-cargando" style="color: #94a3b8; grid-column: 1/-1; text-align: center; padding: 40px; font-size: 1.1rem;">
         ⏳ Cargando catálogo y ofertas recientes...
       </p>
     </div>
   </main>
 
-  <!-- MODAL DEL CARRITO Y PAGO BANCO PICHINCHA -->
+  <!-- MODAL DEL CARRITO, CUPONES Y PAGO BANCO PICHINCHA -->
   <div id="modal-carrito" class="modal-fondo oculto">
     <div class="modal-contenido">
       <div class="modal-header">
@@ -59,11 +59,37 @@
       <!-- Lista de productos en el carrito -->
       <div id="lista-carrito" class="lista-carrito"></div>
 
-      <!-- Resumen y Pago -->
+      <!-- Resumen, Cupones y Pago -->
       <div id="seccion-pago" class="seccion-pago oculto">
-        <div class="fila-total">
-          <span>Total a pagar:</span>
-          <strong id="total-carrito">$0.00</strong>
+
+        <!-- Caja de Cupones -->
+        <div class="caja-cupon">
+          <label for="input-cupon">🎟️ ¿Tienes un cupón de descuento?</label>
+          <div class="fila-cupon">
+            <input type="text" id="input-cupon" placeholder="Ej: STREAM5 o CEDENO10">
+            <button type="button" id="btn-aplicar-cupon" class="btn-cupon">Aplicar</button>
+          </div>
+          <p id="mensaje-cupon" class="estado-verificacion oculto"></p>
+        </div>
+
+        <!-- Desglose de Totales y Descuentos -->
+        <div class="desglose-totales">
+          <div class="fila-desglose">
+            <span>Subtotal:</span>
+            <span id="subtotal-carrito">$0.00</span>
+          </div>
+          <div id="fila-desc-auto" class="fila-desglose descuento-linea oculto">
+            <span>🔥 Promo 3+ Productos (con Streaming -5%):</span>
+            <span id="monto-desc-auto">-$0.00</span>
+          </div>
+          <div id="fila-desc-cupon" class="fila-desglose descuento-linea oculto">
+            <span id="texto-desc-cupon">🎟️ Cupón aplicado:</span>
+            <span id="monto-desc-cupon">-$0.00</span>
+          </div>
+          <div class="fila-total">
+            <span>Total a pagar:</span>
+            <strong id="total-carrito">$0.00</strong>
+          </div>
         </div>
 
         <!-- Caja Banco Pichincha / Deuna -->

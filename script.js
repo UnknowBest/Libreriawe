@@ -68,23 +68,22 @@ document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
   e.target.textContent = "¡Copiado!";
   setTimeout(() => (e.target.textContent = "Copiar"), 2000);
 });
+
 // ==========================================
-// 2. MOTOR INTELIGENTE DE LOGOS OFICIALES EN PNG
+// 2. MOTOR INTELIGENTE DE DISEÑO Y LOGOS
 // ==========================================
 function obtenerDisenoVisualProducto(prod) {
   const n = (prod.nombre || "").toLowerCase();
-  const c = (prod.categoria || "").toLowerCase();
 
   // Si pones un link personalizado en la Columna F de tu Google Sheets:
   if (prod.imagen && prod.imagen.startsWith("http")) {
     return {
       fondo: "linear-gradient(135deg, #1e293b, #0f172a)",
-      imgUrl: prod.imagen,
-      esPortadaCompleta: true
+      logo: prod.imagen,
+      esCustom: true
     };
   }
 
-  // Logos oficiales estables en alta definición (PNG)
   const marcas = [
     { 
       claves: ["netflix"], 
@@ -94,7 +93,7 @@ function obtenerDisenoVisualProducto(prod) {
     { 
       claves: ["disney"], 
       fondo: "linear-gradient(135deg, #040714 0%, #0a1d56 55%, #113ccf 100%)", 
-      logo: "https://static.wikia.nocookie.net/logopedia/images/e/e3/Disney%2B_2024.svg" 
+      logo: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=300&auto=format&fit=crop&q=60" // Respaldo oficial nítido
     },
     { 
       claves: ["hbo", "max"], 
@@ -152,17 +151,20 @@ function obtenerDisenoVisualProducto(prod) {
     if (m.claves.some(k => n.includes(k))) {
       return {
         fondo: m.fondo,
-        imgUrl: m.logo
+        logo: m.logo,
+        esCustom: false
       };
     }
   }
 
-  // Respaldo por si agregas otro producto nuevo en tu Google Sheet
+  // Respaldo genérico
   return {
     fondo: "linear-gradient(135deg, #0f172a, #312e81, #6366f1)",
-    imgUrl: "https://cdn-icons-png.flaticon.com/512/3067/3067451.png"
+    logo: "https://cdn-icons-png.flaticon.com/512/3067/3067451.png",
+    esCustom: false
   };
 }
+
 // ==========================================
 // 3. MOSTRAR PRODUCTOS Y SELECTOR DE MESES
 // ==========================================
@@ -234,18 +236,13 @@ function mostrarProductos(lista) {
       </div>
     ` : "";
 
-    const contenidoMedia = visual.imgUrl
-      ? `<img src="${visual.imgUrl}" alt="${prod.nombre}" class="${visual.esPortadaCompleta ? 'img-cover' : 'img-logo'}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-         <span class="icono-respaldo" style="display:none;">${visual.emoji}</span>`
-      : `<span class="icono-respaldo">${visual.emoji}</span>`;
-
     const mensajeInicial = `¡Hola! Me interesa comprar: *${prod.nombre}*${tieneSelectorMeses ? " (1 mes)" : ""} (${prod.precio} ${prod.periodo})`;
     const urlWhatsappInicial = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeInicial)}`;
 
     tarjeta.innerHTML = `
       <div class="tarjeta-media" style="background: ${visual.fondo};">
         <span class="badge-flotante">${prod.categoria}</span>
-        ${contenidoMedia}
+        <img src="${visual.logo}" alt="${prod.nombre}" class="${visual.esCustom ? 'img-cover' : 'img-logo'}">
       </div>
       <div class="tarjeta-cuerpo">
         <div>
@@ -592,7 +589,7 @@ modalCarrito.addEventListener("click", (e) => {
   if (e.target === modalCarrito) modalCarrito.classList.add("oculto");
 });
 
-// Enviar pedido por WhatsApp (completo o sin completar verificación)
+// Enviar pedido por WhatsApp
 btnFinalizarPedido.addEventListener("click", () => {
   if (carrito.length === 0) return;
 
@@ -721,7 +718,7 @@ async function cargarDesdeGoogleSheets() {
           precio: precioBruto,
           periodo: periodoTexto.trim(),
           descripcion: descripcionTexto.trim(),
-          imagen: (col[5] || "").trim() // Lee link de imagen opcional en la Columna F
+          imagen: (col[5] || "").trim()
         });
       }
     });

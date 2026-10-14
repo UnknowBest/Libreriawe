@@ -17,14 +17,15 @@ let productos = JSON.parse(localStorage.getItem("productos_cedeño_cache")) || [
     categoria: "software",
     descripcion: "Acceso a todas las plantillas premium y herramientas de diseño.",
     precio: "\$3.00",
-    periodo: "/ mes"
+    periodo: "/ mes",
+    imagen: ""
   }
 ];
 
 let carrito = JSON.parse(localStorage.getItem("carrito_cedeño")) || [];
 let categoriaActual = "todos";
 let pagoVerificadoAutomaticamente = false;
-let cuponActivo = null; // Guarda { codigo, porcentaje, categoriaRequerida, minimoProductos }
+let cuponActivo = null;
 
 // Referencias del DOM
 const contenedor = document.getElementById("contenedor-productos");
@@ -69,7 +70,81 @@ document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
 });
 
 // ==========================================
-// 2. MOSTRAR PRODUCTOS Y SELECTOR DE MESES
+// 2. MOTOR INTELIGENTE DE IMÁGENES POR PRODUCTO
+// ==========================================
+function obtenerDisenoVisualProducto(prod) {
+  const n = (prod.nombre || "").toLowerCase();
+  const c = (prod.categoria || "").toLowerCase();
+
+  // Si pusiste un link de imagen personalizado en la Columna F de Google Sheets, lo usa directamente:
+  if (prod.imagen && prod.imagen.startsWith("http")) {
+    return {
+      fondo: "linear-gradient(135deg, #1e293b, #0f172a)",
+      imgUrl: prod.imagen,
+      esPortadaCompleta: true,
+      emoji: "✨"
+    };
+  }
+
+  // Catálogo visual automático según lo que se vende
+  const marcas = [
+    { claves: ["netflix"], fondo: "linear-gradient(135deg, #000000 0%, #831010 55%, #e50914 100%)", logo: "https://cdn.simpleicons.org/netflix/ffffff", emoji: "🎬" },
+    { claves: ["disney"], fondo: "linear-gradient(135deg, #040714 0%, #0a1d56 55%, #113ccf 100%)", logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg", emoji: "🏰" },
+    { claves: ["hbo", "max"], fondo: "linear-gradient(135deg, #090326 0%, #2e0f75 55%, #6610f2 100%)", logo: "https://cdn.simpleicons.org/hbo/ffffff", emoji: "🍿" },
+    { claves: ["paramount"], fondo: "linear-gradient(135deg, #001540 0%, #003899 55%, #0064ff 100%)", logo: "https://cdn.simpleicons.org/paramountplus/ffffff", emoji: "⛰️" },
+    { claves: ["crunchyroll", "anime"], fondo: "linear-gradient(135deg, #1f0c00 0%, #993d00 55%, #f47521 100%)", logo: "https://cdn.simpleicons.org/crunchyroll/ffffff", emoji: "🍥" },
+    { claves: ["prime", "amazon"], fondo: "linear-gradient(135deg, #051923 0%, #004e75 55%, #00a8e1 100%)", logo: "https://cdn.simpleicons.org/primevideo/ffffff", emoji: "📺" },
+    { claves: ["vix"], fondo: "linear-gradient(135deg, #2b0c00 0%, #ff5100 100%)", logo: "", emoji: "📡" },
+    { claves: ["spotify"], fondo: "linear-gradient(135deg, #071f10 0%, #0f682f 55%, #1db954 100%)", logo: "https://cdn.simpleicons.org/spotify/ffffff", emoji: "🎧" },
+    { claves: ["youtube"], fondo: "linear-gradient(135deg, #1f0000 0%, #8f0000 55%, #ff0000 100%)", logo: "https://cdn.simpleicons.org/youtube/ffffff", emoji: "▶️" },
+    { claves: ["apple", "music", "icloud"], fondo: "linear-gradient(135deg, #1c1c1e 0%, #8e2de2 50%, #fa243c 100%)", logo: "https://cdn.simpleicons.org/applemusic/ffffff", emoji: "🎵" },
+    { claves: ["deezer", "tidal"], fondo: "linear-gradient(135deg, #12072b 0%, #7928ca 55%, #ff0080 100%)", logo: "", emoji: "🎶" },
+    { claves: ["canva"], fondo: "linear-gradient(135deg, #005163 0%, #00c4cc 50%, #7d2ae8 100%)", logo: "https://cdn.simpleicons.org/canva/ffffff", emoji: "🎨" },
+    { claves: ["chatgpt", "openai", "gpt"], fondo: "linear-gradient(135deg, #052e24 0%, #0b6e56 55%, #10a37f 100%)", logo: "https://cdn.simpleicons.org/openai/ffffff", emoji: "🤖" },
+    { claves: ["gemini", "google"], fondo: "linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #9333ea 100%)", logo: "https://cdn.simpleicons.org/googlegemini/ffffff", emoji: "✨" },
+    { claves: ["capcut"], fondo: "linear-gradient(135deg, #090d16 0%, #334155 55%, #00f2fe 100%)", logo: "", emoji: "🎬" },
+    { claves: ["adobe", "photoshop", "illustrator"], fondo: "linear-gradient(135deg, #2b0000 0%, #990000 55%, #ff0000 100%)", logo: "https://cdn.simpleicons.org/adobe/ffffff", emoji: "🖌️" },
+    { claves: ["office", "microsoft", "windows", "365"], fondo: "linear-gradient(135deg, #0c2340 0%, #005a9e 55%, #00a4ef 100%)", logo: "", emoji: "💻" },
+    { claves: ["roblox", "robux"], fondo: "linear-gradient(135deg, #111827 0%, #374151 55%, #ef4444 100%)", logo: "https://cdn.simpleicons.org/roblox/ffffff", emoji: "🎮" },
+    { claves: ["minecraft"], fondo: "linear-gradient(135deg, #143601 0%, #245501 55%, #538d22 100%)", logo: "", emoji: "⛏️" },
+    { claves: ["free fire", "diamantes", "garena"], fondo: "linear-gradient(135deg, #3b1d00 0%, #b45309 55%, #f59e0b 100%)", logo: "", emoji: "💎" },
+    { claves: ["playstation", "psn", "ps4", "ps5"], fondo: "linear-gradient(135deg, #001233 0%, #00287a 55%, #00439c 100%)", logo: "https://cdn.simpleicons.org/playstation/ffffff", emoji: "🕹️" },
+    { claves: ["xbox", "game pass"], fondo: "linear-gradient(135deg, #062905 0%, #0e5c0c 55%, #107c10 100%)", logo: "https://cdn.simpleicons.org/xbox/ffffff", emoji: "🎮" },
+    { claves: ["steam"], fondo: "linear-gradient(135deg, #0b141e 0%, #1b2838 55%, #2a475e 100%)", logo: "https://cdn.simpleicons.org/steam/ffffff", emoji: "🎲" }
+  ];
+
+  for (const m of marcas) {
+    if (m.claves.some(k => n.includes(k))) {
+      return {
+        fondo: m.fondo,
+        imgUrl: m.logo,
+        esPortadaCompleta: false,
+        emoji: m.emoji
+      };
+    }
+  }
+
+  // Respaldo por categoría si es un producto nuevo
+  if (c.includes("stream")) {
+    return { fondo: "linear-gradient(135deg, #1e1b4b, #6d28d9, #db2777)", imgUrl: "", esPortadaCompleta: false, emoji: "🍿" };
+  }
+  if (c.includes("musica") || c.includes("música")) {
+    return { fondo: "linear-gradient(135deg, #064e3b, #059669, #10b981)", imgUrl: "", esPortadaCompleta: false, emoji: "🎧" };
+  }
+  if (c.includes("juego") || c.includes("game") || c.includes("recarga")) {
+    return { fondo: "linear-gradient(135deg, #31102f, #be123c, #f43f5e)", imgUrl: "", esPortadaCompleta: false, emoji: "🎮" };
+  }
+
+  return {
+    fondo: "linear-gradient(135deg, #0f172a, #312e81, #6366f1)",
+    imgUrl: "",
+    esPortadaCompleta: false,
+    emoji: "⚡"
+  };
+}
+
+// ==========================================
+// 3. MOSTRAR PRODUCTOS Y SELECTOR DE MESES
 // ==========================================
 function obtenerPrecioNumerico(precioTexto) {
   const limpio = String(precioTexto).replace(/[^0-9.,]/g, "").replace(",", ".");
@@ -113,16 +188,18 @@ function mostrarProductos(lista) {
   contenedor.innerHTML = "";
 
   if (lista.length === 0) {
-    contenedor.innerHTML = `<p style="color: #94a3b8; grid-column: 1/-1; text-align: center;">No se encontraron productos.</p>`;
+    contenedor.innerHTML = `<p style="color: #94a3b8; grid-column: 1/-1; text-align: center; padding: 30px;">No se encontraron productos con esa búsqueda.</p>`;
     return;
   }
 
-  lista.forEach((prod) => {
+  lista.forEach((prod, idx) => {
     const precioBase = obtenerPrecioNumerico(prod.precio);
     const tieneSelectorMeses = permiteElegirMeses(prod);
+    const visual = obtenerDisenoVisualProducto(prod);
 
     const tarjeta = document.createElement("div");
     tarjeta.className = "tarjeta";
+    tarjeta.style.animationDelay = `${idx * 0.05}s`;
 
     const htmlSelectorMeses = tieneSelectorMeses ? `
       <div class="caja-selector-meses">
@@ -137,24 +214,34 @@ function mostrarProductos(lista) {
       </div>
     ` : "";
 
+    const contenidoMedia = visual.imgUrl
+      ? `<img src="${visual.imgUrl}" alt="${prod.nombre}" class="${visual.esPortadaCompleta ? 'img-cover' : 'img-logo'}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+         <span class="icono-respaldo" style="display:none;">${visual.emoji}</span>`
+      : `<span class="icono-respaldo">${visual.emoji}</span>`;
+
     const mensajeInicial = `¡Hola! Me interesa comprar: *${prod.nombre}*${tieneSelectorMeses ? " (1 mes)" : ""} (${prod.precio} ${prod.periodo})`;
     const urlWhatsappInicial = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeInicial)}`;
 
     tarjeta.innerHTML = `
-      <div>
-        <span class="etiqueta-cat">${prod.categoria}</span>
-        <h3>${prod.nombre}</h3>
-        <p>${prod.descripcion}</p>
+      <div class="tarjeta-media" style="background: ${visual.fondo};">
+        <span class="badge-flotante">${prod.categoria}</span>
+        ${contenidoMedia}
       </div>
-      <div>
-        ${htmlSelectorMeses}
-        <div class="precio">
-          <strong class="valor-precio">${prod.precio}</strong> 
-          <span class="texto-periodo">${prod.periodo}</span>
+      <div class="tarjeta-cuerpo">
+        <div>
+          <h3>${prod.nombre}</h3>
+          <p>${prod.descripcion}</p>
         </div>
-        <div class="botones-tarjeta">
-          <button class="btn-agregar-carrito">🛒 Añadir al carrito</button>
-          <a href="${urlWhatsappInicial}" target="_blank" class="btn-comprar-directo">Comprar directo</a>
+        <div>
+          ${htmlSelectorMeses}
+          <div class="precio">
+            <strong class="valor-precio">${prod.precio}</strong> 
+            <span class="texto-periodo">${prod.periodo}</span>
+          </div>
+          <div class="botones-tarjeta">
+            <button class="btn-agregar-carrito">🛒 Añadir al carrito</button>
+            <a href="${urlWhatsappInicial}" target="_blank" class="btn-comprar-directo">⚡ Comprar directo</a>
+          </div>
         </div>
       </div>
     `;
@@ -192,7 +279,7 @@ function mostrarProductos(lista) {
 }
 
 // ==========================================
-// 3. CARRITO Y CUPONES CON REGLAS DE CATEGORÍA Y CANTIDAD
+// 4. CARRITO Y CUPONES CON REGLAS DE CATEGORÍA Y CANTIDAD
 // ==========================================
 function agregarAlCarrito(prod, meses = 1, mostrarMeses = false) {
   const precioBase = obtenerPrecioNumerico(prod.precio);
@@ -226,7 +313,6 @@ window.cambiarCantidad = function(index, cambio) {
   actualizarVistaCarrito();
 };
 
-// Revisa si el carrito actual cumple con la categoría y mínimo de productos del cupón
 function verificarRequisitosCarritoParaCupon(cupon) {
   if (!cupon) return { cumple: false, motivo: "" };
 
@@ -264,7 +350,6 @@ function obtenerResumenTotales() {
     if (validacion.cumple) {
       aplicaCupon = true;
       const catReq = (cuponActivo.categoriaRequerida || "todos").toLowerCase().trim();
-      // Si el cupón es para una categoría específica (ej: streaming), calcula el descuento sobre esos productos; si es "todos", sobre todo el carrito
       const baseDescuento = carrito.reduce((acc, item) => {
         const catItem = (item.categoria || "otros").toLowerCase().trim();
         if (catReq === "todos" || catReq === "" || catItem === catReq) {
@@ -353,7 +438,6 @@ function actualizarVistaCarrito() {
   totalCarrito.textContent = `$${resumen.totalFinal.toFixed(2)}`;
 }
 
-// Conector con Google Apps Script
 async function consultarAppsScript(url) {
   try {
     const respuesta = await fetch(url, { method: "GET", redirect: "follow", credentials: "omit" });
@@ -385,7 +469,6 @@ async function consultarAppsScript(url) {
   });
 }
 
-// Botón Aplicar Cupón
 if (btnAplicarCupon) {
   btnAplicarCupon.addEventListener("click", async () => {
     const codigo = inputCupon.value.trim().toUpperCase();
@@ -501,7 +584,6 @@ btnFinalizarPedido.addEventListener("click", () => {
 
   const resumen = obtenerResumenTotales();
 
-  // Suma +1 uso en la hoja "Cupones" de Google Sheets al enviar el pedido (si aún no se había sumado al verificar pago)
   if (cuponActivo && resumen.aplicaCupon && !pagoVerificadoAutomaticamente) {
     const urlUso = `${URL_VERIFICADOR_PICHINCHA}?accion=usarCupon&cupon=${encodeURIComponent(cuponActivo.codigo)}&t=${Date.now()}`;
     consultarAppsScript(urlUso).catch(() => {});
@@ -542,7 +624,7 @@ btnFinalizarPedido.addEventListener("click", () => {
 });
 
 // ==========================================
-// 4. BUSCADOR, FILTROS Y GOOGLE SHEETS
+// 5. BUSCADOR, FILTROS Y GOOGLE SHEETS
 // ==========================================
 function filtrarCatalogo() {
   const texto = buscador.value.toLowerCase();
@@ -618,7 +700,8 @@ async function cargarDesdeGoogleSheets() {
           categoria: (col[1] || "otros").trim().toLowerCase(),
           precio: precioBruto,
           periodo: periodoTexto.trim(),
-          descripcion: descripcionTexto.trim()
+          descripcion: descripcionTexto.trim(),
+          imagen: (col[5] || "").trim() // Lee link de imagen opcional en la Columna F
         });
       }
     });

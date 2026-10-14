@@ -88,7 +88,7 @@ function obtenerDisenoVisualProducto(prod) {
     { 
       claves: ["netflix"], 
       fondo: "linear-gradient(135deg, #000000 0%, #831010 55%, #e50914 100%)", 
-      logo: "https://images.ctfassets.net/y2ske730sjqp/1aHzLmCuKqlCGAgtWxHxny/e640fa9646732536e7a130324913be1f/Netflix_Symbol_CMYK.png" 
+      logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYaHC_9YxqnPCCaadcefalsMg2EOkjYOedtUHk1DvhWQ&s=10" 
     },
     { 
       claves: ["disney"], 

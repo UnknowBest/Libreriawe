@@ -11,10 +11,9 @@ const DATOS_BANCO = {
   titular: "Jostin Alejandro Cedeño López"
 };
 
-// Productos por defecto mientras carga la nube (carga inmediata)
 let productos = JSON.parse(localStorage.getItem("productos_cedeño_cache")) || [
   {
-    nombre: "Canva Pro (30 Días)",
+    nombre: "Canva Pro",
     categoria: "software",
     descripcion: "Acceso a todas las plantillas premium y herramientas de diseño.",
     precio: "\$3.00",
@@ -59,11 +58,18 @@ document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
 });
 
 // ==========================================
-// 2. MOSTRAR PRODUCTOS Y CATEGORÍAS
+// 2. MOSTRAR PRODUCTOS Y SELECTOR DE MESES
 // ==========================================
 function obtenerPrecioNumerico(precioTexto) {
   const limpio = String(precioTexto).replace(/[^0-9.,]/g, "").replace(",", ".");
   return parseFloat(limpio) || 0;
+}
+
+function permiteElegirMeses(prod) {
+  const per = (prod.periodo || "").toLowerCase();
+  const cat = (prod.categoria || "").toLowerCase();
+  // Activa el selector si el periodo dice "mes" o si la categoría es de planes/suscripciones/meses
+  return per.includes("mes") || cat.includes("mes") || cat.includes("plan") || cat.includes("suscripcion");
 }
 
 function actualizarBotonesFiltro() {
@@ -102,11 +108,28 @@ function mostrarProductos(lista) {
   }
 
   lista.forEach((prod) => {
-    const mensajeDirecto = `¡Hola! Me interesa comprar: *${prod.nombre}* (${prod.precio} ${prod.periodo})`;
-    const urlWhatsapp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeDirecto)}`;
+    const precioBase = obtenerPrecioNumerico(prod.precio);
+    const tieneSelectorMeses = permiteElegirMeses(prod);
 
     const tarjeta = document.createElement("div");
     tarjeta.className = "tarjeta";
+
+    const htmlSelectorMeses = tieneSelectorMeses ? `
+      <div class="caja-selector-meses">
+        <label>📅 Duración:</label>
+        <select class="select-meses">
+          <option value="1">1 mes</option>
+          <option value="2">2 meses</option>
+          <option value="3">3 meses</option>
+          <option value="6">6 meses</option>
+          <option value="12">12 meses (1 año)</option>
+        </select>
+      </div>
+    ` : "";
+
+    const mensajeInicial = `¡Hola! Me interesa comprar: *${prod.nombre}*${tieneSelectorMeses ? " (1 mes)" : ""} (${prod.precio} ${prod.periodo})`;
+    const urlWhatsappInicial = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeInicial)}`;
+
     tarjeta.innerHTML = `
       <div>
         <span class="etiqueta-cat">${prod.categoria}</span>
@@ -114,16 +137,42 @@ function mostrarProductos(lista) {
         <p>${prod.descripcion}</p>
       </div>
       <div>
-        <div class="precio">${prod.precio} <span>${prod.periodo}</span></div>
+        ${htmlSelectorMeses}
+        <div class="precio">
+          <strong class="valor-precio">${prod.precio}</strong> 
+          <span class="texto-periodo">${prod.periodo}</span>
+        </div>
         <div class="botones-tarjeta">
           <button class="btn-agregar-carrito">🛒 Añadir al carrito</button>
-          <a href="${urlWhatsapp}" target="_blank" class="btn-comprar-directo">Comprar directo</a>
+          <a href="${urlWhatsappInicial}" target="_blank" class="btn-comprar-directo">Comprar directo</a>
         </div>
       </div>
     `;
 
+    const selectMeses = tarjeta.querySelector(".select-meses");
+    const valorPrecioEl = tarjeta.querySelector(".valor-precio");
+    const textoPeriodoEl = tarjeta.querySelector(".texto-periodo");
+    const btnComprarDirecto = tarjeta.querySelector(".btn-comprar-directo");
+
+    // Si el cliente cambia la cantidad de meses, actualiza el precio y el link de compra directa en vivo
+    if (selectMeses) {
+      selectMeses.addEventListener("change", () => {
+        const meses = parseInt(selectMeses.value, 10) || 1;
+        const nuevoTotal = (precioBase * meses).toFixed(2);
+        const etiquetaMeses = meses === 1 ? "1 mes" : `${meses} meses`;
+
+        valorPrecioEl.textContent = `$${nuevoTotal}`;
+        textoPeriodoEl.textContent = meses === 1 ? prod.periodo : `por ${meses} meses`;
+
+        const nuevoMensaje = `¡Hola! Me interesa comprar: *${prod.nombre} (${etiquetaMeses})* - Total: $${nuevoTotal}`;
+        btnComprarDirecto.href = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(nuevoMensaje)}`;
+      });
+    }
+
     tarjeta.querySelector(".btn-agregar-carrito").addEventListener("click", (e) => {
-      agregarAlCarrito(prod);
+      const mesesElegidos = selectMeses ? (parseInt(selectMeses.value, 10) || 1) : 1;
+      agregarAlCarrito(prod, mesesElegidos, tieneSelectorMeses);
+      
       const btn = e.target;
       btn.textContent = "✔ ¡Añadido!";
       setTimeout(() => (btn.textContent = "🛒 Añadir al carrito"), 1000);
@@ -136,16 +185,24 @@ function mostrarProductos(lista) {
 // ==========================================
 // 3. CARRITO Y VERIFICADOR BANCO PICHINCHA
 // ==========================================
-function agregarAlCarrito(prod) {
-  const existente = carrito.find(item => item.nombre === prod.nombre);
+function agregarAlCarrito(prod, meses = 1, mostrarMeses = false) {
+  const precioBase = obtenerPrecioNumerico(prod.precio);
+  const precioFinalNum = precioBase * meses;
+  const precioFinalTexto = `$${precioFinalNum.toFixed(2)}`;
+
+  // El nombre en el carrito indicará cuántos meses eligió el cliente
+  const etiquetaMeses = meses === 1 ? "1 mes" : `${meses} meses`;
+  const nombreConMeses = mostrarMeses ? `${prod.nombre} (${etiquetaMeses})` : prod.nombre;
+
+  const existente = carrito.find(item => item.nombre === nombreConMeses);
   if (existente) {
     existente.cantidad += 1;
   } else {
     carrito.push({
-      nombre: prod.nombre,
-      precioTexto: prod.precio,
-      precioNum: obtenerPrecioNumerico(prod.precio),
-      periodo: prod.periodo,
+      nombre: nombreConMeses,
+      precioTexto: precioFinalTexto,
+      precioNum: precioFinalNum,
+      periodo: mostrarMeses ? etiquetaMeses : prod.periodo,
       cantidad: 1
     });
   }
@@ -397,7 +454,7 @@ async function cargarDesdeGoogleSheets() {
 
     if (listaSheet.length > 0) {
       productos = listaSheet;
-      localStorage.setItem("productos_cedeño_cache", JSON.stringify(productos)); // Guarda caché veloz
+      localStorage.setItem("productos_cedeño_cache", JSON.stringify(productos));
     }
   } catch (err) {
     console.error("Error cargando Google Sheet:", err);

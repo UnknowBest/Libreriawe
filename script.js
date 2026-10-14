@@ -24,7 +24,7 @@ let productos = JSON.parse(localStorage.getItem("productos_cedeño_cache")) || [
 let carrito = JSON.parse(localStorage.getItem("carrito_cedeño")) || [];
 let categoriaActual = "todos";
 let pagoVerificadoAutomaticamente = false;
-let cuponActivo = null; // Guarda { codigo, porcentaje }
+let cuponActivo = null; // Guarda { codigo, porcentaje, categoriaRequerida, minimoProductos }
 
 // Referencias del DOM
 const contenedor = document.getElementById("contenedor-productos");
@@ -40,7 +40,6 @@ const listaCarrito = document.getElementById("lista-carrito");
 const contadorCarrito = document.getElementById("contador-carrito");
 const subtotalCarritoEl = document.getElementById("subtotal-carrito");
 const filaDescAuto = document.getElementById("fila-desc-auto");
-const montoDescAutoEl = document.getElementById("monto-desc-auto");
 const filaDescCupon = document.getElementById("fila-desc-cupon");
 const textoDescCuponEl = document.getElementById("texto-desc-cupon");
 const montoDescCuponEl = document.getElementById("monto-desc-cupon");
@@ -193,7 +192,7 @@ function mostrarProductos(lista) {
 }
 
 // ==========================================
-// 3. CARRITO, DESCUENTO STREAMING 5% Y CUPONES
+// 3. CARRITO Y CUPONES CON REGLAS DE CATEGORÍA Y CANTIDAD
 // ==========================================
 function agregarAlCarrito(prod, meses = 1, mostrarMeses = false) {
   const precioBase = obtenerPrecioNumerico(prod.precio);
@@ -227,27 +226,66 @@ window.cambiarCantidad = function(index, cambio) {
   actualizarVistaCarrito();
 };
 
-// Calcula Subtotal, Descuento Automático (5% si hay 3+ productos e incluye streaming) y Cupón
+// Revisa si el carrito actual cumple con la categoría y mínimo de productos del cupón
+function verificarRequisitosCarritoParaCupon(cupon) {
+  if (!cupon) return { cumple: false, motivo: "" };
+
+  const catReq = (cupon.categoriaRequerida || "todos").toLowerCase().trim();
+  const minProd = parseInt(cupon.minimoProductos, 10) || 1;
+
+  let cantidadValida = 0;
+  carrito.forEach((item) => {
+    const catItem = (item.categoria || "otros").toLowerCase().trim();
+    if (catReq === "todos" || catReq === "" || catItem === catReq) {
+      cantidadValida += item.cantidad;
+    }
+  });
+
+  if (cantidadValida < minProd) {
+    const textoCat = (catReq === "todos" || catReq === "") ? "en total" : `de la categoría "${catReq}"`;
+    return {
+      cumple: false,
+      motivo: `⚠️ El cupón ${cupon.codigo} requiere al menos ${minProd} producto(s) ${textoCat} en tu carrito (tienes ${cantidadValida}).`
+    };
+  }
+
+  return { cumple: true, motivo: "" };
+}
+
 function obtenerResumenTotales() {
   const subtotal = carrito.reduce((acc, item) => acc + (item.precioNum * item.cantidad), 0);
-  const cantidadTotalProductos = carrito.reduce((acc, item) => acc + item.cantidad, 0);
-  const incluyeStreaming = carrito.some(item => (item.categoria || "").toLowerCase().includes("streaming"));
 
-  // Regla: 5% automático si compra 3 o más productos y al menos uno es de streaming
-  const aplicaDescAuto = cantidadTotalProductos >= 3 && incluyeStreaming;
-  const montoDescAuto = aplicaDescAuto ? (subtotal * 0.05) : 0;
+  let aplicaCupon = false;
+  let montoDescCupon = 0;
+  let motivoNoCumple = "";
 
-  // Descuento por cupón de Google Sheets
-  const porcentajeCupon = cuponActivo ? cuponActivo.porcentaje : 0;
-  const montoDescCupon = (subtotal - montoDescAuto) * (porcentajeCupon / 100);
+  if (cuponActivo) {
+    const validacion = verificarRequisitosCarritoParaCupon(cuponActivo);
+    if (validacion.cumple) {
+      aplicaCupon = true;
+      const catReq = (cuponActivo.categoriaRequerida || "todos").toLowerCase().trim();
+      // Si el cupón es para una categoría específica (ej: streaming), calcula el descuento sobre esos productos; si es "todos", sobre todo el carrito
+      const baseDescuento = carrito.reduce((acc, item) => {
+        const catItem = (item.categoria || "otros").toLowerCase().trim();
+        if (catReq === "todos" || catReq === "" || catItem === catReq) {
+          return acc + (item.precioNum * item.cantidad);
+        }
+        return acc;
+      }, 0);
 
-  const totalFinal = Math.max(0, subtotal - montoDescAuto - montoDescCupon);
+      montoDescCupon = baseDescuento * (cuponActivo.porcentaje / 100);
+    } else {
+      motivoNoCumple = validacion.motivo;
+    }
+  }
+
+  const totalFinal = Math.max(0, subtotal - montoDescCupon);
 
   return {
     subtotal,
-    aplicaDescAuto,
-    montoDescAuto,
+    aplicaCupon,
     montoDescCupon,
+    motivoNoCumple,
     totalFinal
   };
 }
@@ -276,7 +314,7 @@ function actualizarVistaCarrito() {
     div.innerHTML = `
       <div class="item-info">
         <h4>${item.nombre}</h4>
-        <span>${item.precioTexto} c/u</span>
+        <span>Categoría: ${item.categoria} | ${item.precioTexto} c/u</span>
       </div>
       <div class="item-controles">
         <button onclick="cambiarCantidad(${index}, -1)">-</button>
@@ -290,23 +328,25 @@ function actualizarVistaCarrito() {
 
   const resumen = obtenerResumenTotales();
   if (subtotalCarritoEl) subtotalCarritoEl.textContent = `$${resumen.subtotal.toFixed(2)}`;
-
-  if (filaDescAuto) {
-    if (resumen.aplicaDescAuto) {
-      filaDescAuto.classList.remove("oculto");
-      montoDescAutoEl.textContent = `-$${resumen.montoDescAuto.toFixed(2)}`;
-    } else {
-      filaDescAuto.classList.add("oculto");
-    }
-  }
+  if (filaDescAuto) filaDescAuto.classList.add("oculto");
 
   if (filaDescCupon) {
-    if (cuponActivo && resumen.montoDescCupon > 0) {
+    if (resumen.aplicaCupon && resumen.montoDescCupon > 0) {
       filaDescCupon.classList.remove("oculto");
       textoDescCuponEl.textContent = `🎟️ Cupón ${cuponActivo.codigo} (-${cuponActivo.porcentaje}%):`;
       montoDescCuponEl.textContent = `-$${resumen.montoDescCupon.toFixed(2)}`;
+      if (mensajeCupon) {
+        mensajeCupon.classList.remove("oculto", "error");
+        mensajeCupon.classList.add("exito");
+        mensajeCupon.textContent = `🎉 ¡Cupón ${cuponActivo.codigo} (-${cuponActivo.porcentaje}%) aplicado!`;
+      }
     } else {
       filaDescCupon.classList.add("oculto");
+      if (cuponActivo && resumen.motivoNoCumple && mensajeCupon) {
+        mensajeCupon.classList.remove("oculto", "exito");
+        mensajeCupon.classList.add("error");
+        mensajeCupon.textContent = resumen.motivoNoCumple;
+      }
     }
   }
 
@@ -359,18 +399,33 @@ if (btnAplicarCupon) {
 
     btnAplicarCupon.disabled = true;
     btnAplicarCupon.textContent = "Validando...";
-    mensajeCupon.textContent = "🔄 Verificando cupón...";
+    mensajeCupon.textContent = "🔄 Verificando cupón en el sistema...";
 
     try {
       const url = `${URL_VERIFICADOR_PICHINCHA}?accion=validarCupon&cupon=${encodeURIComponent(codigo)}&t=${Date.now()}`;
       const data = await consultarAppsScript(url);
 
-      mensajeCupon.textContent = data.mensaje;
       if (data.valido) {
-        cuponActivo = { codigo: data.codigo, porcentaje: data.porcentaje };
-        mensajeCupon.classList.add("exito");
+        const candidatoCupon = {
+          codigo: data.codigo,
+          porcentaje: data.porcentaje,
+          categoriaRequerida: data.categoriaRequerida || "todos",
+          minimoProductos: data.minimoProductos || 1
+        };
+
+        const checkCarrito = verificarRequisitosCarritoParaCupon(candidatoCupon);
+        cuponActivo = candidatoCupon;
+
+        if (checkCarrito.cumple) {
+          mensajeCupon.textContent = data.mensaje;
+          mensajeCupon.classList.add("exito");
+        } else {
+          mensajeCupon.textContent = checkCarrito.motivo;
+          mensajeCupon.classList.add("error");
+        }
       } else {
         cuponActivo = null;
+        mensajeCupon.textContent = data.mensaje;
         mensajeCupon.classList.add("error");
       }
       actualizarVistaCarrito();
@@ -393,7 +448,7 @@ btnVerificarPago.addEventListener("click", async () => {
   const comprobante = inputComprobante.value.trim();
   const resumen = obtenerResumenTotales();
   const monto = resumen.totalFinal.toFixed(2);
-  const codigoCupon = cuponActivo ? cuponActivo.codigo : "";
+  const codigoCupon = (cuponActivo && resumen.aplicaCupon) ? cuponActivo.codigo : "";
 
   estadoVerificacion.classList.remove("oculto", "exito", "error");
 
@@ -434,38 +489,46 @@ modalCarrito.addEventListener("click", (e) => {
   if (e.target === modalCarrito) modalCarrito.classList.add("oculto");
 });
 
+// Enviar pedido por WhatsApp (completo o sin completar verificación)
 btnFinalizarPedido.addEventListener("click", () => {
   if (carrito.length === 0) return;
 
   let detalleProductos = "";
   carrito.forEach((item) => {
     const subtotalItem = item.precioNum * item.cantidad;
-    detalleProductos += `• ${item.cantidad}x *${item.nombre}* ($${subtotalItem.toFixed(2)})\n`;
+    detalleProductos += `• ${item.cantidad}x *${item.nombre}* [${item.categoria}] ($${subtotalItem.toFixed(2)})\n`;
   });
 
   const resumen = obtenerResumenTotales();
-  let detalleDescuentos = "";
-  if (resumen.aplicaDescAuto) {
-    detalleDescuentos += `🔥 *Desc. 3+ Productos (Streaming -5%):* -$${resumen.montoDescAuto.toFixed(2)}\n`;
-  }
-  if (cuponActivo && resumen.montoDescCupon > 0) {
-    detalleDescuentos += `🎟️ *Cupón (${cuponActivo.codigo} -${cuponActivo.porcentaje}%):* -$${resumen.montoDescCupon.toFixed(2)}\n`;
+  let lineaCuponTexto = "🎟️ *Cupón:* Ninguno\n";
+
+  if (cuponActivo && resumen.aplicaCupon) {
+    lineaCuponTexto = `🎟️ *Cupón aplicado:* ${cuponActivo.codigo} (-${cuponActivo.porcentaje}% | -$${resumen.montoDescCupon.toFixed(2)})\n`;
+  } else if (cuponActivo && !resumen.aplicaCupon) {
+    lineaCuponTexto = `🎟️ *Cupón ingresado (${cuponActivo.codigo}):* No aplicó por falta de requisitos\n`;
   }
 
-  const comprobante = inputComprobante.value.trim() || "Enviaré captura en el chat";
-  const estadoPagoTexto = pagoVerificadoAutomaticamente
-    ? "✅ VERIFICADO EN SISTEMA"
-    : "⏳ Pendiente de revisión";
+  const comprobanteEscrito = inputComprobante.value.trim();
+  const comprobanteTexto = comprobanteEscrito ? comprobanteEscrito : "No ingresado (Enviaré captura por aquí)";
+
+  let estadoOrdenTexto = "";
+  if (pagoVerificadoAutomaticamente) {
+    estadoOrdenTexto = "✅ ORDEN COMPLETA (Pago Verificado en Sistema)";
+  } else if (comprobanteEscrito) {
+    estadoOrdenTexto = "⏳ ORDEN PENDIENTE DE VERIFICACIÓN MANUAL";
+  } else {
+    estadoOrdenTexto = "⚠️ ORDEN SIN COMPLETAR PAGO (Pendiente enviar comprobante)";
+  }
 
   const mensaje = 
     `¡Hola *Tienda Digital Cedeño*! 🛒 Quiero realizar este pedido:\n\n` +
-    `${detalleProductos}\n` +
+    `*📦 PRODUCTOS:*\n${detalleProductos}\n` +
     `💵 *Subtotal:* $${resumen.subtotal.toFixed(2)}\n` +
-    `${detalleDescuentos}` +
-    `💰 *Total a pagar:* $${resumen.totalFinal.toFixed(2)}\n` +
+    `${lineaCuponTexto}` +
+    `💰 *Total a pagar:* $${resumen.totalFinal.toFixed(2)}\n\n` +
     `🏦 *Cuenta Pichincha:* ${DATOS_BANCO.numeroCuenta}\n` +
-    `🧾 *N° Comprobante:* ${comprobante}\n` +
-    `📌 *Estado:* ${estadoPagoTexto}`;
+    `🧾 *N° Comprobante:* ${comprobanteTexto}\n` +
+    `📌 *Estado de Orden:* ${estadoOrdenTexto}`;
 
   const url = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
   window.open(url, "_blank");

@@ -68,13 +68,6 @@ document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
   e.target.textContent = "¡Copiado!";
   setTimeout(() => (e.target.textContent = "Copiar"), 2000);
 });
-
-// ==========================================
-// 2. MOTOR INTELIGENTE DE IMÁGENES POR PRODUCTO
-// ==========================================
-// ==========================================
-// 2. MOTOR INTELIGENTE DE IMÁGENES POR PRODUCTO
-// ==========================================
 // ==========================================
 // 2. MOTOR INTELIGENTE DE LOGOS OFICIALES EN PNG
 // ==========================================

@@ -500,6 +500,13 @@ btnFinalizarPedido.addEventListener("click", () => {
   });
 
   const resumen = obtenerResumenTotales();
+
+  // Suma +1 uso en la hoja "Cupones" de Google Sheets al enviar el pedido (si aún no se había sumado al verificar pago)
+  if (cuponActivo && resumen.aplicaCupon && !pagoVerificadoAutomaticamente) {
+    const urlUso = `${URL_VERIFICADOR_PICHINCHA}?accion=usarCupon&cupon=${encodeURIComponent(cuponActivo.codigo)}&t=${Date.now()}`;
+    consultarAppsScript(urlUso).catch(() => {});
+  }
+
   let lineaCuponTexto = "🎟️ *Cupón:* Ninguno\n";
 
   if (cuponActivo && resumen.aplicaCupon) {

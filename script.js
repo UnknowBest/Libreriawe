@@ -13,11 +13,11 @@ const DATOS_BANCO = {
 
 let productos = JSON.parse(localStorage.getItem("productos_cedeño_cache")) || [
   {
-    nombre: "Canva Pro",
+    nombre: "Canva Pro 3 Años",
     categoria: "software",
-    descripcion: "Acceso a todas las plantillas premium y herramientas de diseño.",
+    descripcion: "Acceso ilimitado a millones de plantillas premium, fotos y herramientas IA.",
     precio: "\$3.00",
-    periodo: "/ mes",
+    periodo: "/ 3 años",
     imagen: ""
   }
 ];
@@ -70,98 +70,216 @@ document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
 });
 
 // ==========================================
-// 2. MOTOR INTELIGENTE DE DISEÑO Y LOGOS
+// 2. MOTOR DE LOGOS ORIGINALES EN VECTOR (100% ESTABLES)
 // ==========================================
 function obtenerDisenoVisualProducto(prod) {
   const n = (prod.nombre || "").toLowerCase();
 
-  // Si pones un link personalizado en la Columna F de tu Google Sheets:
   if (prod.imagen && prod.imagen.startsWith("http")) {
     return {
       fondo: "linear-gradient(135deg, #1e293b, #0f172a)",
-      logo: prod.imagen,
-      esCustom: true
+      colorMarca: "#6366f1",
+      customImg: prod.imagen,
+      svg: ""
     };
   }
 
-  const marcas = [
-    { 
-      claves: ["netflix"], 
-      fondo: "linear-gradient(135deg, #000000 0%, #831010 55%, #e50914 100%)", 
-      logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYaHC_9YxqnPCCaadcefalsMg2EOkjYOedtUHk1DvhWQ&s=10" 
-    },
-    { 
-      claves: ["disney"], 
-      fondo: "linear-gradient(135deg, #040714 0%, #0a1d56 55%, #113ccf 100%)", 
-      logo: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=300&auto=format&fit=crop&q=60" // Respaldo oficial nítido
-    },
-    { 
-      claves: ["hbo", "max"], 
-      fondo: "linear-gradient(135deg, #090326 0%, #2e0f75 55%, #6610f2 100%)", 
-      logo: "https://images.ctfassets.net/wrqd4vccibti/3q0sJ4q7X2K4e8a8yU2K2a/6e17812bc6c67ef8627bc88f0a3ecb99/Max_logo.png" 
-    },
-    { 
-      claves: ["paramount"], 
-      fondo: "linear-gradient(135deg, #001540 0%, #003899 55%, #0064ff 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Paramount_Pictures_2022_%28Dark_BG%29.png" 
-    },
-    { 
-      claves: ["crunchyroll", "anime"], 
-      fondo: "linear-gradient(135deg, #1f0c00 0%, #993d00 55%, #f47521 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/1/17/Crunchyroll_Logo_2024.png" 
-    },
-    { 
-      claves: ["prime", "amazon"], 
-      fondo: "linear-gradient(135deg, #051923 0%, #004e75 55%, #00a8e1 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Amazon_Prime_Video_Logo_%282024%29.png" 
-    },
-    { 
-      claves: ["spotify"], 
-      fondo: "linear-gradient(135deg, #071f10 0%, #0f682f 55%, #1db954 100%)", 
-      logo: "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Full_Logo_RGB_White.png" 
-    },
-    { 
-      claves: ["youtube"], 
-      fondo: "linear-gradient(135deg, #1f0000 0%, #8f0000 55%, #ff0000 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo_%282015-2017%29.svg" 
-    },
-    { 
-      claves: ["canva"], 
-      fondo: "linear-gradient(135deg, #005163 0%, #00c4cc 50%, #7d2ae8 100%)", 
-      logo: "https://static.canva.com/web/images/12487a1e0770d29351bd4ce4f87ec8fe.svg" 
-    },
-    { 
-      claves: ["chatgpt", "openai", "gpt"], 
-      fondo: "linear-gradient(135deg, #052e24 0%, #0b6e56 55%, #10a37f 100%)", 
-      logo: "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" 
-    },
-    { 
-      claves: ["gemini", "google"], 
-      fondo: "linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #9333ea 100%)", 
-      logo: "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" 
-    },
-    { 
-      claves: ["roblox", "robux"], 
-      fondo: "linear-gradient(135deg, #111827 0%, #374151 55%, #ef4444 100%)", 
-      logo: "https://images.rbxcdn.com/7b1652f9c3f3ea4d56d7879e63c0a230.svg" 
-    }
-  ];
-
-  for (const m of marcas) {
-    if (m.claves.some(k => n.includes(k))) {
-      return {
-        fondo: m.fondo,
-        logo: m.logo,
-        esCustom: false
-      };
-    }
+  // 1. NETFLIX (Logo Oficial Rojo y Blanco)
+  if (n.includes("netflix")) {
+    return {
+      fondo: "radial-gradient(circle at center, #7f1d1d 0%, #1a0404 65%, #050505 100%)",
+      colorMarca: "#e50914",
+      svg: `
+        <svg viewBox="0 0 240 68" xmlns="http://www.w3.org/2000/svg">
+          <text x="50%" y="52" text-anchor="middle" fill="#E50914" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="46" letter-spacing="4" style="filter: drop-shadow(0 4px 12px rgba(229,9,20,0.65));">NETFLIX</text>
+        </svg>`
+    };
   }
 
-  // Respaldo genérico
+  // 2. DISNEY+ (Logo Oficial Blanco con Arco Celeste Luminoso)
+  if (n.includes("disney")) {
+    return {
+      fondo: "radial-gradient(circle at center, #113ccf 0%, #07133a 65%, #030712 100%)",
+      colorMarca: "#38bdf8",
+      svg: `
+        <svg viewBox="0 0 250 90" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="arcoDisney" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.1"/>
+              <stop offset="60%" stop-color="#38bdf8"/>
+              <stop offset="100%" stop-color="#ffffff"/>
+            </linearGradient>
+          </defs>
+          <path d="M 38 42 Q 125 -8 202 36" fill="none" stroke="url(#arcoDisney)" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="202" cy="36" r="4" fill="#ffffff" style="filter: drop-shadow(0 0 8px #38bdf8);"/>
+          <text x="115" y="68" text-anchor="middle" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-weight="bold" font-style="italic" font-size="46" letter-spacing="0.5">Disney</text>
+          <text x="206" y="64" text-anchor="middle" fill="#38bdf8" font-family="Arial, sans-serif" font-weight="900" font-size="40">+</text>
+        </svg>`
+    };
+  }
+
+  // 3. HBO MAX (Logo Oficial HBO + max)
+  if (n.includes("hbo") || n.includes("max")) {
+    return {
+      fondo: "radial-gradient(circle at center, #4c1d95 0%, #1e0b4b 65%, #070312 100%)",
+      colorMarca: "#a855f7",
+      svg: `
+        <svg viewBox="0 0 270 75" xmlns="http://www.w3.org/2000/svg">
+          <text x="72" y="54" text-anchor="middle" fill="#ffffff" font-family="'Arial Black', sans-serif" font-weight="900" font-size="44" letter-spacing="-1">HBO</text>
+          <circle cx="110" cy="39" r="5" fill="#4c1d95"/>
+          <text x="195" y="53" text-anchor="middle" fill="#e9d5ff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="42" letter-spacing="-0.5">max</text>
+        </svg>`
+    };
+  }
+
+  // 4. PARAMOUNT+ (Montaña Oficial + Estrellas + Tipografía)
+  if (n.includes("paramount")) {
+    return {
+      fondo: "radial-gradient(circle at center, #0055ff 0%, #001e6c 68%, #020817 100%)",
+      colorMarca: "#3b82f6",
+      svg: `
+        <svg viewBox="0 0 260 95" xmlns="http://www.w3.org/2000/svg">
+          <path d="M130 14 L92 56 L112 56 L130 34 L148 56 L168 56 Z" fill="#ffffff"/>
+          <path d="M130 8 C105 8 92 26 92 38" fill="none" stroke="#93c5fd" stroke-width="2.5" stroke-dasharray="3 5" stroke-linecap="round"/>
+          <path d="M130 8 C155 8 168 26 168 38" fill="none" stroke="#93c5fd" stroke-width="2.5" stroke-dasharray="3 5" stroke-linecap="round"/>
+          <text x="130" y="82" text-anchor="middle" fill="#ffffff" font-family="Georgia, serif" font-weight="bold" font-style="italic" font-size="27">Paramount+</text>
+        </svg>`
+    };
+  }
+
+  // 5. CRUNCHYROLL (Logo Oficial Ojo Anime + Texto Crunchyroll)
+  if (n.includes("crunchyroll") || n.includes("anime")) {
+    return {
+      fondo: "radial-gradient(circle at center, #ea580c 0%, #7c2d12 65%, #140703 100%)",
+      colorMarca: "#f97316",
+      svg: `
+        <svg viewBox="0 0 280 80" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="48" cy="40" r="24" fill="#ffffff"/>
+          <circle cx="52" cy="43" r="16" fill="#ea580c"/>
+          <circle cx="57" cy="37" r="6" fill="#ffffff"/>
+          <text x="172" y="49" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="31" letter-spacing="-0.5">crunchyroll</text>
+        </svg>`
+    };
+  }
+
+  // 6. PRIME VIDEO (Logo Oficial "prime video" + Sonrisa Amazon)
+  if (n.includes("prime") || n.includes("amazon")) {
+    return {
+      fondo: "radial-gradient(circle at center, #0284c7 0%, #082f49 65%, #020b14 100%)",
+      colorMarca: "#00a8e1",
+      svg: `
+        <svg viewBox="0 0 260 90" xmlns="http://www.w3.org/2000/svg">
+          <text x="130" y="46" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="34" letter-spacing="-0.5">prime video</text>
+          <path d="M 72 58 Q 130 78 188 56" fill="none" stroke="#00a8e1" stroke-width="5" stroke-linecap="round"/>
+          <path d="M 178 52 L 191 55 L 184 67" fill="none" stroke="#00a8e1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`
+    };
+  }
+
+  // 7. CANVA PRO (Emblema Circular Original con Degradado y Tipografía Canva)
+  if (n.includes("canva")) {
+    return {
+      fondo: "linear-gradient(135deg, #008996 0%, #00c4cc 35%, #5b21b6 75%, #3b0764 100%)",
+      colorMarca: "#00c4cc",
+      svg: `
+        <svg viewBox="0 0 250 90" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="canvaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00c4cc"/>
+              <stop offset="50%" stop-color="#3b82f6"/>
+              <stop offset="100%" stop-color="#8b5cf6"/>
+            </linearGradient>
+          </defs>
+          <circle cx="125" cy="45" r="38" fill="url(#canvaGrad)" stroke="#ffffff" stroke-width="2.5"/>
+          <text x="125" y="55" text-anchor="middle" fill="#ffffff" font-family="'Brush Script MT', 'Segoe Script', Georgia, serif" font-weight="bold" font-style="italic" font-size="32">Canva</text>
+          <rect x="170" y="14" width="44" height="20" rx="10" fill="#facc15"/>
+          <text x="192" y="28" text-anchor="middle" fill="#0f172a" font-family="Arial, sans-serif" font-weight="900" font-size="11">PRO</text>
+        </svg>`
+    };
+  }
+
+  // 8. SPOTIFY PREMIUM (Icono Oficial de Ondas + Texto Spotify)
+  if (n.includes("spotify")) {
+    return {
+      fondo: "radial-gradient(circle at center, #15803d 0%, #052e16 68%, #020f07 100%)",
+      colorMarca: "#1db954",
+      svg: `
+        <svg viewBox="0 0 265 80" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="48" cy="40" r="25" fill="#1db954"/>
+          <path d="M 35 33 Q 48 28 61 35" fill="none" stroke="#000000" stroke-width="4" stroke-linecap="round"/>
+          <path d="M 37 41 Q 48 37 59 43" fill="none" stroke="#000000" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M 40 49 Q 48 46 56 50" fill="none" stroke="#000000" stroke-width="3" stroke-linecap="round"/>
+          <text x="160" y="50" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="35" letter-spacing="-0.5">Spotify</text>
+        </svg>`
+    };
+  }
+
+  // 9. YOUTUBE PREMIUM
+  if (n.includes("youtube")) {
+    return {
+      fondo: "radial-gradient(circle at center, #991b1b 0%, #2a0404 68%, #090101 100%)",
+      colorMarca: "#ff0000",
+      svg: `
+        <svg viewBox="0 0 270 80" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="20" width="56" height="40" rx="12" fill="#ff0000"/>
+          <polygon points="43,31 43,49 58,40" fill="#ffffff"/>
+          <text x="168" y="51" text-anchor="middle" fill="#ffffff" font-family="'Arial Black', sans-serif" font-weight="900" font-size="33" letter-spacing="-1">YouTube</text>
+        </svg>`
+    };
+  }
+
+  // 10. CHATGPT / OPENAI
+  if (n.includes("chatgpt") || n.includes("openai") || n.includes("gpt")) {
+    return {
+      fondo: "radial-gradient(circle at center, #0d9488 0%, #064e3b 65%, #021713 100%)",
+      colorMarca: "#10a37f",
+      svg: `
+        <svg viewBox="0 0 260 80" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="48" cy="40" r="22" fill="none" stroke="#ffffff" stroke-width="4" stroke-dasharray="14 6"/>
+          <circle cx="48" cy="40" r="9" fill="#10a37f"/>
+          <text x="162" y="50" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="33">ChatGPT</text>
+        </svg>`
+    };
+  }
+
+  // 11. GOOGLE GEMINI
+  if (n.includes("gemini") || n.includes("google")) {
+    return {
+      fondo: "linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #7e22ce 100%)",
+      colorMarca: "#60a5fa",
+      svg: `
+        <svg viewBox="0 0 250 80" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 14 Q50 40 76 40 Q50 40 50 66 Q50 40 24 40 Q50 40 50 14 Z" fill="#60a5fa"/>
+          <text x="158" y="51" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="36">Gemini</text>
+        </svg>`
+    };
+  }
+
+  // 12. ROBLOX / ROBUX
+  if (n.includes("roblox") || n.includes("robux")) {
+    return {
+      fondo: "radial-gradient(circle at center, #374151 0%, #111827 70%, #030712 100%)",
+      colorMarca: "#ef4444",
+      svg: `
+        <svg viewBox="0 0 260 80" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(46,40) rotate(15)">
+            <rect x="-20" y="-20" width="40" height="40" rx="4" fill="#ffffff"/>
+            <rect x="-7" y="-7" width="14" height="14" fill="#111827"/>
+          </g>
+          <text x="165" y="52" text-anchor="middle" fill="#ffffff" font-family="'Arial Black', sans-serif" font-weight="900" font-size="34" letter-spacing="1">ROBLOX</text>
+        </svg>`
+    };
+  }
+
+  // Respaldo dinámico con el nombre del producto si agregas uno nuevo en Google Sheets
+  const tituloCorto = (prod.nombre || "PREMIUM").split(" ")[0].toUpperCase();
   return {
-    fondo: "linear-gradient(135deg, #0f172a, #312e81, #6366f1)",
-    logo: "https://cdn-icons-png.flaticon.com/512/3067/3067451.png",
-    esCustom: false
+    fondo: "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4f46e5 100%)",
+    colorMarca: "#818cf8",
+    svg: `
+      <svg viewBox="0 0 260 80" xmlns="http://www.w3.org/2000/svg">
+        <text x="50%" y="50" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="32" letter-spacing="1.5">${tituloCorto}</text>
+      </svg>`
   };
 }
 
@@ -222,6 +340,7 @@ function mostrarProductos(lista) {
     const tarjeta = document.createElement("div");
     tarjeta.className = "tarjeta";
     tarjeta.style.animationDelay = `${idx * 0.05}s`;
+    tarjeta.style.setProperty("--color-marca", visual.colorMarca || "#6366f1");
 
     const htmlSelectorMeses = tieneSelectorMeses ? `
       <div class="caja-selector-meses">
@@ -236,13 +355,18 @@ function mostrarProductos(lista) {
       </div>
     ` : "";
 
+    const contenidoCabecera = visual.customImg
+      ? `<img src="${visual.customImg}" alt="${prod.nombre}" class="img-cover">`
+      : `<div class="contenedor-logo-oficial">${visual.svg}</div>`;
+
     const mensajeInicial = `¡Hola! Me interesa comprar: *${prod.nombre}*${tieneSelectorMeses ? " (1 mes)" : ""} (${prod.precio} ${prod.periodo})`;
     const urlWhatsappInicial = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeInicial)}`;
 
     tarjeta.innerHTML = `
       <div class="tarjeta-media" style="background: ${visual.fondo};">
         <span class="badge-flotante">${prod.categoria}</span>
-        <img src="${visual.logo}" alt="${prod.nombre}" class="${visual.esCustom ? 'img-cover' : 'img-logo'}">
+        <span class="badge-garantia">✔ Oficial</span>
+        ${contenidoCabecera}
       </div>
       <div class="tarjeta-cuerpo">
         <div>

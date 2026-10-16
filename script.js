@@ -16,7 +16,7 @@ let productos = JSON.parse(localStorage.getItem("productos_cedeño_cache")) || [
     nombre: "Canva Pro 3 Años",
     categoria: "software",
     descripcion: "Acceso ilimitado a millones de plantillas premium, fotos y herramientas IA.",
-    precio: "$3.00",
+    precio: "\$3.00",
     periodo: "/ 3 años",
     imagen: ""
   }
@@ -525,4 +525,333 @@ function actualizarVistaCarrito() {
   seccionPago.classList.remove("oculto");
 
   carrito.forEach((item, index) => {
-    const subtotalItem = item.preci
+    const subtotalItem = item.precioNum * item.cantidad;
+
+    const div = document.createElement("div");
+    div.className = "item-carrito";
+    div.innerHTML = `
+      <div class="item-info">
+        <h4>${item.nombre}</h4>
+        <span>Categoría: ${item.categoria} | ${item.precioTexto} c/u</span>
+      </div>
+      <div class="item-controles">
+        <button onclick="cambiarCantidad(${index}, -1)">-</button>
+        <span>${item.cantidad}</span>
+        <button onclick="cambiarCantidad(${index}, 1)">+</button>
+        <strong class="item-subtotal">$${subtotalItem.toFixed(2)}</strong>
+      </div>
+    `;
+    listaCarrito.appendChild(div);
+  });
+
+  const resumen = obtenerResumenTotales();
+  if (subtotalCarritoEl) subtotalCarritoEl.textContent = `$${resumen.subtotal.toFixed(2)}`;
+  if (filaDescAuto) filaDescAuto.classList.add("oculto");
+
+  if (filaDescCupon) {
+    if (resumen.aplicaCupon && resumen.montoDescCupon > 0) {
+      filaDescCupon.classList.remove("oculto");
+      textoDescCuponEl.textContent = `🎟️ Cupón ${cuponActivo.codigo} (-${cuponActivo.porcentaje}%):`;
+      montoDescCuponEl.textContent = `-$${resumen.montoDescCupon.toFixed(2)}`;
+      if (mensajeCupon) {
+        mensajeCupon.classList.remove("oculto", "error");
+        mensajeCupon.classList.add("exito");
+        mensajeCupon.textContent = `🎉 ¡Cupón ${cuponActivo.codigo} (-${cuponActivo.porcentaje}%) aplicado!`;
+      }
+    } else {
+      filaDescCupon.classList.add("oculto");
+      if (cuponActivo && resumen.motivoNoCumple && mensajeCupon) {
+        mensajeCupon.classList.remove("oculto", "exito");
+        mensajeCupon.classList.add("error");
+        mensajeCupon.textContent = resumen.motivoNoCumple;
+      }
+    }
+  }
+
+  totalCarrito.textContent = `$${resumen.totalFinal.toFixed(2)}`;
+}
+
+async function consultarAppsScript(url) {
+  try {
+    const respuesta = await fetch(url, { method: "GET", redirect: "follow", credentials: "omit" });
+    const texto = await respuesta.text();
+    return JSON.parse(texto);
+  } catch (e) {
+    console.warn("Intentando respaldo...");
+  }
+
+  return new Promise((resolve, reject) => {
+    const nombreCallback = "cb_" + Math.floor(Math.random() * 1000000);
+    const script = document.createElement("script");
+    const separador = url.includes("?") ? "&" : "?";
+
+    window[nombreCallback] = (datos) => {
+      delete window[nombreCallback];
+      script.remove();
+      resolve(datos);
+    };
+
+    script.onerror = () => {
+      delete window[nombreCallback];
+      script.remove();
+      reject(new Error("Fallo de red"));
+    };
+
+    script.src = `${url}${separador}callback=${nombreCallback}`;
+    document.body.appendChild(script);
+  });
+}
+
+if (btnAplicarCupon) {
+  btnAplicarCupon.addEventListener("click", async () => {
+    const codigo = inputCupon.value.trim().toUpperCase();
+    mensajeCupon.classList.remove("oculto", "exito", "error");
+
+    if (!codigo) {
+      mensajeCupon.textContent = "⚠️ Escribe un código de cupón.";
+      mensajeCupon.classList.add("error");
+      return;
+    }
+
+    btnAplicarCupon.disabled = true;
+    btnAplicarCupon.textContent = "Validando...";
+    mensajeCupon.textContent = "🔄 Verificando cupón en el sistema...";
+
+    try {
+      const url = `${URL_VERIFICADOR_PICHINCHA}?accion=validarCupon&cupon=${encodeURIComponent(codigo)}&t=${Date.now()}`;
+      const data = await consultarAppsScript(url);
+
+      if (data.valido) {
+        const candidatoCupon = {
+          codigo: data.codigo,
+          porcentaje: data.porcentaje,
+          categoriaRequerida: data.categoriaRequerida || "todos",
+          minimoProductos: data.minimoProductos || 1
+        };
+
+        const checkCarrito = verificarRequisitosCarritoParaCupon(candidatoCupon);
+        cuponActivo = candidatoCupon;
+
+        if (checkCarrito.cumple) {
+          mensajeCupon.textContent = data.mensaje;
+          mensajeCupon.classList.add("exito");
+        } else {
+          mensajeCupon.textContent = checkCarrito.motivo;
+          mensajeCupon.classList.add("error");
+        }
+      } else {
+        cuponActivo = null;
+        mensajeCupon.textContent = data.mensaje;
+        mensajeCupon.classList.add("error");
+      }
+      actualizarVistaCarrito();
+    } catch (err) {
+      mensajeCupon.textContent = "⚠️ No se pudo validar el cupón. Revisa tu conexión.";
+      mensajeCupon.classList.add("error");
+    } finally {
+      btnAplicarCupon.disabled = false;
+      btnAplicarCupon.textContent = "Aplicar";
+    }
+  });
+}
+
+inputComprobante.addEventListener("input", () => {
+  pagoVerificadoAutomaticamente = false;
+  estadoVerificacion.classList.add("oculto");
+});
+
+btnVerificarPago.addEventListener("click", async () => {
+  const comprobante = inputComprobante.value.trim();
+  const resumen = obtenerResumenTotales();
+  const monto = resumen.totalFinal.toFixed(2);
+  const codigoCupon = (cuponActivo && resumen.aplicaCupon) ? cuponActivo.codigo : "";
+
+  estadoVerificacion.classList.remove("oculto", "exito", "error");
+
+  if (!comprobante) {
+    estadoVerificacion.textContent = "⚠️ Escribe el número de comprobante de tu transferencia.";
+    estadoVerificacion.classList.add("error");
+    return;
+  }
+
+  btnVerificarPago.disabled = true;
+  btnVerificarPago.textContent = "Buscando...";
+  estadoVerificacion.textContent = "🔄 Verificando transferencia con Banco Pichincha...";
+
+  try {
+    const url = `${URL_VERIFICADOR_PICHINCHA}?comprobante=${encodeURIComponent(comprobante)}&monto=${encodeURIComponent(monto)}&cupon=${encodeURIComponent(codigoCupon)}&t=${Date.now()}`;
+    const data = await consultarAppsScript(url);
+
+    estadoVerificacion.textContent = data.mensaje;
+    if (data.verificado) {
+      pagoVerificadoAutomaticamente = true;
+      estadoVerificacion.classList.add("exito");
+    } else {
+      pagoVerificadoAutomaticamente = false;
+      estadoVerificacion.classList.add("error");
+    }
+  } catch (err) {
+    estadoVerificacion.textContent = "⚠️ No se pudo conectar con el verificador.";
+    estadoVerificacion.classList.add("error");
+  } finally {
+    btnVerificarPago.disabled = false;
+    btnVerificarPago.textContent = "🔍 Verificar";
+  }
+});
+
+btnAbrirCarrito.addEventListener("click", () => modalCarrito.classList.remove("oculto"));
+btnCerrarCarrito.addEventListener("click", () => modalCarrito.classList.add("oculto"));
+modalCarrito.addEventListener("click", (e) => {
+  if (e.target === modalCarrito) modalCarrito.classList.add("oculto");
+});
+
+// Enviar pedido por WhatsApp
+btnFinalizarPedido.addEventListener("click", () => {
+  if (carrito.length === 0) return;
+
+  let detalleProductos = "";
+  carrito.forEach((item) => {
+    const subtotalItem = item.precioNum * item.cantidad;
+    detalleProductos += `• ${item.cantidad}x *${item.nombre}* [${item.categoria}] ($${subtotalItem.toFixed(2)})\n`;
+  });
+
+  const resumen = obtenerResumenTotales();
+
+  if (cuponActivo && resumen.aplicaCupon && !pagoVerificadoAutomaticamente) {
+    const urlUso = `${URL_VERIFICADOR_PICHINCHA}?accion=usarCupon&cupon=${encodeURIComponent(cuponActivo.codigo)}&t=${Date.now()}`;
+    consultarAppsScript(urlUso).catch(() => {});
+  }
+
+  let lineaCuponTexto = "🎟️ *Cupón:* Ninguno\n";
+
+  if (cuponActivo && resumen.aplicaCupon) {
+    lineaCuponTexto = `🎟️ *Cupón aplicado:* ${cuponActivo.codigo} (-${cuponActivo.porcentaje}% | -$${resumen.montoDescCupon.toFixed(2)})\n`;
+  } else if (cuponActivo && !resumen.aplicaCupon) {
+    lineaCuponTexto = `🎟️ *Cupón ingresado (${cuponActivo.codigo}):* No aplicó por falta de requisitos\n`;
+  }
+
+  const comprobanteEscrito = inputComprobante.value.trim();
+  const comprobanteTexto = comprobanteEscrito ? comprobanteEscrito : "No ingresado (Enviaré captura por aquí)";
+
+  let estadoOrdenTexto = "";
+  if (pagoVerificadoAutomaticamente) {
+    estadoOrdenTexto = "✅ ORDEN COMPLETA (Pago Verificado en Sistema)";
+  } else if (comprobanteEscrito) {
+    estadoOrdenTexto = "⏳ ORDEN PENDIENTE DE VERIFICACIÓN MANUAL";
+  } else {
+    estadoOrdenTexto = "⚠️ ORDEN SIN COMPLETAR PAGO (Pendiente enviar comprobante)";
+  }
+
+  const mensaje = 
+    `¡Hola *Tienda Digital Cedeño*! 🛒 Quiero realizar este pedido:\n\n` +
+    `*📦 PRODUCTOS:*\n${detalleProductos}\n` +
+    `💵 *Subtotal:* $${resumen.subtotal.toFixed(2)}\n` +
+    `${lineaCuponTexto}` +
+    `💰 *Total a pagar:* $${resumen.totalFinal.toFixed(2)}\n\n` +
+    `🏦 *Cuenta Pichincha:* ${DATOS_BANCO.numeroCuenta}\n` +
+    `🧾 *N° Comprobante:* ${comprobanteTexto}\n` +
+    `📌 *Estado de Orden:* ${estadoOrdenTexto}`;
+
+  const url = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, "_blank");
+});
+
+// ==========================================
+// 5. BUSCADOR, FILTROS Y GOOGLE SHEETS
+// ==========================================
+function filtrarCatalogo() {
+  const texto = buscador.value.toLowerCase();
+  const filtrados = productos.filter((prod) => {
+    const coincideCategoria = categoriaActual === "todos" || prod.categoria.toLowerCase() === categoriaActual;
+    const coincideTexto = prod.nombre.toLowerCase().includes(texto) || prod.descripcion.toLowerCase().includes(texto);
+    return coincideCategoria && coincideTexto;
+  });
+  mostrarProductos(filtrados);
+}
+
+buscador.addEventListener("input", filtrarCatalogo);
+
+function dividirFilaCSV(fila) {
+  const resultado = [];
+  let actual = "";
+  let dentroDeComillas = false;
+
+  for (let i = 0; i < fila.length; i++) {
+    const letra = fila[i];
+    if (letra === '"') {
+      dentroDeComillas = !dentroDeComillas;
+    } else if (letra === "," && !dentroDeComillas) {
+      resultado.push(actual.trim());
+      actual = "";
+    } else {
+      actual += letra;
+    }
+  }
+  resultado.push(actual.trim());
+  return resultado;
+}
+
+async function cargarDesdeGoogleSheets() {
+  if (!GOOGLE_SHEET_CSV_URL) {
+    actualizarBotonesFiltro();
+    mostrarProductos(productos);
+    return;
+  }
+  try {
+    const urlSinCache = GOOGLE_SHEET_CSV_URL + (GOOGLE_SHEET_CSV_URL.includes("?") ? "&" : "?") + "t=" + new Date().getTime();
+    const res = await fetch(urlSinCache);
+    const csv = await res.text();
+    const filas = csv.split(/\r?\n/);
+    const listaSheet = [];
+
+    filas.forEach((fila, index) => {
+      if (!fila.trim()) return;
+      const col = dividirFilaCSV(fila);
+
+      if (index === 0 && col[0].toLowerCase() === "nombre") return;
+
+      if (col[0]) {
+        let col2Limpia = (col[2] || "").replace(/\\/g, "").trim();
+        let col3Limpia = (col[3] || "").replace(/\\/g, "").trim();
+        
+        let esPrecioEnC = /\d/.test(col2Limpia) && col2Limpia.length <= 10;
+        
+        let precioBruto = esPrecioEnC ? col2Limpia : col3Limpia;
+        if (!precioBruto.startsWith("\$")) {
+          precioBruto = "$" + precioBruto.replace("$", "");
+        }
+
+        let periodoTexto = esPrecioEnC ? (col[3] || "/ mes") : (col[4] || "/ mes");
+        let descripcionTexto = esPrecioEnC ? (col[4] || "") : (col[2] || "");
+
+        if (descripcionTexto.startsWith("\$")) {
+          descripcionTexto = descripcionTexto.substring(1).trim();
+        }
+
+        listaSheet.push({
+          nombre: col[0],
+          categoria: (col[1] || "otros").trim().toLowerCase(),
+          precio: precioBruto,
+          periodo: periodoTexto.trim(),
+          descripcion: descripcionTexto.trim(),
+          imagen: (col[5] || "").trim()
+        });
+      }
+    });
+
+    if (listaSheet.length > 0) {
+      productos = listaSheet;
+      localStorage.setItem("productos_cedeño_cache", JSON.stringify(productos));
+    }
+  } catch (err) {
+    console.error("Error cargando Google Sheet:", err);
+  }
+
+  actualizarBotonesFiltro();
+  filtrarCatalogo();
+}
+
+actualizarBotonesFiltro();
+filtrarCatalogo();
+actualizarVistaCarrito();
+cargarDesdeGoogleSheets();

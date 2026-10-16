@@ -859,4 +859,199 @@
     }
 
     .footer {
-      text-align: c
+      text-align: center;
+      padding: 30px 0;
+      border-top: 1px solid var(--borde);
+      color: var(--texto-secundario);
+      font-size: 0.85rem;
+    }
+
+    .footer-sub {
+      font-size: 0.76rem;
+      margin-top: 4px;
+    }
+
+    /* ==========================================
+       AJUSTES ESPECIALES PARA TELÉFONOS MÓVILES
+       ========================================== */
+    @media (max-width: 600px) {
+      .container {
+        padding: 0 14px;
+      }
+
+      .nav-content {
+        min-height: 60px;
+        padding: 8px 0;
+        gap: 6px;
+      }
+
+      .logo {
+        font-size: 1.05rem;
+        white-space: normal;
+        max-width: 145px;
+        line-height: 1.15;
+      }
+
+      .btn-contacto {
+        padding: 7px 10px;
+        font-size: 0.78rem;
+        border-radius: 8px;
+      }
+
+      .btn-carrito {
+        padding: 7px 11px;
+        font-size: 0.78rem;
+        border-radius: 8px;
+        gap: 5px;
+      }
+
+      .hero {
+        padding: 32px 10px 24px;
+      }
+
+      .badge {
+        font-size: 0.74rem;
+        padding: 6px 12px;
+      }
+
+      .hero h2 {
+        font-size: 1.65rem;
+      }
+
+      .hero p {
+        font-size: 0.9rem;
+      }
+
+      .grid-productos {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header class="navbar">
+    <div class="container nav-content">
+      <h1 class="logo">Tienda Digital <span>Cedeño</span></h1>
+      <div class="nav-acciones">
+        <a href="#catalogo" class="btn-contacto" id="nav-whatsapp" target="_blank">💬 Soporte</a>
+        <button id="btn-abrir-carrito" class="btn-carrito">
+          🛒 Carrito <span id="contador-carrito">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner Principal (Hero) -->
+  <section class="hero">
+    <div class="container">
+      <span class="badge">✨ Entrega Inmediata + Cupones Activos</span>
+      <h2>Tus plataformas, software y recargas al mejor precio</h2>
+      <p>Elige cuántos meses deseas, aplica tus cupones y verifica tu transferencia con Banco Pichincha o Deuna! al instante.</p>
+      <a href="#catalogo" class="btn-principal">Explorar Catálogo</a>
+    </div>
+  </section>
+
+  <!-- Sección del Catálogo -->
+  <main id="catalogo" class="container">
+    <div class="controles">
+      <input type="text" id="buscador" placeholder="🔍 Buscar plataforma o software (ej. Netflix, Disney+, HBO Max, Canva)...">
+      
+      <div class="filtros" id="contenedor-filtros">
+        <button class="btn-filtro activo" data-categoria="todos">Todos</button>
+      </div>
+    </div>
+
+    <div id="contenedor-productos" class="grid-productos">
+      <p id="mensaje-cargando" style="color: #94a3b8; grid-column: 1/-1; text-align: center; padding: 40px; font-size: 1.05rem;">
+        ⏳ Cargando catálogo oficial...
+      </p>
+    </div>
+  </main>
+
+  <!-- MODAL DEL CARRITO, CUPONES Y PAGO BANCO PICHINCHA -->
+  <div id="modal-carrito" class="modal-fondo oculto">
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h3>🛒 Tu Carrito de Compras</h3>
+        <button id="btn-cerrar-carrito" class="btn-cerrar">&times;</button>
+      </div>
+
+      <div id="lista-carrito" class="lista-carrito"></div>
+
+      <div id="seccion-pago" class="seccion-pago oculto">
+        <div class="caja-cupon">
+          <label for="input-cupon">🎟️ ¿Tienes un cupón de descuento?</label>
+          <div class="fila-cupon">
+            <input type="text" id="input-cupon" placeholder="Ej: STREAM5 o CEDENO10">
+            <button type="button" id="btn-aplicar-cupon" class="btn-cupon">Aplicar</button>
+          </div>
+          <p id="mensaje-cupon" class="estado-verificacion oculto"></p>
+        </div>
+
+        <div class="desglose-totales">
+          <div class="fila-desglose">
+            <span>Subtotal:</span>
+            <span id="subtotal-carrito">$0.00</span>
+          </div>
+          <div id="fila-desc-auto" class="fila-desglose descuento-linea oculto">
+            <span>🔥 Descuento Promocional:</span>
+            <span id="monto-desc-auto">-$0.00</span>
+          </div>
+          <div id="fila-desc-cupon" class="fila-desglose descuento-linea oculto">
+            <span id="texto-desc-cupon">🎟️ Cupón aplicado:</span>
+            <span id="monto-desc-cupon">-$0.00</span>
+          </div>
+          <div class="fila-total">
+            <span>Total a pagar:</span>
+            <strong id="total-carrito">$0.00</strong>
+          </div>
+        </div>
+
+        <div class="caja-pichincha">
+          <div class="pichincha-titulo">
+            <span class="icono-banco">🏦</span>
+            <div>
+              <h4>Transferencia Banco Pichincha / Deuna!</h4>
+              <p>Realiza el pago exacto a la siguiente cuenta:</p>
+            </div>
+          </div>
+
+          <div class="datos-cuenta">
+            <p><strong>Banco:</strong> <span id="banco-tipo">Cuenta de Ahorros - Banco Pichincha</span></p>
+            <p><strong>N° de Cuenta:</strong> <span id="banco-numero">2213128245</span> 
+              <button type="button" id="btn-copiar-cuenta" class="btn-copiar">Copiar</button>
+            </p>
+            <p><strong>Titular:</strong> <span id="banco-titular">Jostin Alejandro Cedeño López</span></p>
+          </div>
+
+          <div class="campo-comprobante">
+            <label for="input-comprobante">N° de Comprobante / Documento de transferencia:</label>
+            <div class="fila-verificacion">
+              <input type="text" id="input-comprobante" placeholder="Ej: 48291032">
+              <button type="button" id="btn-verificar-pago" class="btn-verificar">🔍 Verificar</button>
+            </div>
+            <p id="estado-verificacion" class="estado-verificacion oculto"></p>
+          </div>
+        </div>
+
+        <button id="btn-finalizar-pedido" class="btn-whatsapp-pago">
+          ✅ Enviar Pedido por WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pie de página -->
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 Tienda Digital Cedeño. Todos los derechos reservados.</p>
+      <p class="footer-sub">Pagos seguros vía Banco Pichincha (Cta: 2213128245) y Deuna!</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

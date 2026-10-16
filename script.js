@@ -18,7 +18,8 @@ let productos = JSON.parse(localStorage.getItem("productos_cedeño_cache")) || [
     descripcion: "Acceso ilimitado a millones de plantillas premium, fotos y herramientas IA.",
     precio: "\$3.00",
     periodo: "/ 3 años",
-    imagen: ""
+    stock: null,
+    descuento: 0
   }
 ];
 
@@ -75,15 +76,6 @@ document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
 function obtenerDisenoVisualProducto(prod) {
   const n = (prod.nombre || "").toLowerCase();
 
-  if (prod.imagen && prod.imagen.startsWith("http")) {
-    return {
-      fondo: "linear-gradient(135deg, #1e293b, #0f172a)",
-      colorMarca: "#6366f1",
-      customImg: prod.imagen,
-      htmlLogo: ""
-    };
-  }
-
   // 1. NETFLIX
   if (n.includes("netflix")) {
     return {
@@ -109,7 +101,7 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 3. HBO MAX (Corregido con O vectorial exacta para que nunca salga "HBC")
+  // 3. HBO MAX
   if (n.includes("hbo") || n.includes("max")) {
     return {
       fondo: "radial-gradient(circle at center, #4c1d95 0%, #1e0b4b 65%, #070312 100%)",
@@ -219,7 +211,41 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 10. CHATGPT
+  // 10. APPLE MUSIC
+  if (n.includes("apple")) {
+    return {
+      fondo: "linear-gradient(135deg, #fa243c 0%, #8e2de2 60%, #1c1c1e 100%)",
+      colorMarca: "#fa243c",
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="38" height="38" viewBox="0 0 50 50">
+            <rect width="50" height="50" rx="12" fill="#fa243c"/>
+            <path d="M34 13 L20 16 L20 33 C20 36 17 38 14 37 C11 36 11 32 14 31 C16 30 18 31 18 31 L18 19 L32 16 L32 29 C32 32 29 34 26 33 C23 32 23 28 26 27 C28 26 30 27 30 27 L34 13 Z" fill="#ffffff"/>
+          </svg>
+          <span>Apple Music</span>
+        </div>`
+    };
+  }
+
+  // 11. DEEZER
+  if (n.includes("deezer")) {
+    return {
+      fondo: "radial-gradient(circle at center, #a855f7 0%, #3b0764 65%, #090314 100%)",
+      colorMarca: "#a855f7",
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="40" height="36" viewBox="0 0 48 40">
+            <rect x="2" y="24" width="8" height="12" rx="2" fill="#a855f7"/>
+            <rect x="13" y="16" width="8" height="20" rx="2" fill="#ec4899"/>
+            <rect x="24" y="8" width="8" height="28" rx="2" fill="#eab308"/>
+            <rect x="35" y="18" width="8" height="18" rx="2" fill="#22c55e"/>
+          </svg>
+          <span>deezer</span>
+        </div>`
+    };
+  }
+
+  // 12. CHATGPT
   if (n.includes("chatgpt") || n.includes("openai") || n.includes("gpt")) {
     return {
       fondo: "radial-gradient(circle at center, #0d9488 0%, #064e3b 65%, #021713 100%)",
@@ -235,7 +261,7 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 11. GOOGLE GEMINI
+  // 13. GEMINI
   if (n.includes("gemini") || n.includes("google")) {
     return {
       fondo: "linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #7e22ce 100%)",
@@ -250,7 +276,7 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 12. ROBLOX
+  // 14. ROBLOX
   if (n.includes("roblox") || n.includes("robux")) {
     return {
       fondo: "radial-gradient(circle at center, #374151 0%, #111827 70%, #030712 100%)",
@@ -277,17 +303,27 @@ function obtenerDisenoVisualProducto(prod) {
 }
 
 // ==========================================
-// 3. MOSTRAR PRODUCTOS Y SELECTOR DE MESES
+// 3. MOSTRAR PRODUCTOS, STOCK, DESCUENTO Y DURACIÓN FIJA
 // ==========================================
 function obtenerPrecioNumerico(precioTexto) {
   const limpio = String(precioTexto).replace(/[^0-9.,]/g, "").replace(",", ".");
   return parseFloat(limpio) || 0;
 }
 
+// Solo muestra el selector de meses si el periodo es "/ mes" sin números (si dice "/ 3 mes" o "/ 3 años" queda fijo)
 function permiteElegirMeses(prod) {
-  const per = (prod.periodo || "").toLowerCase();
-  const cat = (prod.categoria || "").toLowerCase();
-  return per.includes("mes") || cat.includes("mes") || cat.includes("plan") || cat.includes("suscripcion");
+  const per = (prod.periodo || "").toLowerCase().trim();
+  const nom = (prod.nombre || "").toLowerCase();
+
+  // Si el periodo tiene un número (ej: "/ 3 mes", "/ 3 meses", "/ 3 años") o es anual, NO sale el selector de duración
+  if (/\d/.test(per) || per.includes("año") || per.includes("anual")) {
+    return false;
+  }
+  // Si el nombre del producto ya especifica varios meses fijos (ej: "3 meses") tampoco sale el selector
+  if (/\d+\s*mes/.test(nom)) {
+    return false;
+  }
+  return per === "/ mes" || per === "mes" || per === "mensual";
 }
 
 function actualizarBotonesFiltro() {
@@ -326,15 +362,39 @@ function mostrarProductos(lista) {
   }
 
   lista.forEach((prod) => {
-    const precioBase = obtenerPrecioNumerico(prod.precio);
+    const precioOriginalBase = obtenerPrecioNumerico(prod.precio);
+    const descPorcentaje = parseFloat(prod.descuento) || 0;
+    const tieneDescuento = descPorcentaje > 0;
+    const precioConDescuentoBase = tieneDescuento
+      ? precioOriginalBase * (1 - descPorcentaje / 100)
+      : precioOriginalBase;
+
+    const stockDisponible = (prod.stock === null || prod.stock === undefined || prod.stock === "" || isNaN(prod.stock))
+      ? null
+      : parseInt(prod.stock, 10);
+    const estaAgotado = stockDisponible !== null && stockDisponible <= 0;
+
     const tieneSelectorMeses = permiteElegirMeses(prod);
     const visual = obtenerDisenoVisualProducto(prod);
 
     const tarjeta = document.createElement("div");
-    tarjeta.className = "tarjeta";
+    tarjeta.className = `tarjeta ${estaAgotado ? "sin-stock" : ""}`;
     tarjeta.style.setProperty("--color-marca", visual.colorMarca || "#6366f1");
 
-    const htmlSelectorMeses = tieneSelectorMeses ? `
+    // Etiqueta superior derecha (Stock o Oficial)
+    let htmlBadgeDerecha = `<span class="badge-derecha oficial">✔ Oficial</span>`;
+    if (estaAgotado) {
+      htmlBadgeDerecha = `<span class="badge-derecha agotado">🚫 Agotado</span>`;
+    } else if (stockDisponible !== null) {
+      htmlBadgeDerecha = `<span class="badge-derecha stock-limitado">📦 Stock: ${stockDisponible}</span>`;
+    }
+
+    // Etiqueta de descuento si tiene valor en Columna G
+    const htmlBadgeDescuento = tieneDescuento
+      ? `<span class="badge-descuento-card">🔥 -${descPorcentaje}% OFF</span>`
+      : "";
+
+    const htmlSelectorMeses = (tieneSelectorMeses && !estaAgotado) ? `
       <div class="caja-selector-meses">
         <label>📅 Duración:</label>
         <select class="select-meses">
@@ -347,18 +407,20 @@ function mostrarProductos(lista) {
       </div>
     ` : "";
 
-    const contenidoCabecera = visual.customImg
-      ? `<img src="${visual.customImg}" alt="${prod.nombre}" class="img-cover">`
-      : `<div class="contenedor-logo-oficial">${visual.htmlLogo}</div>`;
+    const precioMostradoTexto = `$${precioConDescuentoBase.toFixed(2)}`;
+    const htmlPrecioOriginalTachado = tieneDescuento
+      ? `<span class="precio-original">$${precioOriginalBase.toFixed(2)}</span>`
+      : "";
 
-    const mensajeInicial = `¡Hola! Me interesa comprar: *${prod.nombre}*${tieneSelectorMeses ? " (1 mes)" : ""} (${prod.precio} ${prod.periodo})`;
+    const mensajeInicial = `¡Hola! Me interesa comprar: *${prod.nombre}*${tieneSelectorMeses ? " (1 mes)" : ""} (${precioMostradoTexto} ${prod.periodo})`;
     const urlWhatsappInicial = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeInicial)}`;
 
     tarjeta.innerHTML = `
       <div class="tarjeta-media" style="background: ${visual.fondo};">
         <span class="badge-flotante">${prod.categoria}</span>
-        <span class="badge-garantia">✔ Oficial</span>
-        ${contenidoCabecera}
+        ${htmlBadgeDerecha}
+        ${htmlBadgeDescuento}
+        <div class="contenedor-logo-oficial">${visual.htmlLogo}</div>
       </div>
       <div class="tarjeta-cuerpo">
         <div>
@@ -368,11 +430,14 @@ function mostrarProductos(lista) {
         <div>
           ${htmlSelectorMeses}
           <div class="precio">
-            <strong class="valor-precio">${prod.precio}</strong> 
+            ${htmlPrecioOriginalTachado}
+            <strong class="valor-precio ${tieneDescuento ? 'en-oferta' : ''}">${precioMostradoTexto}</strong> 
             <span class="texto-periodo">${prod.periodo}</span>
           </div>
           <div class="botones-tarjeta">
-            <button class="btn-agregar-carrito">🛒 Añadir al carrito</button>
+            <button class="btn-agregar-carrito" ${estaAgotado ? "disabled" : ""}>
+              ${estaAgotado ? "🚫 Sin Stock" : "🛒 Añadir al carrito"}
+            </button>
             <a href="${urlWhatsappInicial}" target="_blank" class="btn-comprar-directo">⚡ Comprar directo</a>
           </div>
         </div>
@@ -381,16 +446,20 @@ function mostrarProductos(lista) {
 
     const selectMeses = tarjeta.querySelector(".select-meses");
     const valorPrecioEl = tarjeta.querySelector(".valor-precio");
+    const precioOrigEl = tarjeta.querySelector(".precio-original");
     const textoPeriodoEl = tarjeta.querySelector(".texto-periodo");
     const btnComprarDirecto = tarjeta.querySelector(".btn-comprar-directo");
 
     if (selectMeses) {
       selectMeses.addEventListener("change", () => {
         const meses = parseInt(selectMeses.value, 10) || 1;
-        const nuevoTotal = (precioBase * meses).toFixed(2);
+        const nuevoTotal = (precioConDescuentoBase * meses).toFixed(2);
         const etiquetaMeses = meses === 1 ? "1 mes" : `${meses} meses`;
 
         valorPrecioEl.textContent = `$${nuevoTotal}`;
+        if (precioOrigEl) {
+          precioOrigEl.textContent = `$${(precioOriginalBase * meses).toFixed(2)}`;
+        }
         textoPeriodoEl.textContent = meses === 1 ? prod.periodo : `por ${meses} meses`;
 
         const nuevoMensaje = `¡Hola! Me interesa comprar: *${prod.nombre} (${etiquetaMeses})* - Total: $${nuevoTotal}`;
@@ -398,25 +467,57 @@ function mostrarProductos(lista) {
       });
     }
 
-    tarjeta.querySelector(".btn-agregar-carrito").addEventListener("click", (e) => {
-      const mesesElegidos = selectMeses ? (parseInt(selectMeses.value, 10) || 1) : 1;
-      agregarAlCarrito(prod, mesesElegidos, tieneSelectorMeses);
-      
-      const btn = e.target;
-      btn.textContent = "✔ ¡Añadido!";
-      setTimeout(() => (btn.textContent = "🛒 Añadir al carrito"), 1000);
-    });
+    const btnAgregar = tarjeta.querySelector(".btn-agregar-carrito");
+    if (btnAgregar && !estaAgotado) {
+      btnAgregar.addEventListener("click", (e) => {
+        const mesesElegidos = selectMeses ? (parseInt(selectMeses.value, 10) || 1) : 1;
+        const exito = agregarAlCarrito(prod, mesesElegidos, tieneSelectorMeses);
+        if (exito) {
+          const btn = e.target;
+          btn.textContent = "✔ ¡Añadido!";
+          setTimeout(() => (btn.textContent = "🛒 Añadir al carrito"), 1000);
+        }
+      });
+    }
 
     contenedor.appendChild(tarjeta);
   });
 }
 
 // ==========================================
-// 4. CARRITO Y CUPONES CON REGLAS DE CATEGORÍA Y CANTIDAD
+// 4. CARRITO, REGLA DE NO ACUMULAR DESCUENTOS Y STOCK
 // ==========================================
+function carritoTieneProductoConDescuento() {
+  return carrito.some(item => (parseFloat(item.descuentoProducto) || 0) > 0);
+}
+
 function agregarAlCarrito(prod, meses = 1, mostrarMeses = false) {
-  const precioBase = obtenerPrecioNumerico(prod.precio);
-  const precioFinalNum = precioBase * meses;
+  const stockMax = (prod.stock === null || prod.stock === undefined || prod.stock === "" || isNaN(prod.stock))
+    ? null
+    : parseInt(prod.stock, 10);
+
+  // Calcula cuántas unidades de este producto base ya están en el carrito
+  const unidadesEnCarrito = carrito
+    .filter(item => item.nombreBase === prod.nombre)
+    .reduce((acc, item) => acc + item.cantidad, 0);
+
+  if (stockMax !== null && unidadesEnCarrito + 1 > stockMax) {
+    alert(`⚠️ Solo quedan ${stockMax} unidad(es) disponibles en stock de "${prod.nombre}".`);
+    return false;
+  }
+
+  const precioOriginalBase = obtenerPrecioNumerico(prod.precio);
+  const descPorcentaje = parseFloat(prod.descuento) || 0;
+
+  // Si el cliente YA tiene otro producto con descuento en el carrito, este nuevo producto entra a precio normal sin acumular otro descuento
+  const yaHayDescuentoEnCarrito = carritoTieneProductoConDescuento();
+  const aplicaDescuentoProducto = descPorcentaje > 0 && (!yaHayDescuentoEnCarrito || carrito.some(i => i.nombreBase === prod.nombre && i.descuentoProducto > 0));
+
+  const precioUnitarioBase = aplicaDescuentoProducto
+    ? precioOriginalBase * (1 - descPorcentaje / 100)
+    : precioOriginalBase;
+
+  const precioFinalNum = precioUnitarioBase * meses;
   const precioFinalTexto = `$${precioFinalNum.toFixed(2)}`;
 
   const etiquetaMeses = meses === 1 ? "1 mes" : `${meses} meses`;
@@ -428,19 +529,37 @@ function agregarAlCarrito(prod, meses = 1, mostrarMeses = false) {
   } else {
     carrito.push({
       nombre: nombreConMeses,
+      nombreBase: prod.nombre,
       categoria: (prod.categoria || "otros").toLowerCase(),
       precioTexto: precioFinalTexto,
       precioNum: precioFinalNum,
       periodo: mostrarMeses ? etiquetaMeses : prod.periodo,
-      cantidad: 1
+      cantidad: 1,
+      stockMax: stockMax,
+      descuentoProducto: aplicaDescuentoProducto ? descPorcentaje : 0,
+      intentoSegundoDescuento: (descPorcentaje > 0 && !aplicaDescuentoProducto)
     });
   }
+
   actualizarVistaCarrito();
+  return true;
 }
 
 window.cambiarCantidad = function(index, cambio) {
-  carrito[index].cantidad += cambio;
-  if (carrito[index].cantidad <= 0) {
+  const item = carrito[index];
+  if (cambio > 0 && item.stockMax !== null && item.stockMax !== undefined) {
+    const totalMismoProducto = carrito
+      .filter(i => i.nombreBase === item.nombreBase)
+      .reduce((acc, i) => acc + i.cantidad, 0);
+
+    if (totalMismoProducto + cambio > item.stockMax) {
+      alert(`⚠️ No puedes agregar más: solo hay ${item.stockMax} en stock.`);
+      return;
+    }
+  }
+
+  item.cantidad += cambio;
+  if (item.cantidad <= 0) {
     carrito.splice(index, 1);
   }
   actualizarVistaCarrito();
@@ -448,6 +567,14 @@ window.cambiarCantidad = function(index, cambio) {
 
 function verificarRequisitosCarritoParaCupon(cupon) {
   if (!cupon) return { cumple: false, motivo: "" };
+
+  // REGLA PRINCIPAL: Si ya hay un producto con descuento en el carrito, NO se puede aplicar cupón ni otro descuento
+  if (carritoTieneProductoConDescuento()) {
+    return {
+      cumple: false,
+      motivo: "⚠️ Ya tienes un producto con descuento en el carrito, así que ya no aplica otro descuento adicional."
+    };
+  }
 
   const catReq = (cupon.categoriaRequerida || "todos").toLowerCase().trim();
   const minProd = parseInt(cupon.minimoProductos, 10) || 1;
@@ -473,10 +600,16 @@ function verificarRequisitosCarritoParaCupon(cupon) {
 
 function obtenerResumenTotales() {
   const subtotal = carrito.reduce((acc, item) => acc + (item.precioNum * item.cantidad), 0);
+  const tieneProdConDescuento = carritoTieneProductoConDescuento();
+  const tieneIntentoSegundoDesc = carrito.some(item => item.intentoSegundoDescuento);
 
   let aplicaCupon = false;
   let montoDescCupon = 0;
   let motivoNoCumple = "";
+
+  if (tieneIntentoSegundoDesc) {
+    motivoNoCumple = "⚠️ Ya tienes un producto con descuento en el carrito, por lo que no se acumula otro descuento adicional.";
+  }
 
   if (cuponActivo) {
     const validacion = verificarRequisitosCarritoParaCupon(cuponActivo);
@@ -501,6 +634,7 @@ function obtenerResumenTotales() {
 
   return {
     subtotal,
+    tieneProdConDescuento,
     aplicaCupon,
     montoDescCupon,
     motivoNoCumple,
@@ -526,12 +660,15 @@ function actualizarVistaCarrito() {
 
   carrito.forEach((item, index) => {
     const subtotalItem = item.precioNum * item.cantidad;
+    const tagDescuento = item.descuentoProducto > 0
+      ? `<span class="tag-oferta-carrito">-${item.descuentoProducto}% OFF</span>`
+      : "";
 
     const div = document.createElement("div");
     div.className = "item-carrito";
     div.innerHTML = `
       <div class="item-info">
-        <h4>${item.nombre}</h4>
+        <h4>${item.nombre} ${tagDescuento}</h4>
         <span>Categoría: ${item.categoria} | ${item.precioTexto} c/u</span>
       </div>
       <div class="item-controles">
@@ -560,10 +697,16 @@ function actualizarVistaCarrito() {
       }
     } else {
       filaDescCupon.classList.add("oculto");
-      if (cuponActivo && resumen.motivoNoCumple && mensajeCupon) {
+      if (resumen.motivoNoCumple && mensajeCupon) {
         mensajeCupon.classList.remove("oculto", "exito");
         mensajeCupon.classList.add("error");
         mensajeCupon.textContent = resumen.motivoNoCumple;
+      } else if (resumen.tieneProdConDescuento && mensajeCupon) {
+        mensajeCupon.classList.remove("oculto", "exito");
+        mensajeCupon.classList.add("error");
+        mensajeCupon.textContent = "ℹ️ Ya tienes un producto con descuento en el carrito (no aplica descuento adicional).";
+      } else if (!cuponActivo && mensajeCupon) {
+        mensajeCupon.classList.add("oculto");
       }
     }
   }
@@ -606,6 +749,15 @@ if (btnAplicarCupon) {
   btnAplicarCupon.addEventListener("click", async () => {
     const codigo = inputCupon.value.trim().toUpperCase();
     mensajeCupon.classList.remove("oculto", "exito", "error");
+
+    // Si ya tiene un producto en descuento en el carrito, bloquea el cupón de inmediato
+    if (carritoTieneProductoConDescuento()) {
+      cuponActivo = null;
+      mensajeCupon.textContent = "⚠️ Ya tienes un producto con descuento en el carrito, así que ya no aplica el descuento.";
+      mensajeCupon.classList.add("error");
+      actualizarVistaCarrito();
+      return;
+    }
 
     if (!codigo) {
       mensajeCupon.textContent = "⚠️ Escribe un código de cupón.";
@@ -666,6 +818,12 @@ btnVerificarPago.addEventListener("click", async () => {
   const monto = resumen.totalFinal.toFixed(2);
   const codigoCupon = (cuponActivo && resumen.aplicaCupon) ? cuponActivo.codigo : "";
 
+  // Prepara los productos comprados para que Google Sheets reste el stock automáticamente
+  const itemsParaStock = carrito.map(i => ({
+    nombreBase: i.nombreBase || i.nombre,
+    cantidad: i.cantidad
+  }));
+
   estadoVerificacion.classList.remove("oculto", "exito", "error");
 
   if (!comprobante) {
@@ -676,16 +834,26 @@ btnVerificarPago.addEventListener("click", async () => {
 
   btnVerificarPago.disabled = true;
   btnVerificarPago.textContent = "Buscando...";
-  estadoVerificacion.textContent = "🔄 Verificando transferencia con Banco Pichincha...";
+  estadoVerificacion.textContent = "🔄 Verificando transferencia y actualizando stock...";
 
   try {
-    const url = `${URL_VERIFICADOR_PICHINCHA}?comprobante=${encodeURIComponent(comprobante)}&monto=${encodeURIComponent(monto)}&cupon=${encodeURIComponent(codigoCupon)}&t=${Date.now()}`;
+    const url = `${URL_VERIFICADOR_PICHINCHA}?comprobante=${encodeURIComponent(comprobante)}&monto=${encodeURIComponent(monto)}&cupon=${encodeURIComponent(codigoCupon)}&items=${encodeURIComponent(JSON.stringify(itemsParaStock))}&t=${Date.now()}`;
     const data = await consultarAppsScript(url);
 
     estadoVerificacion.textContent = data.mensaje;
     if (data.verificado) {
       pagoVerificadoAutomaticamente = true;
       estadoVerificacion.classList.add("exito");
+
+      // Resta el stock inmediatamente también en la pantalla del usuario
+      itemsParaStock.forEach((comprado) => {
+        const prodEnCatalogo = productos.find(p => p.nombre.toLowerCase() === String(comprado.nombreBase).toLowerCase());
+        if (prodEnCatalogo && prodEnCatalogo.stock !== null && prodEnCatalogo.stock !== undefined && !isNaN(prodEnCatalogo.stock)) {
+          prodEnCatalogo.stock = Math.max(0, parseInt(prodEnCatalogo.stock, 10) - comprado.cantidad);
+        }
+      });
+      localStorage.setItem("productos_cedeño_cache", JSON.stringify(productos));
+      filtrarCatalogo();
     } else {
       pagoVerificadoAutomaticamente = false;
       estadoVerificacion.classList.add("error");
@@ -712,7 +880,8 @@ btnFinalizarPedido.addEventListener("click", () => {
   let detalleProductos = "";
   carrito.forEach((item) => {
     const subtotalItem = item.precioNum * item.cantidad;
-    detalleProductos += `• ${item.cantidad}x *${item.nombre}* [${item.categoria}] ($${subtotalItem.toFixed(2)})\n`;
+    const txtOferta = item.descuentoProducto > 0 ? ` (Oferta -${item.descuentoProducto}%)` : "";
+    detalleProductos += `• ${item.cantidad}x *${item.nombre}*${txtOferta} [${item.categoria}] ($${subtotalItem.toFixed(2)})\n`;
   });
 
   const resumen = obtenerResumenTotales();
@@ -722,12 +891,11 @@ btnFinalizarPedido.addEventListener("click", () => {
     consultarAppsScript(urlUso).catch(() => {});
   }
 
-  let lineaCuponTexto = "🎟️ *Cupón:* Ninguno\n";
-
-  if (cuponActivo && resumen.aplicaCupon) {
+  let lineaCuponTexto = "🎟️ *Descuento / Cupón:* Ninguno\n";
+  if (resumen.tieneProdConDescuento) {
+    lineaCuponTexto = "🔥 *Descuento aplicado:* Producto en Promoción (No acumulable con otro descuento)\n";
+  } else if (cuponActivo && resumen.aplicaCupon) {
     lineaCuponTexto = `🎟️ *Cupón aplicado:* ${cuponActivo.codigo} (-${cuponActivo.porcentaje}% | -$${resumen.montoDescCupon.toFixed(2)})\n`;
-  } else if (cuponActivo && !resumen.aplicaCupon) {
-    lineaCuponTexto = `🎟️ *Cupón ingresado (${cuponActivo.codigo}):* No aplicó por falta de requisitos\n`;
   }
 
   const comprobanteEscrito = inputComprobante.value.trim();
@@ -735,7 +903,7 @@ btnFinalizarPedido.addEventListener("click", () => {
 
   let estadoOrdenTexto = "";
   if (pagoVerificadoAutomaticamente) {
-    estadoOrdenTexto = "✅ ORDEN COMPLETA (Pago Verificado en Sistema)";
+    estadoOrdenTexto = "✅ ORDEN COMPLETA (Pago Verificado y Stock Descontado)";
   } else if (comprobanteEscrito) {
     estadoOrdenTexto = "⏳ ORDEN PENDIENTE DE VERIFICACIÓN MANUAL";
   } else {
@@ -757,7 +925,7 @@ btnFinalizarPedido.addEventListener("click", () => {
 });
 
 // ==========================================
-// 5. BUSCADOR, FILTROS Y GOOGLE SHEETS
+// 5. BUSCADOR, FILTROS Y SINCRONIZACIÓN EN VIVO CON HOJA 1
 // ==========================================
 function filtrarCatalogo() {
   const texto = buscador.value.toLowerCase();
@@ -791,12 +959,61 @@ function dividirFilaCSV(fila) {
   return resultado;
 }
 
+function normalizarProductoFila(nombre, categoria, descripcion, precioRaw, periodoRaw, stockRaw, descuentoRaw) {
+  let precioBruto = String(precioRaw || "0.00").replace(/\\/g, "").trim();
+  if (!precioBruto.startsWith("\$")) {
+    precioBruto = "$" + precioBruto.replace("$", "");
+  }
+
+  let descTexto = String(descripcion || "").trim();
+  if (descTexto.startsWith("\$")) {
+    descTexto = descTexto.substring(1).trim();
+  }
+
+  const stockLimpio = (stockRaw === undefined || stockRaw === null || String(stockRaw).trim() === "")
+    ? null
+    : parseInt(String(stockRaw).trim(), 10);
+
+  const descuentoLimpio = (descuentoRaw === undefined || descuentoRaw === null || String(descuentoRaw).trim() === "")
+    ? 0
+    : parseFloat(String(descuentoRaw).replace("%", "").trim()) || 0;
+
+  return {
+    nombre: String(nombre).trim(),
+    categoria: String(categoria || "otros").trim().toLowerCase(),
+    descripcion: descTexto,
+    precio: precioBruto,
+    periodo: String(periodoRaw || "/ mes").trim(),
+    stock: isNaN(stockLimpio) ? null : stockLimpio,
+    descuento: descuentoLimpio
+  };
+}
+
 async function cargarDesdeGoogleSheets() {
+  // 1. Primero intenta sincronizar en tiempo real desde Apps Script (sin retraso de caché para ver el Stock exacto)
+  try {
+    const urlVivo = `${URL_VERIFICADOR_PICHINCHA}?accion=obtenerProductos&t=${Date.now()}`;
+    const dataVivo = await consultarAppsScript(urlVivo);
+    if (dataVivo && dataVivo.ok && Array.isArray(dataVivo.productos) && dataVivo.productos.length > 0) {
+      productos = dataVivo.productos.map(p =>
+        normalizarProductoFila(p.nombre, p.categoria, p.descripcion, p.precio, p.periodo, p.stock, p.descuento)
+      );
+      localStorage.setItem("productos_cedeño_cache", JSON.stringify(productos));
+      actualizarBotonesFiltro();
+      filtrarCatalogo();
+      return;
+    }
+  } catch (e) {
+    console.warn("Usando lectura CSV estándar...");
+  }
+
+  // 2. Respaldo por CSV si el Apps Script aún no se ha actualizado
   if (!GOOGLE_SHEET_CSV_URL) {
     actualizarBotonesFiltro();
     mostrarProductos(productos);
     return;
   }
+
   try {
     const urlSinCache = GOOGLE_SHEET_CSV_URL + (GOOGLE_SHEET_CSV_URL.includes("?") ? "&" : "?") + "t=" + new Date().getTime();
     const res = await fetch(urlSinCache);
@@ -808,35 +1025,22 @@ async function cargarDesdeGoogleSheets() {
       if (!fila.trim()) return;
       const col = dividirFilaCSV(fila);
 
-      if (index === 0 && col[0].toLowerCase() === "nombre") return;
+      if (!col[0] || (index === 0 && col[0].toLowerCase() === "nombre")) return;
 
-      if (col[0]) {
-        let col2Limpia = (col[2] || "").replace(/\\/g, "").trim();
-        let col3Limpia = (col[3] || "").replace(/\\/g, "").trim();
-        
-        let esPrecioEnC = /\d/.test(col2Limpia) && col2Limpia.length <= 10;
-        
-        let precioBruto = esPrecioEnC ? col2Limpia : col3Limpia;
-        if (!precioBruto.startsWith("\$")) {
-          precioBruto = "$" + precioBruto.replace("$", "");
-        }
+      let col2Limpia = (col[2] || "").replace(/\\/g, "").trim();
+      let col3Limpia = (col[3] || "").replace(/\\/g, "").trim();
+      let esPrecioEnC = /\d/.test(col2Limpia) && col2Limpia.length <= 10;
 
-        let periodoTexto = esPrecioEnC ? (col[3] || "/ mes") : (col[4] || "/ mes");
-        let descripcionTexto = esPrecioEnC ? (col[4] || "") : (col[2] || "");
+      let precioBruto = esPrecioEnC ? col2Limpia : col3Limpia;
+      let periodoTexto = esPrecioEnC ? (col[3] || "/ mes") : (col[4] || "/ mes");
+      let descripcionTexto = esPrecioEnC ? (col[4] || "") : (col[2] || "");
 
-        if (descripcionTexto.startsWith("\$")) {
-          descripcionTexto = descripcionTexto.substring(1).trim();
-        }
+      // Si el precio no se ha puesto aún (como Apple Music o Deezer vacíos), omite hasta que tenga precio
+      if (!precioBruto && !descripcionTexto) return;
 
-        listaSheet.push({
-          nombre: col[0],
-          categoria: (col[1] || "otros").trim().toLowerCase(),
-          precio: precioBruto,
-          periodo: periodoTexto.trim(),
-          descripcion: descripcionTexto.trim(),
-          imagen: (col[5] || "").trim()
-        });
-      }
+      listaSheet.push(
+        normalizarProductoFila(col[0], col[1], descripcionTexto, precioBruto, periodoTexto, col[5], col[6])
+      );
     });
 
     if (listaSheet.length > 0) {

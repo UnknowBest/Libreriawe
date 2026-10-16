@@ -4,17 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tienda Digital Cedeño | Catálogo Oficial</title>
+  <!-- Fuentes universales para que los logos se vean idénticos en PC, Android y iPhone -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@700;900&family=Outfit:wght@400;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
+  
   <style>
     :root {
       --fondo: #060911;
-      --fondo-tarjeta: rgba(17, 24, 39, 0.82);
+      --fondo-tarjeta: rgba(17, 24, 39, 0.86);
       --texto: #f8fafc;
       --texto-secundario: #94a3b8;
       --acento: #6366f1;
       --acento-hover: #4f46e5;
       --whatsapp: #22c55e;
       --whatsapp-hover: #16a34a;
-      --borde: rgba(255, 255, 255, 0.09);
+      --borde: rgba(255, 255, 255, 0.1);
       --pichincha-amarillo: #ffdd00;
       --pichincha-azul: #0f265c;
     }
@@ -23,7 +28,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Outfit', 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
     body {
@@ -33,23 +38,25 @@
         radial-gradient(circle at 90% 15%, rgba(168, 85, 247, 0.14) 0%, transparent 45%),
         radial-gradient(circle at 50% 90%, rgba(14, 165, 233, 0.1) 0%, transparent 50%);
       color: var(--texto);
-      line-height: 1.6;
+      line-height: 1.5;
       min-height: 100vh;
     }
 
     .container {
       max-width: 1180px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 18px;
     }
 
     .oculto {
       display: none !important;
     }
 
-    /* Barra de Navegación */
+    /* ==========================================
+       BARRA DE NAVEGACIÓN OPTIMIZADA PARA MÓVIL Y PC
+       ========================================== */
     .navbar {
-      background-color: rgba(6, 9, 17, 0.85);
+      background-color: rgba(6, 9, 17, 0.9);
       border-bottom: 1px solid var(--borde);
       position: sticky;
       top: 0;
@@ -61,13 +68,17 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 74px;
+      min-height: 68px;
+      padding: 10px 0;
+      gap: 10px;
     }
 
     .logo {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 900;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.3px;
+      line-height: 1.15;
+      white-space: nowrap;
     }
 
     .logo span {
@@ -78,88 +89,84 @@
 
     .nav-acciones {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       align-items: center;
+      flex-shrink: 0;
     }
 
     .btn-contacto {
-      background-color: rgba(255, 255, 255, 0.05);
+      background-color: rgba(255, 255, 255, 0.06);
       color: var(--texto);
       text-decoration: none;
-      padding: 9px 16px;
+      padding: 9px 14px;
       border-radius: 10px;
       border: 1px solid var(--borde);
-      font-size: 0.9rem;
-      font-weight: 600;
+      font-size: 0.88rem;
+      font-weight: 700;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       transition: 0.25s;
-    }
-
-    .btn-contacto:hover {
-      background-color: rgba(255, 255, 255, 0.12);
-      transform: translateY(-2px);
     }
 
     .btn-carrito {
       background: linear-gradient(135deg, #6366f1, #8b5cf6);
       color: white;
       border: none;
-      padding: 10px 18px;
+      padding: 9px 15px;
       border-radius: 10px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 8px;
-      font-size: 0.92rem;
-      box-shadow: 0 4px 18px rgba(99, 102, 241, 0.4);
+      gap: 7px;
+      font-size: 0.88rem;
+      white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
       transition: 0.25s;
-    }
-
-    .btn-carrito:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(99, 102, 241, 0.6);
     }
 
     .btn-carrito span {
       background-color: rgba(0, 0, 0, 0.35);
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 0.8rem;
+      padding: 2px 7px;
+      border-radius: 99px;
+      font-size: 0.78rem;
     }
 
-    /* Hero */
+    /* ==========================================
+       HERO BANNER
+       ========================================== */
     .hero {
       text-align: center;
-      padding: 60px 20px 40px;
+      padding: 48px 16px 32px;
     }
 
     .badge {
       background: rgba(99, 102, 241, 0.14);
       color: #a5b4fc;
-      padding: 7px 18px;
+      padding: 7px 16px;
       border-radius: 99px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
       display: inline-block;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       border: 1px solid rgba(99, 102, 241, 0.35);
-      box-shadow: 0 0 25px rgba(99, 102, 241, 0.25);
     }
 
     .hero h2 {
-      font-size: 2.5rem;
-      max-width: 750px;
-      margin: 0 auto 14px;
+      font-size: 2.3rem;
+      max-width: 720px;
+      margin: 0 auto 12px;
       line-height: 1.18;
       font-weight: 900;
-      letter-spacing: -0.5px;
     }
 
     .hero p {
       color: var(--texto-secundario);
-      max-width: 610px;
-      margin: 0 auto 26px;
-      font-size: 1.05rem;
+      max-width: 580px;
+      margin: 0 auto 22px;
+      font-size: 1rem;
     }
 
     .btn-principal {
@@ -167,46 +174,40 @@
       background: linear-gradient(135deg, #6366f1, #8b5cf6);
       color: white;
       text-decoration: none;
-      padding: 13px 32px;
+      padding: 12px 28px;
       border-radius: 12px;
       font-weight: 700;
       box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
-      transition: 0.25s;
     }
 
-    .btn-principal:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(99, 102, 241, 0.55);
-    }
-
-    /* Buscador y Filtros */
+    /* ==========================================
+       BUSCADOR Y FILTROS
+       ========================================== */
     .controles {
-      margin: 10px 0 35px;
+      margin: 10px 0 28px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     #buscador {
       width: 100%;
-      padding: 16px 22px;
-      border-radius: 14px;
+      padding: 14px 18px;
+      border-radius: 13px;
       border: 1px solid var(--borde);
       background-color: rgba(17, 24, 39, 0.85);
       color: var(--texto);
-      font-size: 1rem;
+      font-size: 0.96rem;
       outline: none;
-      transition: 0.25s;
     }
 
     #buscador:focus {
       border-color: var(--acento);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
     }
 
     .filtros {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
@@ -214,33 +215,28 @@
       background-color: rgba(17, 24, 39, 0.8);
       color: var(--texto-secundario);
       border: 1px solid var(--borde);
-      padding: 9px 22px;
+      padding: 8px 18px;
       border-radius: 99px;
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.9rem;
-      transition: 0.25s;
+      font-size: 0.88rem;
+      transition: 0.2s;
     }
 
     .btn-filtro.activo, .btn-filtro:hover {
       background: linear-gradient(135deg, #6366f1, #8b5cf6);
       color: white;
       border-color: transparent;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-      transform: translateY(-1px);
     }
 
-    /* Grid y Tarjetas Premium */
+    /* ==========================================
+       GRID Y TARJETAS CON LOGOS ESTRUCTURADOS
+       ========================================== */
     .grid-productos {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 28px;
-      padding-bottom: 70px;
-    }
-
-    @keyframes aparecerTarjeta {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+      grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+      gap: 24px;
+      padding-bottom: 65px;
     }
 
     .tarjeta {
@@ -252,45 +248,35 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      backdrop-filter: blur(12px);
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
-      animation: aparecerTarjeta 0.45s ease forwards;
-      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     }
 
     .tarjeta:hover {
-      transform: translateY(-8px);
+      transform: translateY(-6px);
       border-color: var(--color-marca);
-      box-shadow: 0 20px 38px -12px rgba(0, 0, 0, 0.75), 0 0 28px -4px var(--color-marca);
+      box-shadow: 0 18px 34px -12px rgba(0, 0, 0, 0.75), 0 0 24px -4px var(--color-marca);
     }
 
-    /* Cabecera del Logo Oficial */
     .tarjeta-media {
-      height: 165px;
+      height: 155px;
       width: 100%;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      padding: 24px;
+      padding: 20px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    /* Brillo ambiental detrás del logo */
     .tarjeta-media::before {
       content: "";
       position: absolute;
       width: 140px;
       height: 140px;
-      background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
       border-radius: 50%;
       pointer-events: none;
-      transition: transform 0.4s ease;
-    }
-
-    .tarjeta:hover .tarjeta-media::before {
-      transform: scale(1.35);
     }
 
     .contenedor-logo-oficial {
@@ -300,20 +286,148 @@
       justify-content: center;
       width: 100%;
       height: 100%;
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.55));
+      padding-top: 12px;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.5));
     }
 
-    .tarjeta:hover .contenedor-logo-oficial {
-      transform: scale(1.09);
+    /* Estilos universales de los Logos para que nunca se descuadren en móvil */
+    .marca-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      user-select: none;
     }
 
-    .contenedor-logo-oficial svg {
-      max-width: 200px;
-      max-height: 82px;
-      width: auto;
-      height: auto;
-      overflow: visible;
+    .logo-netflix {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.3rem;
+      color: #e50914;
+      letter-spacing: 5px;
+      text-shadow: 0 4px 16px rgba(229, 9, 20, 0.75);
+      line-height: 1;
+    }
+
+    .logo-disney {
+      position: relative;
+      display: inline-flex;
+      align-items: baseline;
+      font-family: 'Cinzel', Georgia, serif;
+      font-weight: 900;
+      font-size: 2.3rem;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      padding-top: 10px;
+    }
+    .logo-disney .arco-disney {
+      position: absolute;
+      top: -6px;
+      left: 5%;
+      width: 90%;
+      height: 28px;
+      pointer-events: none;
+    }
+    .logo-disney .mas-disney {
+      color: #38bdf8;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 2.1rem;
+      margin-left: 2px;
+      text-shadow: 0 0 10px #38bdf8;
+    }
+
+    .logo-hbomax {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-hbomax .txt-hbo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 2.4rem;
+      color: #ffffff;
+      letter-spacing: -1px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .logo-hbomax .txt-max {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 2.2rem;
+      color: #d8b4fe;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-prime {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .logo-prime .txt-prime {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.95rem;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .logo-prime svg {
+      width: 120px;
+      height: 24px;
+      margin-top: 2px;
+    }
+
+    .logo-canva {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-canva .circulo-canva {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00c4cc 0%, #3b82f6 50%, #8b5cf6 100%);
+      border: 2.5px solid rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Pacifico', cursive;
+      font-size: 1.45rem;
+      color: #ffffff;
+      box-shadow: 0 6px 16px rgba(0, 196, 204, 0.4);
+    }
+    .logo-canva .tag-pro {
+      background: #facc15;
+      color: #0f172a;
+      font-weight: 900;
+      font-size: 0.78rem;
+      padding: 3px 9px;
+      border-radius: 99px;
+      letter-spacing: 0.5px;
+    }
+
+    .logo-paramount {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .logo-paramount span {
+      font-family: 'Cinzel', Georgia, serif;
+      font-weight: 900;
+      font-size: 1.4rem;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+
+    .logo-texto-icono {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      font-size: 1.85rem;
+      color: #ffffff;
+      letter-spacing: -0.5px;
     }
 
     .tarjeta-media img.img-cover {
@@ -323,36 +437,31 @@
       position: absolute;
       inset: 0;
       z-index: 1;
-      transition: transform 0.4s ease;
-    }
-
-    .tarjeta:hover .tarjeta-media img.img-cover {
-      transform: scale(1.08);
     }
 
     .badge-flotante {
       position: absolute;
-      top: 12px;
-      left: 12px;
+      top: 11px;
+      left: 11px;
       z-index: 3;
-      background-color: rgba(6, 9, 17, 0.75);
+      background-color: rgba(6, 9, 17, 0.78);
       backdrop-filter: blur(8px);
       color: #f1f5f9;
-      padding: 4px 12px;
+      padding: 4px 11px;
       border-radius: 99px;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.9px;
+      letter-spacing: 0.8px;
       border: 1px solid rgba(255, 255, 255, 0.16);
     }
 
     .badge-garantia {
       position: absolute;
-      top: 12px;
-      right: 12px;
+      top: 11px;
+      right: 11px;
       z-index: 3;
-      background-color: rgba(34, 197, 94, 0.2);
+      background-color: rgba(34, 197, 94, 0.18);
       backdrop-filter: blur(8px);
       color: #4ade80;
       padding: 4px 10px;
@@ -363,7 +472,7 @@
     }
 
     .tarjeta-cuerpo {
-      padding: 22px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       flex: 1;
@@ -371,21 +480,21 @@
     }
 
     .tarjeta h3 {
-      font-size: 1.28rem;
-      margin-bottom: 8px;
+      font-size: 1.25rem;
+      margin-bottom: 6px;
       font-weight: 800;
       color: #ffffff;
     }
 
     .tarjeta p {
       color: var(--texto-secundario);
-      font-size: 0.9rem;
-      margin-bottom: 18px;
-      line-height: 1.5;
+      font-size: 0.88rem;
+      margin-bottom: 16px;
+      line-height: 1.45;
     }
 
     .precio {
-      font-size: 1.8rem;
+      font-size: 1.75rem;
       font-weight: 900;
       margin-bottom: 14px;
       display: flex;
@@ -395,26 +504,25 @@
     }
 
     .precio span {
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       color: var(--texto-secundario);
       font-weight: 500;
     }
 
-    /* Selector de meses */
     .caja-selector-meses {
       margin-bottom: 14px;
       background-color: rgba(6, 9, 17, 0.65);
-      padding: 10px 14px;
-      border-radius: 12px;
+      padding: 9px 12px;
+      border-radius: 11px;
       border: 1px solid var(--borde);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .caja-selector-meses label {
-      font-size: 0.84rem;
+      font-size: 0.82rem;
       color: #cbd5e1;
       font-weight: 600;
     }
@@ -423,9 +531,9 @@
       background-color: #0f172a;
       color: var(--texto);
       border: 1px solid var(--acento);
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: 8px;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 700;
       cursor: pointer;
       outline: none;
@@ -434,7 +542,7 @@
     .botones-tarjeta {
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 8px;
     }
 
     .btn-agregar-carrito {
@@ -445,14 +553,8 @@
       padding: 12px;
       border-radius: 11px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.94rem;
       cursor: pointer;
-      transition: 0.25s;
-    }
-
-    .btn-agregar-carrito:hover {
-      filter: brightness(1.15);
-      transform: translateY(-1px);
     }
 
     .btn-comprar-directo {
@@ -466,15 +568,11 @@
       border-radius: 11px;
       font-weight: 700;
       font-size: 0.88rem;
-      transition: 0.25s;
     }
 
-    .btn-comprar-directo:hover {
-      background-color: var(--whatsapp);
-      color: white;
-    }
-
-    /* MODAL DEL CARRITO, CUPONES Y BANCO PICHINCHA */
+    /* ==========================================
+       MODAL DEL CARRITO
+       ========================================== */
     .modal-fondo {
       position: fixed;
       inset: 0;
@@ -484,7 +582,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 16px;
+      padding: 14px;
     }
 
     .modal-contenido {
@@ -495,8 +593,7 @@
       max-width: 520px;
       max-height: 90vh;
       overflow-y: auto;
-      padding: 24px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+      padding: 20px;
     }
 
     .modal-header {
@@ -504,8 +601,8 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--borde);
-      padding-bottom: 14px;
-      margin-bottom: 16px;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .btn-cerrar {
@@ -533,18 +630,18 @@
     }
 
     .item-info h4 {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
     }
 
     .item-info span {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--texto-secundario);
     }
 
     .item-controles {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .item-controles button {
@@ -559,12 +656,12 @@
     }
 
     .item-subtotal {
-      min-width: 60px;
+      min-width: 58px;
       text-align: right;
       color: #818cf8;
+      font-size: 0.92rem;
     }
 
-    /* Caja de Cupones y Desglose */
     .caja-cupon {
       margin-top: 14px;
       padding: 12px;
@@ -575,7 +672,7 @@
 
     .caja-cupon label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       font-weight: 600;
       margin-bottom: 6px;
       color: #c7d2fe;
@@ -593,7 +690,7 @@
       border: 1px solid var(--borde);
       background-color: var(--fondo);
       color: var(--texto);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       text-transform: uppercase;
     }
 
@@ -601,7 +698,7 @@
       background-color: var(--acento);
       color: white;
       border: none;
-      padding: 0 16px;
+      padding: 0 14px;
       border-radius: 8px;
       font-weight: 700;
       cursor: pointer;
@@ -618,7 +715,7 @@
     .fila-desglose {
       display: flex;
       justify-content: space-between;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--texto-secundario);
       margin-bottom: 6px;
     }
@@ -632,7 +729,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       margin: 10px 0 0 0;
       padding-top: 10px;
       border-top: 1px solid var(--borde);
@@ -640,49 +737,48 @@
 
     .fila-total strong {
       color: var(--whatsapp);
-      font-size: 1.5rem;
+      font-size: 1.4rem;
     }
 
-    /* Caja Banco Pichincha */
     .caja-pichincha {
       background-color: #0b132b;
       border: 2px solid var(--pichincha-amarillo);
       border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 18px;
+      padding: 14px;
+      margin-bottom: 16px;
     }
 
     .pichincha-titulo {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
     .icono-banco {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
     }
 
     .pichincha-titulo h4 {
       color: var(--pichincha-amarillo);
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
 
     .pichincha-titulo p {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--texto-secundario);
     }
 
     .datos-cuenta {
       background-color: rgba(255, 255, 255, 0.05);
-      padding: 12px;
+      padding: 10px;
       border-radius: 8px;
-      font-size: 0.9rem;
-      margin-bottom: 14px;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
     }
 
     .datos-cuenta p {
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     .btn-copiar {
@@ -691,15 +787,15 @@
       border: none;
       padding: 2px 8px;
       border-radius: 4px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       cursor: pointer;
-      margin-left: 8px;
+      margin-left: 6px;
     }
 
     .campo-comprobante label {
       display: block;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--texto-secundario);
       margin-bottom: 6px;
     }
@@ -711,19 +807,19 @@
 
     .fila-verificacion input {
       flex: 1;
-      padding: 10px 12px;
+      padding: 9px 10px;
       border-radius: 8px;
       border: 1px solid var(--borde);
       background-color: var(--fondo);
       color: var(--texto);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
     }
 
     .btn-verificar {
       background-color: var(--pichincha-amarillo);
       color: var(--pichincha-azul);
       border: none;
-      padding: 0 14px;
+      padding: 0 12px;
       border-radius: 8px;
       font-weight: 700;
       cursor: pointer;
@@ -731,7 +827,7 @@
     }
 
     .estado-verificacion {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       margin-top: 8px;
       padding: 8px 10px;
       border-radius: 6px;
@@ -755,160 +851,12 @@
       background-color: var(--whatsapp);
       color: white;
       border: none;
-      padding: 14px;
+      padding: 13px;
       border-radius: 10px;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.96rem;
       cursor: pointer;
     }
 
-    .btn-whatsapp-pago:hover {
-      background-color: var(--whatsapp-hover);
-    }
-
     .footer {
-      text-align: center;
-      padding: 35px 0;
-      border-top: 1px solid var(--borde);
-      color: var(--texto-secundario);
-      font-size: 0.9rem;
-    }
-
-    .footer-sub {
-      font-size: 0.8rem;
-      margin-top: 4px;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Encabezado -->
-  <header class="navbar">
-    <div class="container nav-content">
-      <h1 class="logo">Tienda Digital <span>Cedeño</span></h1>
-      <div class="nav-acciones">
-        <a href="#catalogo" class="btn-contacto" id="nav-whatsapp" target="_blank">💬 Soporte</a>
-        <button id="btn-abrir-carrito" class="btn-carrito">
-          🛒 Carrito <span id="contador-carrito">0</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Banner Principal (Hero) -->
-  <section class="hero">
-    <div class="container">
-      <span class="badge">✨ Entrega Inmediata + Cupones de Descuento Activos</span>
-      <h2>Tus plataformas, software y recargas al mejor precio</h2>
-      <p>Elige cuántos meses deseas, aplica tus cupones y verifica tu transferencia con Banco Pichincha o Deuna! al instante.</p>
-      <a href="#catalogo" class="btn-principal">Explorar Catálogo</a>
-    </div>
-  </section>
-
-  <!-- Sección del Catálogo -->
-  <main id="catalogo" class="container">
-    <div class="controles">
-      <input type="text" id="buscador" placeholder="🔍 Buscar plataforma o software (ej. Netflix, Disney+, HBO Max, Prime Video, Canva, Spotify)...">
-      
-      <div class="filtros" id="contenedor-filtros">
-        <button class="btn-filtro activo" data-categoria="todos">Todos</button>
-      </div>
-    </div>
-
-    <div id="contenedor-productos" class="grid-productos">
-      <p id="mensaje-cargando" style="color: #94a3b8; grid-column: 1/-1; text-align: center; padding: 40px; font-size: 1.1rem;">
-        ⏳ Cargando catálogo oficial...
-      </p>
-    </div>
-  </main>
-
-  <!-- MODAL DEL CARRITO, CUPONES Y PAGO BANCO PICHINCHA -->
-  <div id="modal-carrito" class="modal-fondo oculto">
-    <div class="modal-contenido">
-      <div class="modal-header">
-        <h3>🛒 Tu Carrito de Compras</h3>
-        <button id="btn-cerrar-carrito" class="btn-cerrar">&times;</button>
-      </div>
-
-      <!-- Lista de productos en el carrito -->
-      <div id="lista-carrito" class="lista-carrito"></div>
-
-      <!-- Resumen, Cupones y Pago -->
-      <div id="seccion-pago" class="seccion-pago oculto">
-
-        <!-- Caja de Cupones -->
-        <div class="caja-cupon">
-          <label for="input-cupon">🎟️ ¿Tienes un cupón de descuento?</label>
-          <div class="fila-cupon">
-            <input type="text" id="input-cupon" placeholder="Ej: STREAM5 o CEDENO10">
-            <button type="button" id="btn-aplicar-cupon" class="btn-cupon">Aplicar</button>
-          </div>
-          <p id="mensaje-cupon" class="estado-verificacion oculto"></p>
-        </div>
-
-        <!-- Desglose de Totales y Descuentos -->
-        <div class="desglose-totales">
-          <div class="fila-desglose">
-            <span>Subtotal:</span>
-            <span id="subtotal-carrito">$0.00</span>
-          </div>
-          <div id="fila-desc-auto" class="fila-desglose descuento-linea oculto">
-            <span>🔥 Descuento Promocional:</span>
-            <span id="monto-desc-auto">-$0.00</span>
-          </div>
-          <div id="fila-desc-cupon" class="fila-desglose descuento-linea oculto">
-            <span id="texto-desc-cupon">🎟️ Cupón aplicado:</span>
-            <span id="monto-desc-cupon">-$0.00</span>
-          </div>
-          <div class="fila-total">
-            <span>Total a pagar:</span>
-            <strong id="total-carrito">$0.00</strong>
-          </div>
-        </div>
-
-        <!-- Caja Banco Pichincha / Deuna -->
-        <div class="caja-pichincha">
-          <div class="pichincha-titulo">
-            <span class="icono-banco">🏦</span>
-            <div>
-              <h4>Transferencia Banco Pichincha / Deuna!</h4>
-              <p>Realiza el pago exacto a la siguiente cuenta:</p>
-            </div>
-          </div>
-
-          <div class="datos-cuenta">
-            <p><strong>Banco:</strong> <span id="banco-tipo">Cuenta de Ahorros - Banco Pichincha</span></p>
-            <p><strong>N° de Cuenta:</strong> <span id="banco-numero">2213128245</span> 
-              <button type="button" id="btn-copiar-cuenta" class="btn-copiar">Copiar</button>
-            </p>
-            <p><strong>Titular:</strong> <span id="banco-titular">Jostin Alejandro Cedeño López</span></p>
-          </div>
-
-          <div class="campo-comprobante">
-            <label for="input-comprobante">N° de Comprobante / Documento de transferencia:</label>
-            <div class="fila-verificacion">
-              <input type="text" id="input-comprobante" placeholder="Ej: 48291032">
-              <button type="button" id="btn-verificar-pago" class="btn-verificar">🔍 Verificar</button>
-            </div>
-            <p id="estado-verificacion" class="estado-verificacion oculto"></p>
-          </div>
-        </div>
-
-        <button id="btn-finalizar-pedido" class="btn-whatsapp-pago">
-          ✅ Enviar Pedido por WhatsApp
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Pie de página -->
-  <footer class="footer">
-    <div class="container">
-      <p>© 2026 Tienda Digital Cedeño. Todos los derechos reservados.</p>
-      <p class="footer-sub">Pagos seguros vía Banco Pichincha (Cta: 2213128245) y Deuna!</p>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
+      text-align: c

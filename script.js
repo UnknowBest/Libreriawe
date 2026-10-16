@@ -127,7 +127,7 @@ function obtenerDisenoVisualProducto(prod) {
         <svg viewBox="0 0 270 75" xmlns="http://www.w3.org/2000/svg">
           <text x="72" y="54" text-anchor="middle" fill="#ffffff" font-family="'Arial Black', sans-serif" font-weight="900" font-size="44" letter-spacing="-1">HBO</text>
           <circle cx="110" cy="39" r="5" fill="#4c1d95"/>
-          <text x="195" y="53" text-anchor="middle" fill="#e9d5ff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="42" letter-spacing="-0.5">max</text>
+          <text x="195" y="53" text-anchor="middle" fill="#e9d5ff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="42" letter-spacing="-0.2">max</text>
         </svg>`
     };
   }

@@ -16,7 +16,7 @@ let productos = JSON.parse(localStorage.getItem("productos_cedeño_cache")) || [
     nombre: "Canva Pro 3 Años",
     categoria: "software",
     descripcion: "Acceso ilimitado a millones de plantillas premium, fotos y herramientas IA.",
-    precio: "\$3.00",
+    precio: "$3.00",
     periodo: "/ 3 años",
     imagen: ""
   }
@@ -70,7 +70,7 @@ document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
 });
 
 // ==========================================
-// 2. MOTOR DE LOGOS ORIGINALES EN VECTOR (100% ESTABLES)
+// 2. LOGOS OFICIALES ADAPTABLES A MÓVIL Y PC
 // ==========================================
 function obtenerDisenoVisualProducto(prod) {
   const n = (prod.nombre || "").toLowerCase();
@@ -80,165 +80,158 @@ function obtenerDisenoVisualProducto(prod) {
       fondo: "linear-gradient(135deg, #1e293b, #0f172a)",
       colorMarca: "#6366f1",
       customImg: prod.imagen,
-      svg: ""
+      htmlLogo: ""
     };
   }
 
-  // 1. NETFLIX (Logo Oficial Rojo y Blanco)
+  // 1. NETFLIX
   if (n.includes("netflix")) {
     return {
       fondo: "radial-gradient(circle at center, #7f1d1d 0%, #1a0404 65%, #050505 100%)",
       colorMarca: "#e50914",
-      svg: `
-        <svg viewBox="0 0 240 68" xmlns="http://www.w3.org/2000/svg">
-          <text x="50%" y="52" text-anchor="middle" fill="#E50914" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="46" letter-spacing="4" style="filter: drop-shadow(0 4px 12px rgba(229,9,20,0.65));">NETFLIX</text>
-        </svg>`
+      htmlLogo: `<div class="logo-netflix">NETFLIX</div>`
     };
   }
 
-  // 2. DISNEY+ (Logo Oficial Blanco con Arco Celeste Luminoso)
+  // 2. DISNEY+
   if (n.includes("disney")) {
     return {
       fondo: "radial-gradient(circle at center, #113ccf 0%, #07133a 65%, #030712 100%)",
       colorMarca: "#38bdf8",
-      svg: `
-        <svg viewBox="0 0 250 90" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="arcoDisney" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.1"/>
-              <stop offset="60%" stop-color="#38bdf8"/>
-              <stop offset="100%" stop-color="#ffffff"/>
-            </linearGradient>
-          </defs>
-          <path d="M 38 42 Q 125 -8 202 36" fill="none" stroke="url(#arcoDisney)" stroke-width="4" stroke-linecap="round"/>
-          <circle cx="202" cy="36" r="4" fill="#ffffff" style="filter: drop-shadow(0 0 8px #38bdf8);"/>
-          <text x="115" y="68" text-anchor="middle" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-weight="bold" font-style="italic" font-size="46" letter-spacing="0.5">Disney</text>
-          <text x="206" y="64" text-anchor="middle" fill="#38bdf8" font-family="Arial, sans-serif" font-weight="900" font-size="40">+</text>
-        </svg>`
+      htmlLogo: `
+        <div class="logo-disney">
+          <svg class="arco-disney" viewBox="0 0 180 42" fill="none">
+            <path d="M8 36 Q 90 -8 172 30" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="172" cy="30" r="4" fill="#ffffff"/>
+          </svg>
+          <span>Disney</span><span class="mas-disney">+</span>
+        </div>`
     };
   }
 
-  // 3. HBO MAX (Logo Oficial HBO + max)
+  // 3. HBO MAX (Corregido con O vectorial exacta para que nunca salga "HBC")
   if (n.includes("hbo") || n.includes("max")) {
     return {
       fondo: "radial-gradient(circle at center, #4c1d95 0%, #1e0b4b 65%, #070312 100%)",
       colorMarca: "#a855f7",
-      svg: `
-        <svg viewBox="0 0 270 75" xmlns="http://www.w3.org/2000/svg">
-          <text x="72" y="54" text-anchor="middle" fill="#ffffff" font-family="'Arial Black', sans-serif" font-weight="900" font-size="44" letter-spacing="-1">HBO</text>
-          <circle cx="110" cy="39" r="5" fill="#4c1d95"/>
-          <text x="195" y="53" text-anchor="middle" fill="#e9d5ff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="42" letter-spacing="-0.2">max</text>
-        </svg>`
+      htmlLogo: `
+        <div class="logo-hbomax">
+          <span class="txt-hbo">HB<svg width="34" height="34" viewBox="0 0 36 36" style="margin-left:1px;"><circle cx="18" cy="18" r="14" fill="none" stroke="#ffffff" stroke-width="7"/><circle cx="18" cy="18" r="4.5" fill="#ffffff"/></svg></span>
+          <span class="txt-max">max</span>
+        </div>`
     };
   }
 
-  // 4. PARAMOUNT+ (Montaña Oficial + Estrellas + Tipografía)
+  // 4. PARAMOUNT+
   if (n.includes("paramount")) {
     return {
       fondo: "radial-gradient(circle at center, #0055ff 0%, #001e6c 68%, #020817 100%)",
       colorMarca: "#3b82f6",
-      svg: `
-        <svg viewBox="0 0 260 95" xmlns="http://www.w3.org/2000/svg">
-          <path d="M130 14 L92 56 L112 56 L130 34 L148 56 L168 56 Z" fill="#ffffff"/>
-          <path d="M130 8 C105 8 92 26 92 38" fill="none" stroke="#93c5fd" stroke-width="2.5" stroke-dasharray="3 5" stroke-linecap="round"/>
-          <path d="M130 8 C155 8 168 26 168 38" fill="none" stroke="#93c5fd" stroke-width="2.5" stroke-dasharray="3 5" stroke-linecap="round"/>
-          <text x="130" y="82" text-anchor="middle" fill="#ffffff" font-family="Georgia, serif" font-weight="bold" font-style="italic" font-size="27">Paramount+</text>
-        </svg>`
+      htmlLogo: `
+        <div class="logo-paramount">
+          <svg width="78" height="46" viewBox="0 0 100 58">
+            <path d="M50 8 C28 8 16 26 16 40" fill="none" stroke="#93c5fd" stroke-width="3" stroke-dasharray="3 5" stroke-linecap="round"/>
+            <path d="M50 8 C72 8 84 26 84 40" fill="none" stroke="#93c5fd" stroke-width="3" stroke-dasharray="3 5" stroke-linecap="round"/>
+            <path d="M50 12 L20 54 L36 54 L50 32 L64 54 L80 54 Z" fill="#ffffff"/>
+          </svg>
+          <span>Paramount+</span>
+        </div>`
     };
   }
 
-  // 5. CRUNCHYROLL (Logo Oficial Ojo Anime + Texto Crunchyroll)
+  // 5. CRUNCHYROLL
   if (n.includes("crunchyroll") || n.includes("anime")) {
     return {
       fondo: "radial-gradient(circle at center, #ea580c 0%, #7c2d12 65%, #140703 100%)",
       colorMarca: "#f97316",
-      svg: `
-        <svg viewBox="0 0 280 80" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="48" cy="40" r="24" fill="#ffffff"/>
-          <circle cx="52" cy="43" r="16" fill="#ea580c"/>
-          <circle cx="57" cy="37" r="6" fill="#ffffff"/>
-          <text x="172" y="49" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="31" letter-spacing="-0.5">crunchyroll</text>
-        </svg>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="42" height="42" viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="22" fill="#ffffff"/>
+            <circle cx="28" cy="27" r="14" fill="#ea580c"/>
+            <circle cx="32" cy="22" r="5" fill="#ffffff"/>
+          </svg>
+          <span>crunchyroll</span>
+        </div>`
     };
   }
 
-  // 6. PRIME VIDEO (Logo Oficial "prime video" + Sonrisa Amazon)
+  // 6. PRIME VIDEO
   if (n.includes("prime") || n.includes("amazon")) {
     return {
       fondo: "radial-gradient(circle at center, #0284c7 0%, #082f49 65%, #020b14 100%)",
       colorMarca: "#00a8e1",
-      svg: `
-        <svg viewBox="0 0 260 90" xmlns="http://www.w3.org/2000/svg">
-          <text x="130" y="46" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="34" letter-spacing="-0.5">prime video</text>
-          <path d="M 72 58 Q 130 78 188 56" fill="none" stroke="#00a8e1" stroke-width="5" stroke-linecap="round"/>
-          <path d="M 178 52 L 191 55 L 184 67" fill="none" stroke="#00a8e1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>`
+      htmlLogo: `
+        <div class="logo-prime">
+          <span class="txt-prime">prime video</span>
+          <svg viewBox="0 0 140 28">
+            <path d="M 18 8 Q 70 26 122 6" fill="none" stroke="#00a8e1" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M 112 3 L 125 5 L 118 17" fill="none" stroke="#00a8e1" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>`
     };
   }
 
-  // 7. CANVA PRO (Emblema Circular Original con Degradado y Tipografía Canva)
+  // 7. CANVA PRO
   if (n.includes("canva")) {
     return {
       fondo: "linear-gradient(135deg, #008996 0%, #00c4cc 35%, #5b21b6 75%, #3b0764 100%)",
       colorMarca: "#00c4cc",
-      svg: `
-        <svg viewBox="0 0 250 90" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="canvaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#00c4cc"/>
-              <stop offset="50%" stop-color="#3b82f6"/>
-              <stop offset="100%" stop-color="#8b5cf6"/>
-            </linearGradient>
-          </defs>
-          <circle cx="125" cy="45" r="38" fill="url(#canvaGrad)" stroke="#ffffff" stroke-width="2.5"/>
-          <text x="125" y="55" text-anchor="middle" fill="#ffffff" font-family="'Brush Script MT', 'Segoe Script', Georgia, serif" font-weight="bold" font-style="italic" font-size="32">Canva</text>
-          <rect x="170" y="14" width="44" height="20" rx="10" fill="#facc15"/>
-          <text x="192" y="28" text-anchor="middle" fill="#0f172a" font-family="Arial, sans-serif" font-weight="900" font-size="11">PRO</text>
-        </svg>`
+      htmlLogo: `
+        <div class="logo-canva">
+          <div class="circulo-canva">Canva</div>
+          <span class="tag-pro">👑 PRO</span>
+        </div>`
     };
   }
 
-  // 8. SPOTIFY PREMIUM (Icono Oficial de Ondas + Texto Spotify)
+  // 8. SPOTIFY
   if (n.includes("spotify")) {
     return {
       fondo: "radial-gradient(circle at center, #15803d 0%, #052e16 68%, #020f07 100%)",
       colorMarca: "#1db954",
-      svg: `
-        <svg viewBox="0 0 265 80" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="48" cy="40" r="25" fill="#1db954"/>
-          <path d="M 35 33 Q 48 28 61 35" fill="none" stroke="#000000" stroke-width="4" stroke-linecap="round"/>
-          <path d="M 37 41 Q 48 37 59 43" fill="none" stroke="#000000" stroke-width="3.5" stroke-linecap="round"/>
-          <path d="M 40 49 Q 48 46 56 50" fill="none" stroke="#000000" stroke-width="3" stroke-linecap="round"/>
-          <text x="160" y="50" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="35" letter-spacing="-0.5">Spotify</text>
-        </svg>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="42" height="42" viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="23" fill="#1db954"/>
+            <path d="M 14 19 Q 25 14 36 20" fill="none" stroke="#060911" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 16 26 Q 25 22 34 27" fill="none" stroke="#060911" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M 18 33 Q 25 30 32 34" fill="none" stroke="#060911" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <span>Spotify</span>
+        </div>`
     };
   }
 
-  // 9. YOUTUBE PREMIUM
+  // 9. YOUTUBE
   if (n.includes("youtube")) {
     return {
       fondo: "radial-gradient(circle at center, #991b1b 0%, #2a0404 68%, #090101 100%)",
       colorMarca: "#ff0000",
-      svg: `
-        <svg viewBox="0 0 270 80" xmlns="http://www.w3.org/2000/svg">
-          <rect x="20" y="20" width="56" height="40" rx="12" fill="#ff0000"/>
-          <polygon points="43,31 43,49 58,40" fill="#ffffff"/>
-          <text x="168" y="51" text-anchor="middle" fill="#ffffff" font-family="'Arial Black', sans-serif" font-weight="900" font-size="33" letter-spacing="-1">YouTube</text>
-        </svg>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="46" height="34" viewBox="0 0 56 40">
+            <rect x="0" y="0" width="56" height="40" rx="11" fill="#ff0000"/>
+            <polygon points="22,11 22,29 38,20" fill="#ffffff"/>
+          </svg>
+          <span>YouTube</span>
+        </div>`
     };
   }
 
-  // 10. CHATGPT / OPENAI
+  // 10. CHATGPT
   if (n.includes("chatgpt") || n.includes("openai") || n.includes("gpt")) {
     return {
       fondo: "radial-gradient(circle at center, #0d9488 0%, #064e3b 65%, #021713 100%)",
       colorMarca: "#10a37f",
-      svg: `
-        <svg viewBox="0 0 260 80" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="48" cy="40" r="22" fill="none" stroke="#ffffff" stroke-width="4" stroke-dasharray="14 6"/>
-          <circle cx="48" cy="40" r="9" fill="#10a37f"/>
-          <text x="162" y="50" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="33">ChatGPT</text>
-        </svg>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="40" height="40" viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="20" fill="none" stroke="#ffffff" stroke-width="4" stroke-dasharray="12 5"/>
+            <circle cx="25" cy="25" r="8" fill="#10a37f"/>
+          </svg>
+          <span>ChatGPT</span>
+        </div>`
     };
   }
 
@@ -247,39 +240,39 @@ function obtenerDisenoVisualProducto(prod) {
     return {
       fondo: "linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #7e22ce 100%)",
       colorMarca: "#60a5fa",
-      svg: `
-        <svg viewBox="0 0 250 80" xmlns="http://www.w3.org/2000/svg">
-          <path d="M50 14 Q50 40 76 40 Q50 40 50 66 Q50 40 24 40 Q50 40 50 14 Z" fill="#60a5fa"/>
-          <text x="158" y="51" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="36">Gemini</text>
-        </svg>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="40" height="40" viewBox="0 0 50 50">
+            <path d="M25 4 Q25 25 46 25 Q25 25 25 46 Q25 25 4 25 Q25 25 25 4 Z" fill="#60a5fa"/>
+          </svg>
+          <span>Gemini</span>
+        </div>`
     };
   }
 
-  // 12. ROBLOX / ROBUX
+  // 12. ROBLOX
   if (n.includes("roblox") || n.includes("robux")) {
     return {
       fondo: "radial-gradient(circle at center, #374151 0%, #111827 70%, #030712 100%)",
       colorMarca: "#ef4444",
-      svg: `
-        <svg viewBox="0 0 260 80" xmlns="http://www.w3.org/2000/svg">
-          <g transform="translate(46,40) rotate(15)">
-            <rect x="-20" y="-20" width="40" height="40" rx="4" fill="#ffffff"/>
-            <rect x="-7" y="-7" width="14" height="14" fill="#111827"/>
-          </g>
-          <text x="165" y="52" text-anchor="middle" fill="#ffffff" font-family="'Arial Black', sans-serif" font-weight="900" font-size="34" letter-spacing="1">ROBLOX</text>
-        </svg>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="38" height="38" viewBox="0 0 50 50">
+            <g transform="translate(25,25) rotate(14)">
+              <rect x="-18" y="-18" width="36" height="36" rx="4" fill="#ffffff"/>
+              <rect x="-6" y="-6" width="12" height="12" fill="#111827"/>
+            </g>
+          </svg>
+          <span style="letter-spacing:1px;">ROBLOX</span>
+        </div>`
     };
   }
 
-  // Respaldo dinámico con el nombre del producto si agregas uno nuevo en Google Sheets
   const tituloCorto = (prod.nombre || "PREMIUM").split(" ")[0].toUpperCase();
   return {
     fondo: "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4f46e5 100%)",
     colorMarca: "#818cf8",
-    svg: `
-      <svg viewBox="0 0 260 80" xmlns="http://www.w3.org/2000/svg">
-        <text x="50%" y="50" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="32" letter-spacing="1.5">${tituloCorto}</text>
-      </svg>`
+    htmlLogo: `<div class="logo-texto-icono"><span>${tituloCorto}</span></div>`
   };
 }
 
@@ -332,14 +325,13 @@ function mostrarProductos(lista) {
     return;
   }
 
-  lista.forEach((prod, idx) => {
+  lista.forEach((prod) => {
     const precioBase = obtenerPrecioNumerico(prod.precio);
     const tieneSelectorMeses = permiteElegirMeses(prod);
     const visual = obtenerDisenoVisualProducto(prod);
 
     const tarjeta = document.createElement("div");
     tarjeta.className = "tarjeta";
-    tarjeta.style.animationDelay = `${idx * 0.05}s`;
     tarjeta.style.setProperty("--color-marca", visual.colorMarca || "#6366f1");
 
     const htmlSelectorMeses = tieneSelectorMeses ? `
@@ -357,7 +349,7 @@ function mostrarProductos(lista) {
 
     const contenidoCabecera = visual.customImg
       ? `<img src="${visual.customImg}" alt="${prod.nombre}" class="img-cover">`
-      : `<div class="contenedor-logo-oficial">${visual.svg}</div>`;
+      : `<div class="contenedor-logo-oficial">${visual.htmlLogo}</div>`;
 
     const mensajeInicial = `¡Hola! Me interesa comprar: *${prod.nombre}*${tieneSelectorMeses ? " (1 mes)" : ""} (${prod.precio} ${prod.periodo})`;
     const urlWhatsappInicial = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeInicial)}`;
@@ -533,333 +525,4 @@ function actualizarVistaCarrito() {
   seccionPago.classList.remove("oculto");
 
   carrito.forEach((item, index) => {
-    const subtotalItem = item.precioNum * item.cantidad;
-
-    const div = document.createElement("div");
-    div.className = "item-carrito";
-    div.innerHTML = `
-      <div class="item-info">
-        <h4>${item.nombre}</h4>
-        <span>Categoría: ${item.categoria} | ${item.precioTexto} c/u</span>
-      </div>
-      <div class="item-controles">
-        <button onclick="cambiarCantidad(${index}, -1)">-</button>
-        <span>${item.cantidad}</span>
-        <button onclick="cambiarCantidad(${index}, 1)">+</button>
-        <strong class="item-subtotal">$${subtotalItem.toFixed(2)}</strong>
-      </div>
-    `;
-    listaCarrito.appendChild(div);
-  });
-
-  const resumen = obtenerResumenTotales();
-  if (subtotalCarritoEl) subtotalCarritoEl.textContent = `$${resumen.subtotal.toFixed(2)}`;
-  if (filaDescAuto) filaDescAuto.classList.add("oculto");
-
-  if (filaDescCupon) {
-    if (resumen.aplicaCupon && resumen.montoDescCupon > 0) {
-      filaDescCupon.classList.remove("oculto");
-      textoDescCuponEl.textContent = `🎟️ Cupón ${cuponActivo.codigo} (-${cuponActivo.porcentaje}%):`;
-      montoDescCuponEl.textContent = `-$${resumen.montoDescCupon.toFixed(2)}`;
-      if (mensajeCupon) {
-        mensajeCupon.classList.remove("oculto", "error");
-        mensajeCupon.classList.add("exito");
-        mensajeCupon.textContent = `🎉 ¡Cupón ${cuponActivo.codigo} (-${cuponActivo.porcentaje}%) aplicado!`;
-      }
-    } else {
-      filaDescCupon.classList.add("oculto");
-      if (cuponActivo && resumen.motivoNoCumple && mensajeCupon) {
-        mensajeCupon.classList.remove("oculto", "exito");
-        mensajeCupon.classList.add("error");
-        mensajeCupon.textContent = resumen.motivoNoCumple;
-      }
-    }
-  }
-
-  totalCarrito.textContent = `$${resumen.totalFinal.toFixed(2)}`;
-}
-
-async function consultarAppsScript(url) {
-  try {
-    const respuesta = await fetch(url, { method: "GET", redirect: "follow", credentials: "omit" });
-    const texto = await respuesta.text();
-    return JSON.parse(texto);
-  } catch (e) {
-    console.warn("Intentando respaldo...");
-  }
-
-  return new Promise((resolve, reject) => {
-    const nombreCallback = "cb_" + Math.floor(Math.random() * 1000000);
-    const script = document.createElement("script");
-    const separador = url.includes("?") ? "&" : "?";
-
-    window[nombreCallback] = (datos) => {
-      delete window[nombreCallback];
-      script.remove();
-      resolve(datos);
-    };
-
-    script.onerror = () => {
-      delete window[nombreCallback];
-      script.remove();
-      reject(new Error("Fallo de red"));
-    };
-
-    script.src = `${url}${separador}callback=${nombreCallback}`;
-    document.body.appendChild(script);
-  });
-}
-
-if (btnAplicarCupon) {
-  btnAplicarCupon.addEventListener("click", async () => {
-    const codigo = inputCupon.value.trim().toUpperCase();
-    mensajeCupon.classList.remove("oculto", "exito", "error");
-
-    if (!codigo) {
-      mensajeCupon.textContent = "⚠️ Escribe un código de cupón.";
-      mensajeCupon.classList.add("error");
-      return;
-    }
-
-    btnAplicarCupon.disabled = true;
-    btnAplicarCupon.textContent = "Validando...";
-    mensajeCupon.textContent = "🔄 Verificando cupón en el sistema...";
-
-    try {
-      const url = `${URL_VERIFICADOR_PICHINCHA}?accion=validarCupon&cupon=${encodeURIComponent(codigo)}&t=${Date.now()}`;
-      const data = await consultarAppsScript(url);
-
-      if (data.valido) {
-        const candidatoCupon = {
-          codigo: data.codigo,
-          porcentaje: data.porcentaje,
-          categoriaRequerida: data.categoriaRequerida || "todos",
-          minimoProductos: data.minimoProductos || 1
-        };
-
-        const checkCarrito = verificarRequisitosCarritoParaCupon(candidatoCupon);
-        cuponActivo = candidatoCupon;
-
-        if (checkCarrito.cumple) {
-          mensajeCupon.textContent = data.mensaje;
-          mensajeCupon.classList.add("exito");
-        } else {
-          mensajeCupon.textContent = checkCarrito.motivo;
-          mensajeCupon.classList.add("error");
-        }
-      } else {
-        cuponActivo = null;
-        mensajeCupon.textContent = data.mensaje;
-        mensajeCupon.classList.add("error");
-      }
-      actualizarVistaCarrito();
-    } catch (err) {
-      mensajeCupon.textContent = "⚠️ No se pudo validar el cupón. Revisa tu conexión.";
-      mensajeCupon.classList.add("error");
-    } finally {
-      btnAplicarCupon.disabled = false;
-      btnAplicarCupon.textContent = "Aplicar";
-    }
-  });
-}
-
-inputComprobante.addEventListener("input", () => {
-  pagoVerificadoAutomaticamente = false;
-  estadoVerificacion.classList.add("oculto");
-});
-
-btnVerificarPago.addEventListener("click", async () => {
-  const comprobante = inputComprobante.value.trim();
-  const resumen = obtenerResumenTotales();
-  const monto = resumen.totalFinal.toFixed(2);
-  const codigoCupon = (cuponActivo && resumen.aplicaCupon) ? cuponActivo.codigo : "";
-
-  estadoVerificacion.classList.remove("oculto", "exito", "error");
-
-  if (!comprobante) {
-    estadoVerificacion.textContent = "⚠️ Escribe el número de comprobante de tu transferencia.";
-    estadoVerificacion.classList.add("error");
-    return;
-  }
-
-  btnVerificarPago.disabled = true;
-  btnVerificarPago.textContent = "Buscando...";
-  estadoVerificacion.textContent = "🔄 Verificando transferencia con Banco Pichincha...";
-
-  try {
-    const url = `${URL_VERIFICADOR_PICHINCHA}?comprobante=${encodeURIComponent(comprobante)}&monto=${encodeURIComponent(monto)}&cupon=${encodeURIComponent(codigoCupon)}&t=${Date.now()}`;
-    const data = await consultarAppsScript(url);
-
-    estadoVerificacion.textContent = data.mensaje;
-    if (data.verificado) {
-      pagoVerificadoAutomaticamente = true;
-      estadoVerificacion.classList.add("exito");
-    } else {
-      pagoVerificadoAutomaticamente = false;
-      estadoVerificacion.classList.add("error");
-    }
-  } catch (err) {
-    estadoVerificacion.textContent = "⚠️ No se pudo conectar con el verificador.";
-    estadoVerificacion.classList.add("error");
-  } finally {
-    btnVerificarPago.disabled = false;
-    btnVerificarPago.textContent = "🔍 Verificar";
-  }
-});
-
-btnAbrirCarrito.addEventListener("click", () => modalCarrito.classList.remove("oculto"));
-btnCerrarCarrito.addEventListener("click", () => modalCarrito.classList.add("oculto"));
-modalCarrito.addEventListener("click", (e) => {
-  if (e.target === modalCarrito) modalCarrito.classList.add("oculto");
-});
-
-// Enviar pedido por WhatsApp
-btnFinalizarPedido.addEventListener("click", () => {
-  if (carrito.length === 0) return;
-
-  let detalleProductos = "";
-  carrito.forEach((item) => {
-    const subtotalItem = item.precioNum * item.cantidad;
-    detalleProductos += `• ${item.cantidad}x *${item.nombre}* [${item.categoria}] ($${subtotalItem.toFixed(2)})\n`;
-  });
-
-  const resumen = obtenerResumenTotales();
-
-  if (cuponActivo && resumen.aplicaCupon && !pagoVerificadoAutomaticamente) {
-    const urlUso = `${URL_VERIFICADOR_PICHINCHA}?accion=usarCupon&cupon=${encodeURIComponent(cuponActivo.codigo)}&t=${Date.now()}`;
-    consultarAppsScript(urlUso).catch(() => {});
-  }
-
-  let lineaCuponTexto = "🎟️ *Cupón:* Ninguno\n";
-
-  if (cuponActivo && resumen.aplicaCupon) {
-    lineaCuponTexto = `🎟️ *Cupón aplicado:* ${cuponActivo.codigo} (-${cuponActivo.porcentaje}% | -$${resumen.montoDescCupon.toFixed(2)})\n`;
-  } else if (cuponActivo && !resumen.aplicaCupon) {
-    lineaCuponTexto = `🎟️ *Cupón ingresado (${cuponActivo.codigo}):* No aplicó por falta de requisitos\n`;
-  }
-
-  const comprobanteEscrito = inputComprobante.value.trim();
-  const comprobanteTexto = comprobanteEscrito ? comprobanteEscrito : "No ingresado (Enviaré captura por aquí)";
-
-  let estadoOrdenTexto = "";
-  if (pagoVerificadoAutomaticamente) {
-    estadoOrdenTexto = "✅ ORDEN COMPLETA (Pago Verificado en Sistema)";
-  } else if (comprobanteEscrito) {
-    estadoOrdenTexto = "⏳ ORDEN PENDIENTE DE VERIFICACIÓN MANUAL";
-  } else {
-    estadoOrdenTexto = "⚠️ ORDEN SIN COMPLETAR PAGO (Pendiente enviar comprobante)";
-  }
-
-  const mensaje = 
-    `¡Hola *Tienda Digital Cedeño*! 🛒 Quiero realizar este pedido:\n\n` +
-    `*📦 PRODUCTOS:*\n${detalleProductos}\n` +
-    `💵 *Subtotal:* $${resumen.subtotal.toFixed(2)}\n` +
-    `${lineaCuponTexto}` +
-    `💰 *Total a pagar:* $${resumen.totalFinal.toFixed(2)}\n\n` +
-    `🏦 *Cuenta Pichincha:* ${DATOS_BANCO.numeroCuenta}\n` +
-    `🧾 *N° Comprobante:* ${comprobanteTexto}\n` +
-    `📌 *Estado de Orden:* ${estadoOrdenTexto}`;
-
-  const url = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
-  window.open(url, "_blank");
-});
-
-// ==========================================
-// 5. BUSCADOR, FILTROS Y GOOGLE SHEETS
-// ==========================================
-function filtrarCatalogo() {
-  const texto = buscador.value.toLowerCase();
-  const filtrados = productos.filter((prod) => {
-    const coincideCategoria = categoriaActual === "todos" || prod.categoria.toLowerCase() === categoriaActual;
-    const coincideTexto = prod.nombre.toLowerCase().includes(texto) || prod.descripcion.toLowerCase().includes(texto);
-    return coincideCategoria && coincideTexto;
-  });
-  mostrarProductos(filtrados);
-}
-
-buscador.addEventListener("input", filtrarCatalogo);
-
-function dividirFilaCSV(fila) {
-  const resultado = [];
-  let actual = "";
-  let dentroDeComillas = false;
-
-  for (let i = 0; i < fila.length; i++) {
-    const letra = fila[i];
-    if (letra === '"') {
-      dentroDeComillas = !dentroDeComillas;
-    } else if (letra === "," && !dentroDeComillas) {
-      resultado.push(actual.trim());
-      actual = "";
-    } else {
-      actual += letra;
-    }
-  }
-  resultado.push(actual.trim());
-  return resultado;
-}
-
-async function cargarDesdeGoogleSheets() {
-  if (!GOOGLE_SHEET_CSV_URL) {
-    actualizarBotonesFiltro();
-    mostrarProductos(productos);
-    return;
-  }
-  try {
-    const urlSinCache = GOOGLE_SHEET_CSV_URL + (GOOGLE_SHEET_CSV_URL.includes("?") ? "&" : "?") + "t=" + new Date().getTime();
-    const res = await fetch(urlSinCache);
-    const csv = await res.text();
-    const filas = csv.split(/\r?\n/);
-    const listaSheet = [];
-
-    filas.forEach((fila, index) => {
-      if (!fila.trim()) return;
-      const col = dividirFilaCSV(fila);
-
-      if (index === 0 && col[0].toLowerCase() === "nombre") return;
-
-      if (col[0]) {
-        let col2Limpia = (col[2] || "").replace(/\\/g, "").trim();
-        let col3Limpia = (col[3] || "").replace(/\\/g, "").trim();
-        
-        let esPrecioEnC = /\d/.test(col2Limpia) && col2Limpia.length <= 10;
-        
-        let precioBruto = esPrecioEnC ? col2Limpia : col3Limpia;
-        if (!precioBruto.startsWith("\$")) {
-          precioBruto = "$" + precioBruto.replace("$", "");
-        }
-
-        let periodoTexto = esPrecioEnC ? (col[3] || "/ mes") : (col[4] || "/ mes");
-        let descripcionTexto = esPrecioEnC ? (col[4] || "") : (col[2] || "");
-
-        if (descripcionTexto.startsWith("\$")) {
-          descripcionTexto = descripcionTexto.substring(1).trim();
-        }
-
-        listaSheet.push({
-          nombre: col[0],
-          categoria: (col[1] || "otros").trim().toLowerCase(),
-          precio: precioBruto,
-          periodo: periodoTexto.trim(),
-          descripcion: descripcionTexto.trim(),
-          imagen: (col[5] || "").trim()
-        });
-      }
-    });
-
-    if (listaSheet.length > 0) {
-      productos = listaSheet;
-      localStorage.setItem("productos_cedeño_cache", JSON.stringify(productos));
-    }
-  } catch (err) {
-    console.error("Error cargando Google Sheet:", err);
-  }
-
-  actualizarBotonesFiltro();
-  filtrarCatalogo();
-}
-
-actualizarBotonesFiltro();
-filtrarCatalogo();
-actualizarVistaCarrito();
-cargarDesdeGoogleSheets();
+    const subtotalItem = item.preci

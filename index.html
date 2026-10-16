@@ -5,23 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tienda Digital Cedeño | Catálogo Oficial</title>
   <style>
-.tarjeta-media img.img-logo {
-  max-width: 120px !important;
-  max-height: 65px !important;
-  object-fit: contain;
-  z-index: 2;
-  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
-}
     :root {
-      --fondo: #090d16;
-      --fondo-tarjeta: rgba(30, 41, 59, 0.75);
+      --fondo: #060911;
+      --fondo-tarjeta: rgba(17, 24, 39, 0.82);
       --texto: #f8fafc;
       --texto-secundario: #94a3b8;
       --acento: #6366f1;
       --acento-hover: #4f46e5;
       --whatsapp: #22c55e;
       --whatsapp-hover: #16a34a;
-      --borde: rgba(255, 255, 255, 0.1);
+      --borde: rgba(255, 255, 255, 0.09);
       --pichincha-amarillo: #ffdd00;
       --pichincha-azul: #0f265c;
     }
@@ -36,15 +29,16 @@
     body {
       background-color: var(--fondo);
       background-image: 
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.12) 0px, transparent 50%);
+        radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.16) 0%, transparent 45%),
+        radial-gradient(circle at 90% 15%, rgba(168, 85, 247, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(14, 165, 233, 0.1) 0%, transparent 50%);
       color: var(--texto);
       line-height: 1.6;
       min-height: 100vh;
     }
 
     .container {
-      max-width: 1140px;
+      max-width: 1180px;
       margin: 0 auto;
       padding: 0 20px;
     }
@@ -53,31 +47,31 @@
       display: none !important;
     }
 
-    /* Barra de Navegación Glassmorphism */
+    /* Barra de Navegación */
     .navbar {
-      background-color: rgba(9, 13, 22, 0.85);
+      background-color: rgba(6, 9, 17, 0.85);
       border-bottom: 1px solid var(--borde);
       position: sticky;
       top: 0;
       z-index: 100;
-      backdrop-filter: blur(14px);
+      backdrop-filter: blur(16px);
     }
 
     .nav-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 72px;
+      height: 74px;
     }
 
     .logo {
-      font-size: 1.45rem;
-      font-weight: 800;
+      font-size: 1.5rem;
+      font-weight: 900;
       letter-spacing: -0.5px;
     }
 
     .logo span {
-      background: linear-gradient(90deg, #818cf8, #c084fc);
+      background: linear-gradient(90deg, #818cf8, #c084fc, #38bdf8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -117,13 +111,13 @@
       align-items: center;
       gap: 8px;
       font-size: 0.92rem;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+      box-shadow: 0 4px 18px rgba(99, 102, 241, 0.4);
       transition: 0.25s;
     }
 
     .btn-carrito:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+      box-shadow: 0 6px 24px rgba(99, 102, 241, 0.6);
     }
 
     .btn-carrito span {
@@ -133,42 +127,37 @@
       font-size: 0.8rem;
     }
 
-    /* Hero Dinámico */
+    /* Hero */
     .hero {
       text-align: center;
-      padding: 65px 20px 45px;
+      padding: 60px 20px 40px;
     }
 
     .badge {
-      background: rgba(99, 102, 241, 0.15);
+      background: rgba(99, 102, 241, 0.14);
       color: #a5b4fc;
-      padding: 7px 16px;
+      padding: 7px 18px;
       border-radius: 99px;
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 700;
       display: inline-block;
       margin-bottom: 18px;
       border: 1px solid rgba(99, 102, 241, 0.35);
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
-      animation: pulsoSuave 3s infinite ease-in-out;
-    }
-
-    @keyframes pulsoSuave {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.03); }
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.25);
     }
 
     .hero h2 {
-      font-size: 2.4rem;
-      max-width: 720px;
+      font-size: 2.5rem;
+      max-width: 750px;
       margin: 0 auto 14px;
-      line-height: 1.2;
-      font-weight: 800;
+      line-height: 1.18;
+      font-weight: 900;
+      letter-spacing: -0.5px;
     }
 
     .hero p {
       color: var(--texto-secundario);
-      max-width: 600px;
+      max-width: 610px;
       margin: 0 auto 26px;
       font-size: 1.05rem;
     }
@@ -187,12 +176,12 @@
 
     .btn-principal:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.55);
+      box-shadow: 0 8px 28px rgba(99, 102, 241, 0.55);
     }
 
     /* Buscador y Filtros */
     .controles {
-      margin: 15px 0 35px;
+      margin: 10px 0 35px;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -200,10 +189,10 @@
 
     #buscador {
       width: 100%;
-      padding: 15px 20px;
-      border-radius: 12px;
+      padding: 16px 22px;
+      border-radius: 14px;
       border: 1px solid var(--borde);
-      background-color: rgba(30, 41, 59, 0.8);
+      background-color: rgba(17, 24, 39, 0.85);
       color: var(--texto);
       font-size: 1rem;
       outline: none;
@@ -222,13 +211,14 @@
     }
 
     .btn-filtro {
-      background-color: rgba(30, 41, 59, 0.7);
+      background-color: rgba(17, 24, 39, 0.8);
       color: var(--texto-secundario);
       border: 1px solid var(--borde);
-      padding: 9px 20px;
+      padding: 9px 22px;
       border-radius: 99px;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 0.9rem;
       transition: 0.25s;
     }
 
@@ -236,52 +226,94 @@
       background: linear-gradient(135deg, #6366f1, #8b5cf6);
       color: white;
       border-color: transparent;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
       transform: translateY(-1px);
     }
 
-    /* Grid y Tarjetas con Imagen Dinámica */
+    /* Grid y Tarjetas Premium */
     .grid-productos {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 26px;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 28px;
       padding-bottom: 70px;
     }
 
     @keyframes aparecerTarjeta {
-      from { opacity: 0; transform: translateY(18px); }
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     .tarjeta {
+      --color-marca: #6366f1;
       background-color: var(--fondo-tarjeta);
       border: 1px solid var(--borde);
-      border-radius: 18px;
+      border-radius: 20px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      backdrop-filter: blur(10px);
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-      animation: aparecerTarjeta 0.4s ease forwards;
+      backdrop-filter: blur(12px);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+      animation: aparecerTarjeta 0.45s ease forwards;
+      position: relative;
     }
 
     .tarjeta:hover {
-      transform: translateY(-7px);
-      border-color: rgba(129, 140, 248, 0.5);
-      box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(99, 102, 241, 0.2);
+      transform: translateY(-8px);
+      border-color: var(--color-marca);
+      box-shadow: 0 20px 38px -12px rgba(0, 0, 0, 0.75), 0 0 28px -4px var(--color-marca);
     }
 
-    /* Cabecera visual / Imagen del producto */
+    /* Cabecera del Logo Oficial */
     .tarjeta-media {
-      height: 155px;
+      height: 165px;
       width: 100%;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      padding: 20px;
+      padding: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Brillo ambiental detrás del logo */
+    .tarjeta-media::before {
+      content: "";
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      transition: transform 0.4s ease;
+    }
+
+    .tarjeta:hover .tarjeta-media::before {
+      transform: scale(1.35);
+    }
+
+    .contenedor-logo-oficial {
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.55));
+    }
+
+    .tarjeta:hover .contenedor-logo-oficial {
+      transform: scale(1.09);
+    }
+
+    .contenedor-logo-oficial svg {
+      max-width: 200px;
+      max-height: 82px;
+      width: auto;
+      height: auto;
+      overflow: visible;
     }
 
     .tarjeta-media img.img-cover {
@@ -290,24 +322,12 @@
       object-fit: cover;
       position: absolute;
       inset: 0;
+      z-index: 1;
       transition: transform 0.4s ease;
-    }
-
-    .tarjeta-media img.img-logo {
-      width: 72px;
-      height: 72px;
-      object-fit: contain;
-      z-index: 2;
-      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.45));
-      transition: transform 0.35s ease;
     }
 
     .tarjeta:hover .tarjeta-media img.img-cover {
       transform: scale(1.08);
-    }
-
-    .tarjeta:hover .tarjeta-media img.img-logo {
-      transform: scale(1.14) rotate(-2deg);
     }
 
     .badge-flotante {
@@ -315,31 +335,35 @@
       top: 12px;
       left: 12px;
       z-index: 3;
-      background-color: rgba(9, 13, 22, 0.75);
-      backdrop-filter: blur(6px);
-      color: #e2e8f0;
-      padding: 4px 11px;
+      background-color: rgba(6, 9, 17, 0.75);
+      backdrop-filter: blur(8px);
+      color: #f1f5f9;
+      padding: 4px 12px;
       border-radius: 99px;
-      font-size: 0.72rem;
-      font-weight: 700;
+      font-size: 0.7rem;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      border: 1px solid rgba(255,255,255,0.15);
+      letter-spacing: 0.9px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
     }
 
-    .icono-respaldo {
-      font-size: 3.2rem;
-      z-index: 2;
-      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
-      transition: transform 0.35s ease;
-    }
-
-    .tarjeta:hover .icono-respaldo {
-      transform: scale(1.15);
+    .badge-garantia {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 3;
+      background-color: rgba(34, 197, 94, 0.2);
+      backdrop-filter: blur(8px);
+      color: #4ade80;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      border: 1px solid rgba(34, 197, 94, 0.4);
     }
 
     .tarjeta-cuerpo {
-      padding: 20px 22px 22px;
+      padding: 22px;
       display: flex;
       flex-direction: column;
       flex: 1;
@@ -347,24 +371,27 @@
     }
 
     .tarjeta h3 {
-      font-size: 1.25rem;
+      font-size: 1.28rem;
       margin-bottom: 8px;
-      font-weight: 700;
+      font-weight: 800;
+      color: #ffffff;
     }
 
     .tarjeta p {
       color: var(--texto-secundario);
       font-size: 0.9rem;
       margin-bottom: 18px;
+      line-height: 1.5;
     }
 
     .precio {
-      font-size: 1.7rem;
-      font-weight: 800;
+      font-size: 1.8rem;
+      font-weight: 900;
       margin-bottom: 14px;
       display: flex;
       align-items: baseline;
       gap: 6px;
+      color: #ffffff;
     }
 
     .precio span {
@@ -376,9 +403,9 @@
     /* Selector de meses */
     .caja-selector-meses {
       margin-bottom: 14px;
-      background-color: rgba(15, 23, 42, 0.65);
-      padding: 9px 12px;
-      border-radius: 10px;
+      background-color: rgba(6, 9, 17, 0.65);
+      padding: 10px 14px;
+      border-radius: 12px;
       border: 1px solid var(--borde);
       display: flex;
       justify-content: space-between;
@@ -387,16 +414,16 @@
     }
 
     .caja-selector-meses label {
-      font-size: 0.83rem;
-      color: var(--texto-secundario);
+      font-size: 0.84rem;
+      color: #cbd5e1;
       font-weight: 600;
     }
 
     .select-meses {
-      background-color: var(--fondo);
+      background-color: #0f172a;
       color: var(--texto);
       border: 1px solid var(--acento);
-      padding: 6px 10px;
+      padding: 6px 12px;
       border-radius: 8px;
       font-size: 0.88rem;
       font-weight: 700;
@@ -415,15 +442,16 @@
       background: linear-gradient(135deg, #6366f1, #4f46e5);
       color: white;
       border: none;
-      padding: 11px;
-      border-radius: 10px;
+      padding: 12px;
+      border-radius: 11px;
       font-weight: 700;
+      font-size: 0.95rem;
       cursor: pointer;
       transition: 0.25s;
     }
 
     .btn-agregar-carrito:hover {
-      filter: brightness(1.12);
+      filter: brightness(1.15);
       transform: translateY(-1px);
     }
 
@@ -435,8 +463,8 @@
       border: 1px solid rgba(34, 197, 94, 0.4);
       text-decoration: none;
       padding: 9px;
-      border-radius: 10px;
-      font-weight: 600;
+      border-radius: 11px;
+      font-weight: 700;
       font-size: 0.88rem;
       transition: 0.25s;
     }
@@ -450,8 +478,8 @@
     .modal-fondo {
       position: fixed;
       inset: 0;
-      background-color: rgba(0, 0, 0, 0.78);
-      backdrop-filter: blur(5px);
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(6px);
       z-index: 200;
       display: flex;
       justify-content: center;
@@ -460,15 +488,15 @@
     }
 
     .modal-contenido {
-      background-color: #162032;
+      background-color: #111827;
       border: 1px solid var(--borde);
-      border-radius: 18px;
+      border-radius: 20px;
       width: 100%;
       max-width: 520px;
       max-height: 90vh;
       overflow-y: auto;
       padding: 24px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
     }
 
     .modal-header {
@@ -770,9 +798,9 @@
   <!-- Banner Principal (Hero) -->
   <section class="hero">
     <div class="container">
-      <span class="badge">✨ Entrega Inmediata + Cupones Activos</span>
+      <span class="badge">✨ Entrega Inmediata + Cupones de Descuento Activos</span>
       <h2>Tus plataformas, software y recargas al mejor precio</h2>
-      <p>Elige cuántos meses deseas, aplica tus cupones de descuento y verifica tu transferencia con Banco Pichincha o Deuna! al instante.</p>
+      <p>Elige cuántos meses deseas, aplica tus cupones y verifica tu transferencia con Banco Pichincha o Deuna! al instante.</p>
       <a href="#catalogo" class="btn-principal">Explorar Catálogo</a>
     </div>
   </section>
@@ -780,7 +808,7 @@
   <!-- Sección del Catálogo -->
   <main id="catalogo" class="container">
     <div class="controles">
-      <input type="text" id="buscador" placeholder="🔍 Buscar plataforma o software (ej. Netflix, Disney, Canva, Spotify, Crunchyroll)...">
+      <input type="text" id="buscador" placeholder="🔍 Buscar plataforma o software (ej. Netflix, Disney+, HBO Max, Prime Video, Canva, Spotify)...">
       
       <div class="filtros" id="contenedor-filtros">
         <button class="btn-filtro activo" data-categoria="todos">Todos</button>
@@ -789,7 +817,7 @@
 
     <div id="contenedor-productos" class="grid-productos">
       <p id="mensaje-cargando" style="color: #94a3b8; grid-column: 1/-1; text-align: center; padding: 40px; font-size: 1.1rem;">
-        ⏳ Cargando catálogo y ofertas recientes...
+        ⏳ Cargando catálogo oficial...
       </p>
     </div>
   </main>

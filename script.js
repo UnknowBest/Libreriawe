@@ -666,33 +666,10 @@ btnVerificarPago.addEventListener("click", async () => {
   }
 });
 
-// Abrir el carrito y actualizar la URL a #carrito
-btnAbrirCarrito.addEventListener("click", () => {
-  modalCarrito.classList.remove("oculto");
-  window.location.hash = "carrito";
-});
-
-// Función para cerrar y limpiar el hash de la URL
-function cerrarModalCarrito() {
-  modalCarrito.classList.add("oculto");
-  if (window.location.hash === "#carrito") {
-    history.pushState("", document.title, window.location.pathname + window.location.search);
-  }
-}
-
-btnCerrarCarrito.addEventListener("click", cerrarModalCarrito);
-
+btnAbrirCarrito.addEventListener("click", () => modalCarrito.classList.remove("oculto"));
+btnCerrarCarrito.addEventListener("click", () => modalCarrito.classList.add("oculto"));
 modalCarrito.addEventListener("click", (e) => {
-  if (e.target === modalCarrito) {
-    cerrarModalCarrito();
-  }
-});
-
-// Detectar si el usuario entra o recarga directamente con #carrito en el enlace
-window.addEventListener("load", () => {
-  if (window.location.hash === "#carrito") {
-    modalCarrito.classList.remove("oculto");
-  }
+  if (e.target === modalCarrito) modalCarrito.classList.add("oculto");
 });
 
 btnFinalizarPedido.addEventListener("click", () => {

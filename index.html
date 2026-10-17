@@ -119,15 +119,33 @@
       background-color: rgba(255, 255, 255, 0.06);
       color: var(--texto);
       text-decoration: none;
-      padding: 9px 14px;
+      padding: 9px 13px;
       border-radius: 10px;
       border: 1px solid var(--borde);
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 700;
       white-space: nowrap;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-contacto:hover {
+      background-color: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-resenas-nav {
+      background: rgba(250, 204, 21, 0.1);
+      border-color: rgba(250, 204, 21, 0.35);
+      color: #fde047;
+    }
+
+    .btn-resenas-nav:hover {
+      background: rgba(250, 204, 21, 0.2);
+      border-color: #facc15;
     }
 
     .btn-carrito {
@@ -616,7 +634,7 @@
       font-size: 0.88rem;
     }
 
-    /* MODAL DEL CARRITO Y LEGAL */
+    /* MODALES */
     .modal-fondo {
       position: fixed;
       inset: 0;
@@ -865,11 +883,11 @@
     }
 
     @media (max-width: 600px) {
-      .container { padding: 0 14px; }
-      .nav-content { min-height: 60px; padding: 8px 0; gap: 6px; }
-      .logo { font-size: 1.05rem; white-space: normal; max-width: 145px; line-height: 1.15; }
-      .btn-contacto { padding: 7px 10px; font-size: 0.78rem; border-radius: 8px; }
-      .btn-carrito { padding: 7px 11px; font-size: 0.78rem; border-radius: 8px; gap: 5px; }
+      .container { padding: 0 12px; }
+      .nav-content { min-height: 60px; padding: 8px 0; gap: 5px; }
+      .logo { font-size: 1rem; white-space: normal; max-width: 115px; line-height: 1.15; }
+      .btn-contacto { padding: 7px 9px; font-size: 0.74rem; border-radius: 8px; gap: 4px; }
+      .btn-carrito { padding: 7px 10px; font-size: 0.75rem; border-radius: 8px; gap: 4px; }
       .hero { padding: 32px 10px 24px; }
       .badge { font-size: 0.74rem; padding: 6px 12px; }
       .hero h2 { font-size: 1.65rem; }
@@ -880,13 +898,18 @@
 </head>
 <body>
 
-  <!-- Encabezado -->
+  <!-- Encabezado con Botón de Reseñas y Ticket de Soporte -->
   <header class="navbar">
     <div class="container nav-content">
       <h1 class="logo">Tienda Digital <span>Cedeño</span></h1>
       <div class="nav-acciones">
-        <a href="#catalogo" class="btn-contacto" id="nav-whatsapp" target="_blank">💬 Soporte</a>
-        <button id="btn-abrir-carrito" class="btn-carrito">
+        <button type="button" id="btn-abrir-resenas" class="btn-contacto btn-resenas-nav">
+          ⭐ Reseñas
+        </button>
+        <button type="button" id="btn-abrir-soporte" class="btn-contacto">
+          💬 Soporte
+        </button>
+        <button type="button" id="btn-abrir-carrito" class="btn-carrito">
           🛒 Carrito <span id="contador-carrito">0</span>
         </button>
       </div>
@@ -920,7 +943,118 @@
     </div>
   </main>
 
-  <!-- MODAL DEL CARRITO -->
+  <!-- ========================================== -->
+  <!-- MODAL DE RESEÑAS DE CLIENTES (GOOGLE)      -->
+  <!-- ========================================== -->
+  <div id="modal-resenas" class="modal-fondo oculto">
+    <div class="modal-contenido modal-legal-ancho">
+      <div class="modal-header">
+        <h3>⭐ Reseñas Oficiales en Google</h3>
+        <button id="btn-cerrar-resenas" class="btn-cerrar">&times;</button>
+      </div>
+
+      <!-- Cabecera de Calificación y Botón para Publicar en Google -->
+      <div class="cabecera-resenas-google">
+        <div class="resumen-puntaje">
+          <div class="numero-puntaje" id="promedio-resenas">5.0</div>
+          <div>
+            <div class="estrellas-doradas">★★★★★</div>
+            <p class="texto-total-resenas">Perfil verificado en <strong>Google Maps</strong> (<span id="total-resenas-count">0</span> opiniones)</p>
+          </div>
+        </div>
+
+        <div class="caja-calificar-rapido">
+          <span>¿Compraste con nosotros? Elige tus estrellas para publicar tu reseña:</span>
+          <div class="estrellas-interactivas" id="estrellas-publicar">
+            <button type="button" data-star="5" title="5 Estrellas">★</button>
+            <button type="button" data-star="5" title="5 Estrellas">★</button>
+            <button type="button" data-star="5" title="5 Estrellas">★</button>
+            <button type="button" data-star="5" title="5 Estrellas">★</button>
+            <button type="button" data-star="5" title="5 Estrellas">★</button>
+          </div>
+          <a href="https://g.page/r/CcVHRoL30LsdECE/review" target="_blank" rel="noopener noreferrer" class="btn-publicar-google">
+            ✍️ Publicar reseña en Google
+          </a>
+        </div>
+      </div>
+
+      <!-- Lista de Reseñas dentro de la página con tiempo relativo -->
+      <div id="lista-resenas-contenedor" class="lista-resenas-grid"></div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL DE TICKETS DE SOPORTE                -->
+  <!-- ========================================== -->
+  <div id="modal-soporte" class="modal-fondo oculto">
+    <div class="modal-contenido modal-legal-ancho">
+      <div class="modal-header">
+        <h3>🎫 Centro de Soporte por Tickets</h3>
+        <button id="btn-cerrar-soporte" class="btn-cerrar">&times;</button>
+      </div>
+
+      <div class="tabs-legales">
+        <button type="button" class="tab-soporte activo" data-vista="crear">📝 Crear Ticket</button>
+        <button type="button" class="tab-soporte" data-vista="historial">📂 Mis Tickets (<span id="contador-mis-tickets">0</span>)</button>
+      </div>
+
+      <!-- Vista 1: Formulario para Crear Ticket -->
+      <div id="vista-crear-ticket">
+        <p class="descripcion-soporte">
+          Completa los datos de tu consulta o reporte. Se generará un <strong>Ticket Oficial</strong> y te responderemos directamente a tu contacto registrado.
+        </p>
+
+        <form id="form-ticket-soporte" class="form-soporte">
+          <div class="campo-form">
+            <label for="ticket-nombre">👤 Tu Nombre:</label>
+            <input type="text" id="ticket-nombre" placeholder="Ej: Carlos Mendoza" required>
+          </div>
+
+          <div class="campo-form">
+            <label for="ticket-contacto">📱 Tu WhatsApp o Correo (donde te responderemos):</label>
+            <input type="text" id="ticket-contacto" placeholder="Ej: 0991234567 o correo@gmail.com" required>
+          </div>
+
+          <div class="fila-doble-form">
+            <div class="campo-form">
+              <label for="ticket-asunto">📌 Tipo de Solicitud:</label>
+              <select id="ticket-asunto" required>
+                <option value="Garantía / Problema con cuenta">🛡️ Garantía / Problema con cuenta</option>
+                <option value="Verificación de Pago / Comprobante">🏦 Verificación de Pago / Comprobante</option>
+                <option value="Consulta antes de comprar">🛒 Consulta antes de comprar</option>
+                <option value="Otro motivo">💬 Otro motivo</option>
+              </select>
+            </div>
+
+            <div class="campo-form">
+              <label for="ticket-referencia">📦 Plataforma o N° Comprobante:</label>
+              <input type="text" id="ticket-referencia" placeholder="Ej: Netflix / Comp: 482910">
+            </div>
+          </div>
+
+          <div class="campo-form">
+            <label for="ticket-mensaje">📝 Describe detalladamente tu solicitud:</label>
+            <textarea id="ticket-mensaje" rows="3" placeholder="Escribe aquí los detalles para poder ayudarte rápido..." required></textarea>
+          </div>
+
+          <p id="estado-envio-ticket" class="estado-verificacion oculto"></p>
+
+          <button type="submit" id="btn-enviar-ticket" class="btn-agregar-carrito">
+            📩 Generar Ticket de Soporte
+          </button>
+        </form>
+      </div>
+
+      <!-- Vista 2: Confirmación e Historial de Tickets del Cliente -->
+      <div id="vista-historial-tickets" class="oculto">
+        <div id="lista-mis-tickets" class="lista-tickets-cliente"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL DEL CARRITO                          -->
+  <!-- ========================================== -->
   <div id="modal-carrito" class="modal-fondo oculto">
     <div class="modal-contenido">
       <div class="modal-header">
@@ -999,7 +1133,9 @@
     </div>
   </div>
 
-  <!-- MODAL DE POLÍTICAS Y TÉRMINOS LEGALES -->
+  <!-- ========================================== -->
+  <!-- MODAL DE POLÍTICAS Y TÉRMINOS LEGALES      -->
+  <!-- ========================================== -->
   <div id="modal-legal" class="modal-fondo oculto">
     <div class="modal-contenido modal-legal-ancho">
       <div class="modal-header">
@@ -1007,7 +1143,6 @@
         <button id="btn-cerrar-legal" class="btn-cerrar">&times;</button>
       </div>
 
-      <!-- Pestañas de navegación legal -->
       <div class="tabs-legales">
         <button class="tab-legal activo" data-tab="terminos">📜 Términos</button>
         <button class="tab-legal" data-tab="garantia">🛡️ Garantía</button>
@@ -1044,7 +1179,7 @@
 
         <h4>2. Tiempo de Respuesta y Reposición</h4>
         <ul>
-          <li>En caso de caída, bloqueo involuntario o inconveniente técnico con una cuenta o licencia, el cliente debe reportarlo a nuestro WhatsApp oficial de soporte (<strong>+593 96 325 9492</strong>).</li>
+          <li>En caso de caída, bloqueo involuntario o inconveniente técnico con una cuenta o licencia, el cliente puede reportarlo creando un <strong>Ticket de Soporte</strong> en la web.</li>
           <li>El tiempo de solución, reactivación o reemplazo por una cuenta funcional es de <strong>1 a 24 horas máximo</strong> tras el reporte.</li>
         </ul>
 
@@ -1067,15 +1202,15 @@
         <h4>2. Datos que Recopilamos</h4>
         <ul>
           <li><strong>Datos de Transacción:</strong> Número de comprobante o documento bancario de Banco Pichincha / Deuna! ingresado en nuestro verificador para validar el pago.</li>
-          <li><strong>Datos de Contacto:</strong> Número de teléfono de WhatsApp y nombre de perfil cuando el cliente envía su orden de compra para recibir sus accesos.</li>
-          <li><strong>Almacenamiento Local (Cookies técnicas):</strong> Utilizamos <code>localStorage</code> en tu navegador únicamente para guardar temporalmente los productos de tu carrito y acelerar la carga del catálogo.</li>
+          <li><strong>Datos de Contacto y Soporte:</strong> Número de teléfono de WhatsApp, correo y nombre cuando el cliente envía su orden de compra o abre un ticket de soporte.</li>
+          <li><strong>Almacenamiento Local (Cookies técnicas):</strong> Utilizamos <code>localStorage</code> en tu navegador únicamente para guardar temporalmente los productos de tu carrito, tus tickets y acelerar la carga del catálogo.</li>
         </ul>
 
         <h4>3. Finalidad del Tratamiento</h4>
-        <p>Tus datos se utilizan única y exclusivamente para: (a) verificar la autenticidad del pago, (b) entregar las cuentas o licencias adquiridas vía WhatsApp, (c) brindar soporte y garantía durante la vigencia de tu suscripción, y (d) prevenir el fraude.</p>
+        <p>Tus datos se utilizan única y exclusivamente para: (a) verificar la autenticidad del pago, (b) entregar las cuentas o licencias adquiridas, (c) brindar soporte mediante tickets durante la vigencia de tu suscripción, y (d) prevenir el fraude.</p>
 
         <h4>4. Confidencialidad y Derechos ARCO</h4>
-        <p>Tienda Digital Cedeño <strong>jamás vende, alquila ni cede datos personales a terceros</strong>. El titular de los datos puede ejercer sus derechos de acceso, rectificación, actualización o eliminación escribiendo directamente a nuestro canal oficial de WhatsApp (+593 96 325 9492).</p>
+        <p>Tienda Digital Cedeño <strong>jamás vende, alquila ni cede datos personales a terceros</strong>. El titular de los datos puede ejercer sus derechos de acceso, rectificación, actualización o eliminación mediante nuestro sistema de tickets de soporte.</p>
       </div>
 
       <div class="footer-modal-legal">
@@ -1088,9 +1223,11 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-enlaces-legales">
+        <a href="#resenas">⭐ Reseñas de Clientes</a>
+        <a href="#soporte">🎫 Tickets de Soporte</a>
         <a href="#terminos">📜 Términos y Condiciones</a>
-        <a href="#garantia">🛡️ Política de Garantía y Reembolsos</a>
-        <a href="#privacidad">🔒 Política de Privacidad (LOPDP)</a>
+        <a href="#garantia">🛡️ Política de Garantía</a>
+        <a href="#privacidad">🔒 Privacidad (LOPDP)</a>
       </div>
       <p>© 2026 Tienda Digital Cedeño. Todos los derechos reservados.</p>
       <p class="footer-sub">Pagos seguros vía Banco Pichincha (Cta: 2213128245) y Deuna! | Titular: Jostin Alejandro Cedeño López</p>

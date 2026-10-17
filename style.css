@@ -72,7 +72,313 @@
   border-top: 1px solid var(--borde);
 }
 
-/* Estilos de la Sección Legal, Pestañas y Footer */
+/* ========================================== */
+/* ESTILOS DEL CUADRO DE RESEÑAS (GOOGLE)     */
+/* ========================================== */
+.cabecera-resenas-google {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+  border: 1px solid rgba(250, 204, 21, 0.3);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.resumen-puntaje {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.numero-puntaje {
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: #facc15;
+  line-height: 1;
+}
+
+.estrellas-doradas {
+  color: #facc15;
+  font-size: 1.25rem;
+  letter-spacing: 2px;
+}
+
+.texto-total-resenas {
+  font-size: 0.82rem;
+  color: var(--texto-secundario);
+}
+
+.caja-calificar-rapido {
+  border-top: 1px solid var(--borde);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+
+.caja-calificar-rapido span {
+  font-size: 0.84rem;
+  color: #e2e8f0;
+}
+
+.estrellas-interactivas {
+  display: flex;
+  gap: 6px;
+}
+
+.estrellas-interactivas button {
+  background: rgba(250, 204, 21, 0.12);
+  border: 1px solid rgba(250, 204, 21, 0.4);
+  color: #facc15;
+  font-size: 1.4rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.estrellas-interactivas button:hover {
+  transform: scale(1.12);
+  background: rgba(250, 204, 21, 0.28);
+}
+
+.btn-publicar-google {
+  display: inline-block;
+  width: 100%;
+  background: linear-gradient(135deg, #facc15, #eab308);
+  color: #0f172a;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 0.92rem;
+  padding: 11px 16px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.3);
+}
+
+.lista-resenas-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 45vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.tarjeta-resena-item {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.resena-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.resena-usuario {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar-resena {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: white;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.resena-usuario h4 {
+  font-size: 0.92rem;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.badge-verificado-google {
+  font-size: 0.68rem;
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  padding: 1px 6px;
+  border-radius: 99px;
+}
+
+.tiempo-resena {
+  font-size: 0.75rem;
+  color: var(--texto-secundario);
+}
+
+.estrellas-item {
+  color: #facc15;
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+}
+
+.comentario-resena {
+  font-size: 0.86rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+/* ========================================== */
+/* ESTILOS DEL SISTEMA DE TICKETS DE SOPORTE  */
+/* ========================================== */
+.tab-soporte {
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--texto-secundario);
+  border: 1px solid var(--borde);
+  padding: 9px 10px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.tab-soporte.activo {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.descripcion-soporte {
+  font-size: 0.84rem;
+  color: var(--texto-secundario);
+  margin-bottom: 14px;
+}
+
+.form-soporte {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.campo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.campo-form label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.campo-form input,
+.campo-form select,
+.campo-form textarea {
+  padding: 10px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--borde);
+  background-color: var(--fondo);
+  color: var(--texto);
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.campo-form input:focus,
+.campo-form select:focus,
+.campo-form textarea:focus {
+  border-color: var(--acento);
+}
+
+.fila-doble-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 550px) {
+  .fila-doble-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lista-tickets-cliente {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.item-ticket-historial {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.ticket-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.codigo-ticket {
+  font-weight: 800;
+  color: #818cf8;
+  font-size: 0.9rem;
+}
+
+.estado-ticket-badge {
+  font-size: 0.74rem;
+  background: rgba(250, 204, 21, 0.14);
+  color: #fde047;
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-weight: 700;
+}
+
+.ticket-asunto-txt {
+  font-size: 0.88rem;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.ticket-mensaje-txt {
+  font-size: 0.83rem;
+  color: #cbd5e1;
+  margin-bottom: 10px;
+}
+
+.ticket-footer-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--texto-secundario);
+  border-top: 1px solid var(--borde);
+  padding-top: 8px;
+}
+
+/* ========================================== */
+/* ESTILOS DE SECCIÓN LEGAL Y FOOTER          */
+/* ========================================== */
 .footer-enlaces-legales {
   display: flex;
   justify-content: center;
@@ -211,7 +517,6 @@ img, svg, a {
   user-drag: none !important;
 }
 
-/* Permite escribir en el buscador o cupones */
 input, textarea, select {
   -webkit-user-select: text !important;
   user-select: text !important;

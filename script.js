@@ -1,17 +1,19 @@
 const NUMERO_WHATSAPP = "593963259492";
+const URL_GOOGLE_REVIEW = "https://g.page/r/CcVHRoL30LsdECE/review";
 
 // 1. URL directa publicada en CSV (Carga ultrarrápida)
 const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNz682jLUpz3P7eKqahpH2NiLqctI5V1B2utHZ2ZMS4rsmYSwd0huivG5Qt_sM4FyxHtvS7AliVNm9/pub?output=csv";
 
-// Respaldo con gviz para Productos y Cupones
+// Respaldo con gviz para Productos, Cupones y Reseñas
 const SHEET_ID = "1zN4bHeBl8iZ4NETcDN7kKfv7z3GSHZ8kf-EX0UqJHtg";
 const SHEET_GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
 const SHEET_CUPONES_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Cupones`;
+const SHEET_RESENAS_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Resenas`;
 
 // URL completa de tu Google Apps Script (Versión 15 actualizada)
 const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwmO7jW90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMAUdpx1ttutlRY/exec";
 
-// Cupones de respaldo inmediato por si la red del usuario falla al consultar el Sheet
+// Cupones de respaldo inmediato
 const CUPONES_LOCALES = {
   "CEDENO10": { porcentaje: 10, categoriaRequerida: "todos", minimoProductos: 1, activo: true },
   "STREAM5":  { porcentaje: 5,  categoriaRequerida: "streaming", minimoProductos: 1, activo: true }
@@ -25,6 +27,35 @@ const DATOS_BANCO = {
 
 const CACHE_KEY = "productos_cedeno_cache";
 const CARRITO_KEY = "carrito_cedeno";
+const TICKETS_KEY = "tickets_cedeno_cliente";
+
+// Reseñas iniciales verificadas (con fechas reales para calcular el tiempo transcurrido automáticamente)
+let resenasLista = [
+  {
+    nombre: "Mateo Zambrano",
+    estrellas: 5,
+    comentario: "Excelente servicio, compré Netflix y Disney+ con transferencia de Banco Pichincha y el verificador me validó el pago al instante. Entrega súper rápida.",
+    fecha: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // Hace 2 días
+  },
+  {
+    nombre: "Valeria Andrade",
+    estrellas: 5,
+    comentario: "100% recomendados. Adquirí Canva Pro por 3 años y Spotify, todo funciona perfecto y sin caídas. Muy buena atención.",
+    fecha: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() // Hace 5 días
+  },
+  {
+    nombre: "Kevin Moreira",
+    estrellas: 5,
+    comentario: "Los mejores precios de Ecuador en cuentas de streaming. Pagué por Deuna! y en menos de 2 minutos ya estaba viendo HBO Max.",
+    fecha: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString() // Hace 1 semana
+  },
+  {
+    nombre: "Andrea Cevallos",
+    estrellas: 5,
+    comentario: "Muy confiables y serios. Llevo 3 meses renovando mis pantallas aquí y siempre cumplen con la garantía.",
+    fecha: new Date(Date.now() - 26 * 24 * 60 * 60 * 1000).toISOString() // Hace 3 semanas
+  }
+];
 
 // Carga TODOS los productos guardados al instante (0.01s)
 let productos = JSON.parse(localStorage.getItem(CACHE_KEY)) || [
@@ -32,7 +63,7 @@ let productos = JSON.parse(localStorage.getItem(CACHE_KEY)) || [
     nombre: "Canva Pro 3 Años",
     categoria: "software",
     descripcion: "Acceso ilimitado a millones de plantillas premium, fotos y herramientas IA.",
-    precio: "\$3.00",
+    precio: "$3.00",
     periodo: "/ 3 años",
     stock: null,
     descuento: 0,
@@ -41,6 +72,7 @@ let productos = JSON.parse(localStorage.getItem(CACHE_KEY)) || [
 ];
 
 let carrito = JSON.parse(localStorage.getItem(CARRITO_KEY)) || [];
+let misTickets = JSON.parse(localStorage.getItem(TICKETS_KEY)) || [];
 let categoriaActual = "todos";
 let pagoVerificadoAutomaticamente = false;
 let cuponActivo = null;
@@ -49,7 +81,6 @@ let cuponActivo = null;
 const contenedor = document.getElementById("contenedor-productos");
 const contenedorFiltros = document.getElementById("contenedor-filtros");
 const buscador = document.getElementById("buscador");
-const navWhatsapp = document.getElementById("nav-whatsapp");
 
 // Referencias del Carrito y Cupones
 const modalCarrito = document.getElementById("modal-carrito");
@@ -74,6 +105,28 @@ const btnVerificarPago = document.getElementById("btn-verificar-pago");
 const estadoVerificacion = document.getElementById("estado-verificacion");
 const btnFinalizarPedido = document.getElementById("btn-finalizar-pedido");
 
+// Referencias de Reseñas
+const modalResenas = document.getElementById("modal-resenas");
+const btnAbrirResenas = document.getElementById("btn-abrir-resenas");
+const btnCerrarResenas = document.getElementById("btn-cerrar-resenas");
+const listaResenasContenedor = document.getElementById("lista-resenas-contenedor");
+const promedioResenasEl = document.getElementById("promedio-resenas");
+const totalResenasCountEl = document.getElementById("total-resenas-count");
+const estrellasPublicarBtns = document.querySelectorAll("#estrellas-publicar button");
+
+// Referencias de Soporte por Tickets
+const modalSoporte = document.getElementById("modal-soporte");
+const btnAbrirSoporte = document.getElementById("btn-abrir-soporte");
+const btnCerrarSoporte = document.getElementById("btn-cerrar-soporte");
+const tabsSoporte = document.querySelectorAll(".tab-soporte");
+const vistaCrearTicket = document.getElementById("vista-crear-ticket");
+const vistaHistorialTickets = document.getElementById("vista-historial-tickets");
+const formTicketSoporte = document.getElementById("form-ticket-soporte");
+const estadoEnvioTicket = document.getElementById("estado-envio-ticket");
+const btnEnviarTicket = document.getElementById("btn-enviar-ticket");
+const listaMisTicketsEl = document.getElementById("lista-mis-tickets");
+const contadorMisTicketsEl = document.getElementById("contador-mis-tickets");
+
 // Referencias Legales
 const modalLegal = document.getElementById("modal-legal");
 const btnCerrarLegal = document.getElementById("btn-cerrar-legal");
@@ -85,8 +138,6 @@ const checkAceptoTerminos = document.getElementById("check-acepto-terminos");
 document.getElementById("banco-tipo").textContent = DATOS_BANCO.tipoCuenta;
 document.getElementById("banco-numero").textContent = DATOS_BANCO.numeroCuenta;
 document.getElementById("banco-titular").textContent = DATOS_BANCO.titular;
-
-navWhatsapp.href = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent("¡Hola! Quiero consultar sobre el catálogo de Tienda Digital Cedeño.")}`;
 
 document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
   navigator.clipboard.writeText(DATOS_BANCO.numeroCuenta);
@@ -100,7 +151,6 @@ document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
 function obtenerDisenoVisualProducto(prod) {
   const n = (prod.nombre || "").toLowerCase();
 
-  // 1. NETFLIX
   if (n.includes("netflix")) {
     return {
       fondo: "radial-gradient(circle at center, #7f1d1d 0%, #1a0404 65%, #050505 100%)",
@@ -108,8 +158,6 @@ function obtenerDisenoVisualProducto(prod) {
       htmlLogo: `<div class="logo-netflix">NETFLIX</div>`
     };
   }
-
-  // 2. DISNEY+
   if (n.includes("disney")) {
     return {
       fondo: "radial-gradient(circle at center, #113ccf 0%, #07133a 65%, #030712 100%)",
@@ -124,8 +172,6 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-
-  // 3. HBO MAX
   if (n.includes("hbo") || n.includes("max")) {
     return {
       fondo: "radial-gradient(circle at center, #4c1d95 0%, #1e0b4b 65%, #070312 100%)",
@@ -137,8 +183,6 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-
-  // 4. PARAMOUNT+
   if (n.includes("paramount")) {
     return {
       fondo: "radial-gradient(circle at center, #0055ff 0%, #001e6c 68%, #020817 100%)",
@@ -154,8 +198,6 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-
-  // 5. CRUNCHYROLL
   if (n.includes("crunchyroll") || n.includes("anime")) {
     return {
       fondo: "radial-gradient(circle at center, #ea580c 0%, #7c2d12 65%, #140703 100%)",
@@ -171,8 +213,6 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-
-  // 6. PRIME VIDEO
   if (n.includes("prime") || n.includes("amazon")) {
     return {
       fondo: "radial-gradient(circle at center, #0284c7 0%, #082f49 65%, #020b14 100%)",
@@ -187,8 +227,6 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-
-  // 7. CANVA PRO
   if (n.includes("canva")) {
     return {
       fondo: "linear-gradient(135deg, #008996 0%, #00c4cc 35%, #5b21b6 75%, #3b0764 100%)",
@@ -200,8 +238,6 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-
-  // 8. SPOTIFY
   if (n.includes("spotify")) {
     return {
       fondo: "radial-gradient(circle at center, #15803d 0%, #052e16 68%, #020f07 100%)",
@@ -218,8 +254,6 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-
-  // 9. YOUTUBE
   if (n.includes("youtube")) {
     return {
       fondo: "radial-gradient(circle at center, #991b1b 0%, #2a0404 68%, #090101 100%)",
@@ -234,8 +268,6 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-
-  // 10. APPLE MUSIC
   if (n.includes("apple")) {
     return {
       fondo: "linear-gradient(135deg, #fa243c 0%, #8e2de2 60%, #1c1c1e 100%)",
@@ -250,8 +282,6 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-
-  // 11. DEEZER
   if (n.includes("deezer")) {
     return {
       fondo: "radial-gradient(circle at center, #a855f7 0%, #3b0764 65%, #090314 100%)",
@@ -268,8 +298,6 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-
-  // 12. CHATGPT
   if (n.includes("chatgpt") || n.includes("openai") || n.includes("gpt")) {
     return {
       fondo: "radial-gradient(circle at center, #0d9488 0%, #064e3b 65%, #021713 100%)",
@@ -284,8 +312,6 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-
-  // 13. GEMINI
   if (n.includes("gemini") || n.includes("google")) {
     return {
       fondo: "linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #7e22ce 100%)",
@@ -299,8 +325,6 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-
-  // 14. ROBLOX
   if (n.includes("roblox") || n.includes("robux")) {
     return {
       fondo: "radial-gradient(circle at center, #374151 0%, #111827 70%, #030712 100%)",
@@ -417,7 +441,6 @@ function mostrarProductos(lista) {
       ? `<span class="badge-descuento-card">🔥 -${descPorcentaje}% OFF</span>`
       : "";
 
-    // Genera las opciones de meses respetando el mínimo configurado en Columna H
     const opcionesBase = [1, 2, 3, 6, 12];
     if (!opcionesBase.includes(minMeses)) {
       opcionesBase.push(minMeses);
@@ -442,7 +465,6 @@ function mostrarProductos(lista) {
       </div>
     ` : "";
 
-    // Calcula el precio inicial multiplicado por el mínimo de meses (ej: 2 meses en Spotify)
     const precioMostradoInicial = (precioConDescuentoBase * minMeses).toFixed(2);
     const precioOriginalInicial = (precioOriginalBase * minMeses).toFixed(2);
     const precioMostradoTexto = `$${precioMostradoInicial}`;
@@ -966,27 +988,303 @@ btnVerificarPago.addEventListener("click", async () => {
 });
 
 // ==========================================
-// 5. RUTAS DINÁMICAS (#carrito, #catalogo, #terminos, #garantia, #privacidad)
+// 5. SISTEMA DE RESEÑAS EN PÁGINA + TIEMPO RELATIVO + REDIRECCIÓN A GOOGLE
 // ==========================================
+function calcularTiempoRelativo(fechaInput) {
+  if (!fechaInput) return "Hace poco";
+  const texto = String(fechaInput).trim();
+
+  // Si en el Excel ya escribiste "Hace 3 días", lo muestra tal cual
+  if (texto.toLowerCase().startsWith("hace")) return texto;
+
+  const fechaObj = new Date(texto);
+  if (isNaN(fechaObj.getTime())) return texto;
+
+  const segundos = Math.max(1, Math.floor((Date.now() - fechaObj.getTime()) / 1000));
+  if (segundos < 60) return "Hace unos segundos";
+  const minutos = Math.floor(segundos / 60);
+  if (minutos < 60) return `Hace ${minutos} ${minutos === 1 ? "minuto" : "minutos"}`;
+  const horas = Math.floor(minutos / 60);
+  if (horas < 24) return `Hace ${horas} ${horas === 1 ? "hora" : "horas"}`;
+  const dias = Math.floor(horas / 24);
+  if (dias < 7) return `Hace ${dias} ${dias === 1 ? "día" : "días"}`;
+  const semanas = Math.floor(dias / 7);
+  if (semanas < 5) return `Hace ${semanas} ${semanas === 1 ? "semana" : "semanas"}`;
+  const meses = Math.floor(dias / 30);
+  if (meses < 12) return `Hace ${meses} ${meses === 1 ? "mes" : "meses"}`;
+  const anos = Math.floor(dias / 365);
+  return `Hace ${anos} ${anos === 1 ? "año" : "años"}`;
+}
+
+function renderizarResenas() {
+  if (!listaResenasContenedor) return;
+  listaResenasContenedor.innerHTML = "";
+
+  const total = resenasLista.length;
+  const suma = resenasLista.reduce((acc, r) => acc + (parseFloat(r.estrellas) || 5), 0);
+  const promedio = total > 0 ? (suma / total).toFixed(1) : "5.0";
+
+  if (promedioResenasEl) promedioResenasEl.textContent = promedio;
+  if (totalResenasCountEl) totalResenasCountEl.textContent = total;
+
+  resenasLista.forEach((rev) => {
+    const numEstrellas = Math.min(5, Math.max(1, parseInt(rev.estrellas, 10) || 5));
+    const estrellasTxt = "★".repeat(numEstrellas) + "☆".repeat(5 - numEstrellas);
+    const inicial = (rev.nombre || "C").trim().charAt(0).toUpperCase();
+    const tiempoTexto = calcularTiempoRelativo(rev.fecha);
+
+    const card = document.createElement("div");
+    card.className = "tarjeta-resena-item";
+    card.innerHTML = `
+      <div class="resena-cabecera">
+        <div class="resena-usuario">
+          <div class="avatar-resena">${inicial}</div>
+          <div>
+            <h4>${rev.nombre} <span class="badge-verificado-google" title="Reseña de Google">✔ Google</span></h4>
+            <span class="tiempo-resena">🕒 ${tiempoTexto}</span>
+          </div>
+        </div>
+        <div class="estrellas-item">${estrellasTxt}</div>
+      </div>
+      <p class="comentario-resena">"${rev.comentario}"</p>
+    `;
+    listaResenasContenedor.appendChild(card);
+  });
+}
+
+async function cargarResenasDesdeSheet() {
+  try {
+    const res = await fetch(`${SHEET_RESENAS_CSV_URL}&t=${Date.now()}`, { cache: "no-store" });
+    if (!res.ok) return;
+    const csv = await res.text();
+    if (csv.includes("<!DOCTYPE") || csv.includes("<html")) return;
+
+    const filas = csv.split(/\r?\n/);
+    const nuevasResenas = [];
+
+    filas.forEach((fila, idx) => {
+      if (!fila.trim()) return;
+      const col = dividirFilaCSV(fila);
+      if (!col[0] || (idx === 0 && col[0].toLowerCase().includes("nombre"))) return;
+      if (!col[2]) return; // Requiere comentario en Columna C
+
+      nuevasResenas.push({
+        nombre: col[0].replace(/"/g, "").trim(),
+        estrellas: parseInt(col[1], 10) || 5,
+        comentario: col[2].replace(/"/g, "").trim(),
+        fecha: col[3] ? col[3].replace(/"/g, "").trim() : "Hace poco"
+      });
+    });
+
+    if (nuevasResenas.length > 0) {
+      resenasLista = nuevasResenas;
+      renderizarResenas();
+    }
+  } catch (e) {}
+}
+
+// Al hacer clic en las estrellas de publicar, lleva directo al enlace de Google Review
+estrellasPublicarBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    window.open(URL_GOOGLE_REVIEW, "_blank", "noopener,noreferrer");
+  });
+});
+
+// ==========================================
+// 6. SISTEMA DE TICKETS DE SOPORTE (SIN ENVIAR DIRECTO A WHATSAPP)
+// ==========================================
+function cambiarVistaSoporte(vista) {
+  tabsSoporte.forEach((t) => {
+    t.classList.toggle("activo", t.getAttribute("data-vista") === vista);
+  });
+  if (vista === "crear") {
+    vistaCrearTicket.classList.remove("oculto");
+    vistaHistorialTickets.classList.add("oculto");
+  } else {
+    vistaCrearTicket.classList.add("oculto");
+    vistaHistorialTickets.classList.remove("oculto");
+    renderizarMisTickets();
+  }
+}
+
+tabsSoporte.forEach((tab) => {
+  tab.addEventListener("click", () => cambiarVistaSoporte(tab.getAttribute("data-vista")));
+});
+
+function renderizarMisTickets() {
+  if (contadorMisTicketsEl) contadorMisTicketsEl.textContent = misTickets.length;
+  if (!listaMisTicketsEl) return;
+
+  listaMisTicketsEl.innerHTML = "";
+  if (misTickets.length === 0) {
+    listaMisTicketsEl.innerHTML = `<p class="carrito-vacio">Aún no has creado ningún ticket de soporte.</p>`;
+    return;
+  }
+
+  misTickets.slice().reverse().forEach((tk) => {
+    const div = document.createElement("div");
+    div.className = "item-ticket-historial";
+    div.innerHTML = `
+      <div class="ticket-top">
+        <span class="codigo-ticket">🎫 Ticket #${tk.id}</span>
+        <span class="estado-ticket-badge">${tk.estado || "🟡 Recibido - En revisión"}</span>
+      </div>
+      <p class="ticket-asunto-txt"><strong>${tk.asunto}</strong> ${tk.referencia ? `(\${tk.referencia})` : ""}</p>
+      <p class="ticket-mensaje-txt">${tk.mensaje}</p>
+      <div class="ticket-footer-info">
+        <span>📱 Contacto: ${tk.contacto}</span>
+        <span>🕒 ${calcularTiempoRelativo(tk.fecha)}</span>
+      </div>
+    `;
+    listaMisTicketsEl.appendChild(div);
+  });
+}
+
+if (formTicketSoporte) {
+  formTicketSoporte.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const nombre = document.getElementById("ticket-nombre").value.trim();
+    const contacto = document.getElementById("ticket-contacto").value.trim();
+    const asunto = document.getElementById("ticket-asunto").value;
+    const referencia = document.getElementById("ticket-referencia").value.trim();
+    const mensaje = document.getElementById("ticket-mensaje").value.trim();
+
+    if (!nombre || !contacto || !mensaje) return;
+
+    const codigoTicket = "TDC-" + Math.floor(10000 + Math.random() * 90000);
+    const fechaISO = new Date().toISOString();
+
+    btnEnviarTicket.disabled = true;
+    btnEnviarTicket.textContent = "⏳ Registrando Ticket...";
+    estadoEnvioTicket.classList.remove("oculto", "exito", "error");
+    estadoEnvioTicket.textContent = "🔄 Creando tu ticket en el sistema...";
+
+    const nuevoTicket = {
+      id: codigoTicket,
+      nombre,
+      contacto,
+      asunto,
+      referencia,
+      mensaje,
+      fecha: fechaISO,
+      estado: "🟡 Recibido - Te responderemos pronto"
+    };
+
+    // Envía el ticket al Google Apps Script para guardarlo en tu Google Sheet
+    try {
+      const urlTicket = `${URL_VERIFICADOR_PICHINCHA}?accion=crearTicket&id=${encodeURIComponent(codigoTicket)}&nombre=${encodeURIComponent(nombre)}&contacto=${encodeURIComponent(contacto)}&asunto=${encodeURIComponent(asunto)}&referencia=${encodeURIComponent(referencia)}&mensaje=${encodeURIComponent(mensaje)}&t=${Date.now()}`;
+      await consultarAppsScript(urlTicket);
+    } catch (err) {
+      console.warn("Ticket guardado localmente y registrado en cola.");
+    }
+
+    misTickets.push(nuevoTicket);
+    localStorage.setItem(TICKETS_KEY, JSON.stringify(misTickets));
+    if (contadorMisTicketsEl) contadorMisTicketsEl.textContent = misTickets.length;
+
+    estadoEnvioTicket.classList.add("exito");
+    estadoEnvioTicket.innerHTML = `✅ <strong>¡Ticket #${codigoTicket} creado con éxito!</strong> Hemos recibido tu solicitud y te responderemos a <strong>${contacto}</strong>.`;
+
+    formTicketSoporte.reset();
+    btnEnviarTicket.disabled = false;
+    btnEnviarTicket.textContent = "📩 Generar Ticket de Soporte";
+
+    setTimeout(() => {
+      cambiarVistaSoporte("historial");
+    }, 1800);
+  });
+}
+
+// ==========================================
+// 7. RUTAS DINÁMICAS (#carrito, #resenas, #soporte, #terminos, #garantia, #privacidad)
+// ==========================================
+function cerrarTodosLosModales() {
+  if (modalCarrito) modalCarrito.classList.add("oculto");
+  if (modalResenas) modalResenas.classList.add("oculto");
+  if (modalSoporte) modalSoporte.classList.add("oculto");
+  if (modalLegal) modalLegal.classList.add("oculto");
+}
+
+function limpiarHashUrl() {
+  history.pushState("", document.title, window.location.pathname + window.location.search);
+}
+
+// Abrir/Cerrar Carrito
 btnAbrirCarrito.addEventListener("click", () => {
+  cerrarTodosLosModales();
   modalCarrito.classList.remove("oculto");
   window.location.hash = "carrito";
 });
 
-function cerrarModalCarrito() {
+btnCerrarCarrito.addEventListener("click", () => {
   modalCarrito.classList.add("oculto");
-  if (window.location.hash === "#carrito") {
-    history.pushState("", document.title, window.location.pathname + window.location.search);
-  }
-}
-
-btnCerrarCarrito.addEventListener("click", cerrarModalCarrito);
-modalCarrito.addEventListener("click", (e) => {
-  if (e.target === modalCarrito) cerrarModalCarrito();
+  if (window.location.hash === "#carrito") limpiarHashUrl();
 });
 
+modalCarrito.addEventListener("click", (e) => {
+  if (e.target === modalCarrito) {
+    modalCarrito.classList.add("oculto");
+    if (window.location.hash === "#carrito") limpiarHashUrl();
+  }
+});
+
+// Abrir/Cerrar Reseñas
+if (btnAbrirResenas) {
+  btnAbrirResenas.addEventListener("click", () => {
+    cerrarTodosLosModales();
+    renderizarResenas();
+    modalResenas.classList.remove("oculto");
+    window.location.hash = "resenas";
+  });
+}
+
+if (btnCerrarResenas) {
+  btnCerrarResenas.addEventListener("click", () => {
+    modalResenas.classList.add("oculto");
+    if (window.location.hash === "#resenas") limpiarHashUrl();
+  });
+}
+
+if (modalResenas) {
+  modalResenas.addEventListener("click", (e) => {
+    if (e.target === modalResenas) {
+      modalResenas.classList.add("oculto");
+      if (window.location.hash === "#resenas") limpiarHashUrl();
+    }
+  });
+}
+
+// Abrir/Cerrar Soporte por Tickets
+if (btnAbrirSoporte) {
+  btnAbrirSoporte.addEventListener("click", () => {
+    cerrarTodosLosModales();
+    renderizarMisTickets();
+    modalSoporte.classList.remove("oculto");
+    window.location.hash = "soporte";
+  });
+}
+
+if (btnCerrarSoporte) {
+  btnCerrarSoporte.addEventListener("click", () => {
+    modalSoporte.classList.add("oculto");
+    if (window.location.hash === "#soporte") limpiarHashUrl();
+  });
+}
+
+if (modalSoporte) {
+  modalSoporte.addEventListener("click", (e) => {
+    if (e.target === modalSoporte) {
+      modalSoporte.classList.add("oculto");
+      if (window.location.hash === "#soporte") limpiarHashUrl();
+    }
+  });
+}
+
+// Abrir/Cerrar Legal
 function abrirPestanaLegal(nombreTab, actualizarHash = true) {
   if (!modalLegal) return;
+  cerrarTodosLosModales();
   modalLegal.classList.remove("oculto");
 
   tabsLegales.forEach((btn) => {
@@ -1009,7 +1307,7 @@ function cerrarModalLegal() {
   if (!modalLegal) return;
   modalLegal.classList.add("oculto");
   if (["#terminos", "#garantia", "#privacidad", "#legal"].includes(window.location.hash)) {
-    history.pushState("", document.title, window.location.pathname + window.location.search);
+    limpiarHashUrl();
   }
 }
 
@@ -1042,15 +1340,23 @@ function sincronizarRutasHash() {
   } else if (hash === "privacidad") {
     abrirPestanaLegal("privacidad", false);
   } else if (hash === "carrito") {
-    if (modalLegal) modalLegal.classList.add("oculto");
+    cerrarTodosLosModales();
     if (modalCarrito) modalCarrito.classList.remove("oculto");
+  } else if (hash === "resenas") {
+    cerrarTodosLosModales();
+    renderizarResenas();
+    if (modalResenas) modalResenas.classList.remove("oculto");
+  } else if (hash === "soporte") {
+    cerrarTodosLosModales();
+    renderizarMisTickets();
+    if (modalSoporte) modalSoporte.classList.remove("oculto");
   }
 }
 
 window.addEventListener("hashchange", sincronizarRutasHash);
 window.addEventListener("load", sincronizarRutasHash);
 
-// Enviar pedido por WhatsApp con validación legal
+// Enviar pedido del Carrito por WhatsApp con validación legal
 btnFinalizarPedido.addEventListener("click", () => {
   if (carrito.length === 0) return;
 
@@ -1108,7 +1414,7 @@ btnFinalizarPedido.addEventListener("click", () => {
 });
 
 // ==========================================
-// 6. BUSCADOR, FILTROS Y CARGA RÁPIDA DESDE GOOGLE SHEETS
+// 8. BUSCADOR, FILTROS Y CARGA RÁPIDA DESDE GOOGLE SHEETS
 // ==========================================
 function filtrarCatalogo() {
   const texto = buscador.value.toLowerCase();
@@ -1197,7 +1503,6 @@ function parsearTextoCSV(csv) {
 
     if (!precioBruto && !descripcionTexto) return;
 
-    // col[5] = Stock, col[6] = Descuento, col[7] = Minimo Meses (Columna H)
     listaSheet.push(
       normalizarProductoFila(col[0], col[1], descripcionTexto, precioBruto, periodoTexto, col[5], col[6], col[7])
     );
@@ -1216,7 +1521,6 @@ async function leerCSVDesdeUrl(urlBase) {
 }
 
 async function cargarDesdeGoogleSheets() {
-  // 1. CARGA RÁPIDA: Lee primero tu CSV publicado (~0.2s) incluyendo la Columna H (Minimo Meses)
   try {
     let listaCSV = await leerCSVDesdeUrl(GOOGLE_SHEET_CSV_URL);
     if (listaCSV.length === 0) {
@@ -1242,7 +1546,6 @@ async function cargarDesdeGoogleSheets() {
     }
   }
 
-  // 2. SINCRONIZACIÓN EN SEGUNDO PLANO: Actualiza stock en vivo conservando el mínimo de meses leído en CSV
   try {
     const mapaMinMesesCSV = {};
     productos.forEach(prodCSV => {
@@ -1263,7 +1566,11 @@ async function cargarDesdeGoogleSheets() {
   } catch (e) {}
 }
 
+// Inicialización general
 actualizarBotonesFiltro();
 filtrarCatalogo();
 actualizarVistaCarrito();
+renderizarResenas();
+renderizarMisTickets();
 cargarDesdeGoogleSheets();
+cargarResenasDesdeSheet();

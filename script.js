@@ -1,7 +1,13 @@
 const NUMERO_WHATSAPP = "593963259492";
+
+// URL directa publicada en CSV (Carga ultrarrápida)
+const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNz682jLUpz3P7eKqahpH2NiLqctI5V1B2utHZ2ZMS4rsmYSwd0huivG5Qt_sM4FyxHtvS7AliVNm9/pub?output=csv";
+
+// Respaldo con gviz por si Google tarda en refrescar el enlace pub
 const SHEET_ID = "1zN4bHeBl8iZ4NETcDN7kKfv7z3GSHZ8kf-EX0UqJHtg";
-const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
-// Mantén en la siguiente línea tu URL completa de Google Apps Script tal como ya la tienes:
+const SHEET_GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+
+// Mantén tu URL completa de Google Apps Script:
 const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwmO7jw90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMVUdpx1/exec";
 
 const DATOS_BANCO = {
@@ -11,8 +17,9 @@ const DATOS_BANCO = {
 };
 
 const CACHE_KEY = "productos_cedeno_cache";
+const CARRITO_KEY = "carrito_cedeno";
 
-// Carga TODOS los productos guardados al instante (0.01s) sin esperar 5 segundos
+// Carga TODOS los productos guardados al instante (0.01s)
 let productos = JSON.parse(localStorage.getItem(CACHE_KEY)) || [
   {
     nombre: "Canva Pro 3 Años",
@@ -25,10 +32,11 @@ let productos = JSON.parse(localStorage.getItem(CACHE_KEY)) || [
   }
 ];
 
-let carrito = JSON.parse(localStorage.getItem("carrito_cedeno")) || [];
+let carrito = JSON.parse(localStorage.getItem(CARRITO_KEY)) || [];
 let categoriaActual = "todos";
 let pagoVerificadoAutomaticamente = false;
 let cuponActivo = null;
+
 // Referencias del DOM
 const contenedor = document.getElementById("contenedor-productos");
 const contenedorFiltros = document.getElementById("contenedor-filtros");
@@ -77,7 +85,6 @@ document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
 function obtenerDisenoVisualProducto(prod) {
   const n = (prod.nombre || "").toLowerCase();
 
-  // 1. NETFLIX
   if (n.includes("netflix")) {
     return {
       fondo: "radial-gradient(circle at center, #7f1d1d 0%, #1a0404 65%, #050505 100%)",
@@ -86,7 +93,6 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 2. DISNEY+
   if (n.includes("disney")) {
     return {
       fondo: "radial-gradient(circle at center, #113ccf 0%, #07133a 65%, #030712 100%)",
@@ -102,7 +108,6 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 3. HBO MAX
   if (n.includes("hbo") || n.includes("max")) {
     return {
       fondo: "radial-gradient(circle at center, #4c1d95 0%, #1e0b4b 65%, #070312 100%)",
@@ -115,7 +120,6 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 4. PARAMOUNT+
   if (n.includes("paramount")) {
     return {
       fondo: "radial-gradient(circle at center, #0055ff 0%, #001e6c 68%, #020817 100%)",
@@ -132,7 +136,6 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 5. CRUNCHYROLL
   if (n.includes("crunchyroll") || n.includes("anime")) {
     return {
       fondo: "radial-gradient(circle at center, #ea580c 0%, #7c2d12 65%, #140703 100%)",
@@ -149,7 +152,6 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 6. PRIME VIDEO
   if (n.includes("prime") || n.includes("amazon")) {
     return {
       fondo: "radial-gradient(circle at center, #0284c7 0%, #082f49 65%, #020b14 100%)",
@@ -165,7 +167,6 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 7. CANVA PRO
   if (n.includes("canva")) {
     return {
       fondo: "linear-gradient(135deg, #008996 0%, #00c4cc 35%, #5b21b6 75%, #3b0764 100%)",
@@ -178,7 +179,6 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 8. SPOTIFY
   if (n.includes("spotify")) {
     return {
       fondo: "radial-gradient(circle at center, #15803d 0%, #052e16 68%, #020f07 100%)",
@@ -196,7 +196,6 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 9. YOUTUBE
   if (n.includes("youtube")) {
     return {
       fondo: "radial-gradient(circle at center, #991b1b 0%, #2a0404 68%, #090101 100%)",
@@ -212,7 +211,6 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 10. APPLE MUSIC
   if (n.includes("apple")) {
     return {
       fondo: "linear-gradient(135deg, #fa243c 0%, #8e2de2 60%, #1c1c1e 100%)",
@@ -228,7 +226,6 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 11. DEEZER
   if (n.includes("deezer")) {
     return {
       fondo: "radial-gradient(circle at center, #a855f7 0%, #3b0764 65%, #090314 100%)",
@@ -246,7 +243,6 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 12. CHATGPT
   if (n.includes("chatgpt") || n.includes("openai") || n.includes("gpt")) {
     return {
       fondo: "radial-gradient(circle at center, #0d9488 0%, #064e3b 65%, #021713 100%)",
@@ -262,7 +258,6 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 13. GEMINI
   if (n.includes("gemini") || n.includes("google")) {
     return {
       fondo: "linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #7e22ce 100%)",
@@ -277,7 +272,6 @@ function obtenerDisenoVisualProducto(prod) {
     };
   }
 
-  // 14. ROBLOX
   if (n.includes("roblox") || n.includes("robux")) {
     return {
       fondo: "radial-gradient(circle at center, #374151 0%, #111827 70%, #030712 100%)",
@@ -311,16 +305,13 @@ function obtenerPrecioNumerico(precioTexto) {
   return parseFloat(limpio) || 0;
 }
 
-// Solo muestra el selector de meses si el periodo es "/ mes" sin números (si dice "/ 3 mes" o "/ 3 años" queda fijo)
 function permiteElegirMeses(prod) {
   const per = (prod.periodo || "").toLowerCase().trim();
   const nom = (prod.nombre || "").toLowerCase();
 
-  // Si el periodo tiene un número (ej: "/ 3 mes", "/ 3 meses", "/ 3 años") o es anual, NO sale el selector de duración
   if (/\d/.test(per) || per.includes("año") || per.includes("anual")) {
     return false;
   }
-  // Si el nombre del producto ya especifica varios meses fijos (ej: "3 meses") tampoco sale el selector
   if (/\d+\s*mes/.test(nom)) {
     return false;
   }
@@ -330,7 +321,7 @@ function permiteElegirMeses(prod) {
 function actualizarBotonesFiltro() {
   if (!contenedorFiltros) return;
 
-  const categoriasUnicas = [...new Set(productos.map(p => p.categoria.toLowerCase()))];
+  const categoriasUnicas = [...new Set(productos.map(p => (p.categoria || "otros").toLowerCase()))];
   contenedorFiltros.innerHTML = `<button class="btn-filtro ${categoriaActual === 'todos' ? 'activo' : ''}" data-categoria="todos">Todos</button>`;
 
   categoriasUnicas.forEach((cat) => {
@@ -382,7 +373,6 @@ function mostrarProductos(lista) {
     tarjeta.className = `tarjeta ${estaAgotado ? "sin-stock" : ""}`;
     tarjeta.style.setProperty("--color-marca", visual.colorMarca || "#6366f1");
 
-    // Etiqueta superior derecha (Stock o Oficial)
     let htmlBadgeDerecha = `<span class="badge-derecha oficial">✔ Oficial</span>`;
     if (estaAgotado) {
       htmlBadgeDerecha = `<span class="badge-derecha agotado">🚫 Agotado</span>`;
@@ -390,7 +380,6 @@ function mostrarProductos(lista) {
       htmlBadgeDerecha = `<span class="badge-derecha stock-limitado">📦 Stock: ${stockDisponible}</span>`;
     }
 
-    // Etiqueta de descuento si tiene valor en Columna G
     const htmlBadgeDescuento = tieneDescuento
       ? `<span class="badge-descuento-card">🔥 -${descPorcentaje}% OFF</span>`
       : "";
@@ -497,7 +486,6 @@ function agregarAlCarrito(prod, meses = 1, mostrarMeses = false) {
     ? null
     : parseInt(prod.stock, 10);
 
-  // Calcula cuántas unidades de este producto base ya están en el carrito
   const unidadesEnCarrito = carrito
     .filter(item => item.nombreBase === prod.nombre)
     .reduce((acc, item) => acc + item.cantidad, 0);
@@ -510,7 +498,6 @@ function agregarAlCarrito(prod, meses = 1, mostrarMeses = false) {
   const precioOriginalBase = obtenerPrecioNumerico(prod.precio);
   const descPorcentaje = parseFloat(prod.descuento) || 0;
 
-  // Si el cliente YA tiene otro producto con descuento en el carrito, este nuevo producto entra a precio normal sin acumular otro descuento
   const yaHayDescuentoEnCarrito = carritoTieneProductoConDescuento();
   const aplicaDescuentoProducto = descPorcentaje > 0 && (!yaHayDescuentoEnCarrito || carrito.some(i => i.nombreBase === prod.nombre && i.descuentoProducto > 0));
 
@@ -569,7 +556,6 @@ window.cambiarCantidad = function(index, cambio) {
 function verificarRequisitosCarritoParaCupon(cupon) {
   if (!cupon) return { cumple: false, motivo: "" };
 
-  // REGLA PRINCIPAL: Si ya hay un producto con descuento en el carrito, NO se puede aplicar cupón ni otro descuento
   if (carritoTieneProductoConDescuento()) {
     return {
       cumple: false,
@@ -644,7 +630,7 @@ function obtenerResumenTotales() {
 }
 
 function actualizarVistaCarrito() {
-  localStorage.setItem("carrito_cedeño", JSON.stringify(carrito));
+  localStorage.setItem(CARRITO_KEY, JSON.stringify(carrito));
 
   const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
   contadorCarrito.textContent = totalItems;
@@ -721,7 +707,7 @@ async function consultarAppsScript(url) {
     const texto = await respuesta.text();
     return JSON.parse(texto);
   } catch (e) {
-    console.warn("Intentando respaldo...");
+    console.warn("Intentando respaldo JSONP...");
   }
 
   return new Promise((resolve, reject) => {
@@ -751,7 +737,6 @@ if (btnAplicarCupon) {
     const codigo = inputCupon.value.trim().toUpperCase();
     mensajeCupon.classList.remove("oculto", "exito", "error");
 
-    // Si ya tiene un producto en descuento en el carrito, bloquea el cupón de inmediato
     if (carritoTieneProductoConDescuento()) {
       cuponActivo = null;
       mensajeCupon.textContent = "⚠️ Ya tienes un producto con descuento en el carrito, así que ya no aplica el descuento.";
@@ -819,7 +804,6 @@ btnVerificarPago.addEventListener("click", async () => {
   const monto = resumen.totalFinal.toFixed(2);
   const codigoCupon = (cuponActivo && resumen.aplicaCupon) ? cuponActivo.codigo : "";
 
-  // Prepara los productos comprados para que Google Sheets reste el stock automáticamente
   const itemsParaStock = carrito.map(i => ({
     nombreBase: i.nombreBase || i.nombre,
     cantidad: i.cantidad
@@ -846,14 +830,13 @@ btnVerificarPago.addEventListener("click", async () => {
       pagoVerificadoAutomaticamente = true;
       estadoVerificacion.classList.add("exito");
 
-      // Resta el stock inmediatamente también en la pantalla del usuario
       itemsParaStock.forEach((comprado) => {
         const prodEnCatalogo = productos.find(p => p.nombre.toLowerCase() === String(comprado.nombreBase).toLowerCase());
         if (prodEnCatalogo && prodEnCatalogo.stock !== null && prodEnCatalogo.stock !== undefined && !isNaN(prodEnCatalogo.stock)) {
           prodEnCatalogo.stock = Math.max(0, parseInt(prodEnCatalogo.stock, 10) - comprado.cantidad);
         }
       });
-      localStorage.setItem("productos_cedeño_cache", JSON.stringify(productos));
+      localStorage.setItem(CACHE_KEY, JSON.stringify(productos));
       filtrarCatalogo();
     } else {
       pagoVerificadoAutomaticamente = false;
@@ -874,7 +857,6 @@ modalCarrito.addEventListener("click", (e) => {
   if (e.target === modalCarrito) modalCarrito.classList.add("oculto");
 });
 
-// Enviar pedido por WhatsApp
 btnFinalizarPedido.addEventListener("click", () => {
   if (carrito.length === 0) return;
 
@@ -926,13 +908,13 @@ btnFinalizarPedido.addEventListener("click", () => {
 });
 
 // ==========================================
-// 5. BUSCADOR, FILTROS Y SINCRONIZACIÓN EN VIVO CON HOJA 1
+// 5. BUSCADOR, FILTROS Y CARGA RÁPIDA DESDE GOOGLE SHEETS
 // ==========================================
 function filtrarCatalogo() {
   const texto = buscador.value.toLowerCase();
   const filtrados = productos.filter((prod) => {
-    const coincideCategoria = categoriaActual === "todos" || prod.categoria.toLowerCase() === categoriaActual;
-    const coincideTexto = prod.nombre.toLowerCase().includes(texto) || prod.descripcion.toLowerCase().includes(texto);
+    const coincideCategoria = categoriaActual === "todos" || (prod.categoria || "").toLowerCase() === categoriaActual;
+    const coincideTexto = (prod.nombre || "").toLowerCase().includes(texto) || (prod.descripcion || "").toLowerCase().includes(texto);
     return coincideCategoria && coincideTexto;
   });
   mostrarProductos(filtrados);
@@ -990,8 +972,72 @@ function normalizarProductoFila(nombre, categoria, descripcion, precioRaw, perio
   };
 }
 
+function parsearTextoCSV(csv) {
+  const filas = csv.split(/\r?\n/);
+  const listaSheet = [];
+
+  filas.forEach((fila, index) => {
+    if (!fila.trim()) return;
+    const col = dividirFilaCSV(fila);
+
+    if (!col[0] || (index === 0 && col[0].toLowerCase().includes("nombre"))) return;
+
+    let col2Limpia = (col[2] || "").replace(/\\/g, "").trim();
+    let col3Limpia = (col[3] || "").replace(/\\/g, "").trim();
+    let esPrecioEnC = /\d/.test(col2Limpia) && col2Limpia.length <= 10;
+
+    let precioBruto = esPrecioEnC ? col2Limpia : col3Limpia;
+    let periodoTexto = esPrecioEnC ? (col[3] || "/ mes") : (col[4] || "/ mes");
+    let descripcionTexto = esPrecioEnC ? (col[4] || "") : (col[2] || "");
+
+    if (!precioBruto && !descripcionTexto) return;
+
+    listaSheet.push(
+      normalizarProductoFila(col[0], col[1], descripcionTexto, precioBruto, periodoTexto, col[5], col[6])
+    );
+  });
+
+  return listaSheet;
+}
+
+async function leerCSVDesdeUrl(urlBase) {
+  const separador = urlBase.includes("?") ? "&" : "?";
+  const urlSinCache = `${urlBase}${separador}t=${Date.now()}`;
+  const res = await fetch(urlSinCache, { cache: "no-store" });
+  if (!res.ok) throw new Error("Error HTTP al leer CSV");
+  const csv = await res.text();
+  return parsearTextoCSV(csv);
+}
+
 async function cargarDesdeGoogleSheets() {
-  // 1. Primero intenta sincronizar en tiempo real desde Apps Script (sin retraso de caché para ver el Stock exacto)
+  // 1. CARGA ULTRARRÁPIDA: Lee primero tu CSV publicado (~0.2s) sin esperar al Apps Script
+  try {
+    let listaCSV = await leerCSVDesdeUrl(GOOGLE_SHEET_CSV_URL);
+    if (listaCSV.length === 0) {
+      listaCSV = await leerCSVDesdeUrl(SHEET_GVIZ_URL);
+    }
+    if (listaCSV.length > 0) {
+      productos = listaCSV;
+      localStorage.setItem(CACHE_KEY, JSON.stringify(productos));
+      actualizarBotonesFiltro();
+      filtrarCatalogo();
+    }
+  } catch (err) {
+    console.warn("Intentando respaldo GVIZ...", err);
+    try {
+      const listaRespaldo = await leerCSVDesdeUrl(SHEET_GVIZ_URL);
+      if (listaRespaldo.length > 0) {
+        productos = listaRespaldo;
+        localStorage.setItem(CACHE_KEY, JSON.stringify(productos));
+        actualizarBotonesFiltro();
+        filtrarCatalogo();
+      }
+    } catch (e2) {
+      console.error("Error cargando CSV:", e2);
+    }
+  }
+
+  // 2. SINCRONIZACIÓN EN SEGUNDO PLANO: Actualiza stock exacto desde Apps Script sin trabar la pantalla
   try {
     const urlVivo = `${URL_VERIFICADOR_PICHINCHA}?accion=obtenerProductos&t=${Date.now()}`;
     const dataVivo = await consultarAppsScript(urlVivo);
@@ -999,63 +1045,16 @@ async function cargarDesdeGoogleSheets() {
       productos = dataVivo.productos.map(p =>
         normalizarProductoFila(p.nombre, p.categoria, p.descripcion, p.precio, p.periodo, p.stock, p.descuento)
       );
-      localStorage.setItem("productos_cedeño_cache", JSON.stringify(productos));
+      localStorage.setItem(CACHE_KEY, JSON.stringify(productos));
       actualizarBotonesFiltro();
       filtrarCatalogo();
-      return;
     }
   } catch (e) {
-    console.warn("Usando lectura CSV estándar...");
+    // Si el Apps Script no tiene la acción obtenerProductos, mantiene los productos del CSV sin fallar
   }
-
-  // 2. Respaldo por CSV si el Apps Script aún no se ha actualizado
-  if (!GOOGLE_SHEET_CSV_URL) {
-    actualizarBotonesFiltro();
-    mostrarProductos(productos);
-    return;
-  }
-
-  try {
-    const urlSinCache = GOOGLE_SHEET_CSV_URL + (GOOGLE_SHEET_CSV_URL.includes("?") ? "&" : "?") + "t=" + new Date().getTime();
-    const res = await fetch(urlSinCache);
-    const csv = await res.text();
-    const filas = csv.split(/\r?\n/);
-    const listaSheet = [];
-
-    filas.forEach((fila, index) => {
-      if (!fila.trim()) return;
-      const col = dividirFilaCSV(fila);
-
-      if (!col[0] || (index === 0 && col[0].toLowerCase() === "nombre")) return;
-
-      let col2Limpia = (col[2] || "").replace(/\\/g, "").trim();
-      let col3Limpia = (col[3] || "").replace(/\\/g, "").trim();
-      let esPrecioEnC = /\d/.test(col2Limpia) && col2Limpia.length <= 10;
-
-      let precioBruto = esPrecioEnC ? col2Limpia : col3Limpia;
-      let periodoTexto = esPrecioEnC ? (col[3] || "/ mes") : (col[4] || "/ mes");
-      let descripcionTexto = esPrecioEnC ? (col[4] || "") : (col[2] || "");
-
-      // Si el precio no se ha puesto aún (como Apple Music o Deezer vacíos), omite hasta que tenga precio
-      if (!precioBruto && !descripcionTexto) return;
-
-      listaSheet.push(
-        normalizarProductoFila(col[0], col[1], descripcionTexto, precioBruto, periodoTexto, col[5], col[6])
-      );
-    });
-
-    if (listaSheet.length > 0) {
-      productos = listaSheet;
-      localStorage.setItem("productos_cedeño_cache", JSON.stringify(productos));
-    }
-  } catch (err) {
-    console.error("Error cargando Google Sheet:", err);
-  }
-
-  actualizarBotonesFiltro();
-  filtrarCatalogo();
 }
 
+// Renderiza inmediatamente lo que haya en caché y lanza la actualización rápida
 actualizarBotonesFiltro();
 filtrarCatalogo();
 actualizarVistaCarrito();

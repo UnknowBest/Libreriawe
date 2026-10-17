@@ -35,7 +35,8 @@ let productos = JSON.parse(localStorage.getItem(CACHE_KEY)) || [
     precio: "\$3.00",
     periodo: "/ 3 años",
     stock: null,
-    descuento: 0
+    descuento: 0,
+    minimoMeses: 1
   }
 ];
 
@@ -326,7 +327,7 @@ function obtenerDisenoVisualProducto(prod) {
 }
 
 // ==========================================
-// 3. MOSTRAR PRODUCTOS, STOCK, DESCUENTO Y DURACIÓN FIJA
+// 3. MOSTRAR PRODUCTOS, STOCK, DESCUENTO Y MÍNIMO DE MESES
 // ==========================================
 function obtenerPrecioNumerico(precioTexto) {
   const limpio = String(precioTexto).replace(/[^0-9.,]/g, "").replace(",", ".");
@@ -395,6 +396,10 @@ function mostrarProductos(lista) {
     const estaAgotado = stockDisponible !== null && stockDisponible <= 0;
 
     const tieneSelectorMeses = permiteElegirMeses(prod);
+    const minMeses = (tieneSelectorMeses && prod.minimoMeses && prod.minimoMeses > 1)
+      ? parseInt(prod.minimoMeses, 10)
+      : 1;
+
     const visual = obtenerDisenoVisualProducto(prod);
 
     const tarjeta = document.createElement("div");
@@ -412,25 +417,48 @@ function mostrarProductos(lista) {
       ? `<span class="badge-descuento-card">🔥 -${descPorcentaje}% OFF</span>`
       : "";
 
+    // Genera las opciones de meses respetando el mínimo configurado en Columna H
+    const opcionesBase = [1, 2, 3, 6, 12];
+    if (!opcionesBase.includes(minMeses)) {
+      opcionesBase.push(minMeses);
+      opcionesBase.sort((a, b) => a - b);
+    }
+    const opcionesFiltradas = opcionesBase.filter(m => m >= minMeses);
+
+    const htmlOpcionesMeses = opcionesFiltradas.map(m => {
+      if (m === 1) return `<option value="1">1 mes</option>`;
+      if (m === 12) return `<option value="12">12 meses (1 año)</option>`;
+      return `<option value="${m}">${m} meses</option>`;
+    }).join("");
+
+    const textoLabelDuracion = minMeses > 1 ? `📅 Duración (Mín. ${minMeses}m):` : `📅 Duración:`;
+
     const htmlSelectorMeses = (tieneSelectorMeses && !estaAgotado) ? `
       <div class="caja-selector-meses">
-        <label>📅 Duración:</label>
+        <label>${textoLabelDuracion}</label>
         <select class="select-meses">
-          <option value="1">1 mes</option>
-          <option value="2">2 meses</option>
-          <option value="3">3 meses</option>
-          <option value="6">6 meses</option>
-          <option value="12">12 meses (1 año)</option>
+          ${htmlOpcionesMeses}
         </select>
       </div>
     ` : "";
 
-    const precioMostradoTexto = `$${precioConDescuentoBase.toFixed(2)}`;
+    // Calcula el precio inicial multiplicado por el mínimo de meses (ej: 2 meses en Spotify)
+    const precioMostradoInicial = (precioConDescuentoBase * minMeses).toFixed(2);
+    const precioOriginalInicial = (precioOriginalBase * minMeses).toFixed(2);
+    const precioMostradoTexto = `$${precioMostradoInicial}`;
+
     const htmlPrecioOriginalTachado = tieneDescuento
-      ? `<span class="precio-original">$${precioOriginalBase.toFixed(2)}</span>`
+      ? `<span class="precio-original">$${precioOriginalInicial}</span>`
       : "";
 
-    const mensajeInicial = `¡Hola! Me interesa comprar: *${prod.nombre}*${tieneSelectorMeses ? " (1 mes)" : ""} (${precioMostradoTexto} ${prod.periodo})`;
+    const textoPeriodoInicial = (tieneSelectorMeses && minMeses > 1)
+      ? `por ${minMeses} meses`
+      : prod.periodo;
+
+    const etiquetaMesesInicial = minMeses === 1 ? "1 mes" : `${minMeses} meses`;
+    const mensajeInicial = tieneSelectorMeses
+      ? `¡Hola! Me interesa comprar: *${prod.nombre} (${etiquetaMesesInicial})* - Total: ${precioMostradoTexto}`
+      : `¡Hola! Me interesa comprar: *${prod.nombre}* (${precioMostradoTexto} ${prod.periodo})`;
     const urlWhatsappInicial = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeInicial)}`;
 
     tarjeta.innerHTML = `
@@ -450,7 +478,7 @@ function mostrarProductos(lista) {
           <div class="precio">
             ${htmlPrecioOriginalTachado}
             <strong class="valor-precio ${tieneDescuento ? 'en-oferta' : ''}">${precioMostradoTexto}</strong> 
-            <span class="texto-periodo">${prod.periodo}</span>
+            <span class="texto-periodo">${textoPeriodoInicial}</span>
           </div>
           <div class="botones-tarjeta">
             <button class="btn-agregar-carrito" ${estaAgotado ? "disabled" : ""}>
@@ -470,7 +498,7 @@ function mostrarProductos(lista) {
 
     if (selectMeses) {
       selectMeses.addEventListener("change", () => {
-        const meses = parseInt(selectMeses.value, 10) || 1;
+        const meses = parseInt(selectMeses.value, 10) || minMeses;
         const nuevoTotal = (precioConDescuentoBase * meses).toFixed(2);
         const etiquetaMeses = meses === 1 ? "1 mes" : `${meses} meses`;
 
@@ -488,7 +516,7 @@ function mostrarProductos(lista) {
     const btnAgregar = tarjeta.querySelector(".btn-agregar-carrito");
     if (btnAgregar && !estaAgotado) {
       btnAgregar.addEventListener("click", (e) => {
-        const mesesElegidos = selectMeses ? (parseInt(selectMeses.value, 10) || 1) : 1;
+        const mesesElegidos = selectMeses ? (parseInt(selectMeses.value, 10) || minMeses) : minMeses;
         const exito = agregarAlCarrito(prod, mesesElegidos, tieneSelectorMeses);
         if (exito) {
           const btn = e.target;
@@ -822,7 +850,6 @@ if (btnAplicarCupon) {
 
     let data = null;
 
-    // 1. Intenta primero con tu Google Apps Script actualizado
     try {
       const url = `${URL_VERIFICADOR_PICHINCHA}?accion=validarCupon&cupon=${encodeURIComponent(codigo)}&t=${Date.now()}`;
       data = await consultarAppsScript(url);
@@ -830,12 +857,10 @@ if (btnAplicarCupon) {
       console.warn("Intentando leer pestaña Cupones CSV...");
     }
 
-    // 2. Si Apps Script no responde, busca directamente en la hoja "Cupones" del Sheet
     if (!data) {
       data = await buscarCuponEnSheetCSV(codigo);
     }
 
-    // 3. Respaldo en CUPONES_LOCALES para que nunca falle por conexión
     if (!data && CUPONES_LOCALES[codigo]) {
       const cLocal = CUPONES_LOCALES[codigo];
       if (cLocal.activo) {
@@ -1117,7 +1142,7 @@ function dividirFilaCSV(fila) {
   return resultado;
 }
 
-function normalizarProductoFila(nombre, categoria, descripcion, precioRaw, periodoRaw, stockRaw, descuentoRaw) {
+function normalizarProductoFila(nombre, categoria, descripcion, precioRaw, periodoRaw, stockRaw, descuentoRaw, minMesesRaw) {
   let precioBruto = String(precioRaw || "0.00").replace(/\\/g, "").trim();
   if (!precioBruto.startsWith("\$")) {
     precioBruto = "$" + precioBruto.replace("$", "");
@@ -1136,6 +1161,10 @@ function normalizarProductoFila(nombre, categoria, descripcion, precioRaw, perio
     ? 0
     : parseFloat(String(descuentoRaw).replace("%", "").trim()) || 0;
 
+  const minMesesLimpio = (minMesesRaw === undefined || minMesesRaw === null || String(minMesesRaw).trim() === "")
+    ? 1
+    : Math.max(1, parseInt(String(minMesesRaw).replace(/[^0-9]/g, ""), 10) || 1);
+
   return {
     nombre: String(nombre).trim(),
     categoria: String(categoria || "otros").trim().toLowerCase(),
@@ -1143,7 +1172,8 @@ function normalizarProductoFila(nombre, categoria, descripcion, precioRaw, perio
     precio: precioBruto,
     periodo: String(periodoRaw || "/ mes").trim(),
     stock: isNaN(stockLimpio) ? null : stockLimpio,
-    descuento: descuentoLimpio
+    descuento: descuentoLimpio,
+    minimoMeses: minMesesLimpio
   };
 }
 
@@ -1167,8 +1197,9 @@ function parsearTextoCSV(csv) {
 
     if (!precioBruto && !descripcionTexto) return;
 
+    // col[5] = Stock, col[6] = Descuento, col[7] = Minimo Meses (Columna H)
     listaSheet.push(
-      normalizarProductoFila(col[0], col[1], descripcionTexto, precioBruto, periodoTexto, col[5], col[6])
+      normalizarProductoFila(col[0], col[1], descripcionTexto, precioBruto, periodoTexto, col[5], col[6], col[7])
     );
   });
 
@@ -1185,7 +1216,7 @@ async function leerCSVDesdeUrl(urlBase) {
 }
 
 async function cargarDesdeGoogleSheets() {
-  // 1. CARGA RÁPIDA: Lee primero tu CSV publicado (~0.2s) sin esperar al Apps Script
+  // 1. CARGA RÁPIDA: Lee primero tu CSV publicado (~0.2s) incluyendo la Columna H (Minimo Meses)
   try {
     let listaCSV = await leerCSVDesdeUrl(GOOGLE_SHEET_CSV_URL);
     if (listaCSV.length === 0) {
@@ -1211,14 +1242,20 @@ async function cargarDesdeGoogleSheets() {
     }
   }
 
-  // 2. SINCRONIZACIÓN EN SEGUNDO PLANO: Actualiza stock en vivo desde Apps Script
+  // 2. SINCRONIZACIÓN EN SEGUNDO PLANO: Actualiza stock en vivo conservando el mínimo de meses leído en CSV
   try {
+    const mapaMinMesesCSV = {};
+    productos.forEach(prodCSV => {
+      mapaMinMesesCSV[(prodCSV.nombre || "").toLowerCase()] = prodCSV.minimoMeses || 1;
+    });
+
     const urlVivo = `${URL_VERIFICADOR_PICHINCHA}?accion=obtenerProductos&t=${Date.now()}`;
     const dataVivo = await consultarAppsScript(urlVivo);
     if (dataVivo && dataVivo.ok && Array.isArray(dataVivo.productos) && dataVivo.productos.length > 0) {
-      productos = dataVivo.productos.map(p =>
-        normalizarProductoFila(p.nombre, p.categoria, p.descripcion, p.precio, p.periodo, p.stock, p.descuento)
-      );
+      productos = dataVivo.productos.map(p => {
+        const minMesesFinal = p.minimoMeses || mapaMinMesesCSV[(p.nombre || "").toLowerCase()] || 1;
+        return normalizarProductoFila(p.nombre, p.categoria, p.descripcion, p.precio, p.periodo, p.stock, p.descuento, minMesesFinal);
+      });
       localStorage.setItem(CACHE_KEY, JSON.stringify(productos));
       actualizarBotonesFiltro();
       filtrarCatalogo();

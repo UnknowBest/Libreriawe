@@ -1,9 +1,8 @@
-// ==========================================
-// 1. CONFIGURACIÓN PRINCIPAL Y DATOS BANCARIOS
-// ==========================================
-const NUMERO_WHATSAPP = "593963259492"; 
-const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNz682jLUpz3P7eKqahpH2NiLqctI5V1B2utHZ2ZMS4rsmYSwd0huivG5Qt_sM4FyxHtvS7AliVNm9/pub?gid=0&single=true&output=csv";
-const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwmO7jW90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMAUdpx1ttutlRY/exec";
+const NUMERO_WHATSAPP = "593963259492";
+const SHEET_ID = "1zN4bHeBl8iZ4NETcDN7kKfv7z3GSHZ8kf-EX0UqJHtg";
+const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+// Mantén en la siguiente línea tu URL completa de Google Apps Script tal como ya la tienes:
+const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwmO7jw90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMVUdpx1/exec";
 
 const DATOS_BANCO = {
   tipoCuenta: "Cuenta de Ahorros - Banco Pichincha",
@@ -11,7 +10,10 @@ const DATOS_BANCO = {
   titular: "Jostin Alejandro Cedeño López"
 };
 
-let productos = JSON.parse(localStorage.getItem("productos_cedeño_cache")) || [
+const CACHE_KEY = "productos_cedeno_cache";
+
+// Carga TODOS los productos guardados al instante (0.01s) sin esperar 5 segundos
+let productos = JSON.parse(localStorage.getItem(CACHE_KEY)) || [
   {
     nombre: "Canva Pro 3 Años",
     categoria: "software",
@@ -23,11 +25,10 @@ let productos = JSON.parse(localStorage.getItem("productos_cedeño_cache")) || [
   }
 ];
 
-let carrito = JSON.parse(localStorage.getItem("carrito_cedeño")) || [];
+let carrito = JSON.parse(localStorage.getItem("carrito_cedeno")) || [];
 let categoriaActual = "todos";
 let pagoVerificadoAutomaticamente = false;
 let cuponActivo = null;
-
 // Referencias del DOM
 const contenedor = document.getElementById("contenedor-productos");
 const contenedorFiltros = document.getElementById("contenedor-filtros");

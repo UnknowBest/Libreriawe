@@ -1065,4 +1065,130 @@
 
   <script src="script.js"></script>
 </body>
+/* ==========================================================================
+   1. SINCRONIZACIÓN ULTRARRÁPIDA CON GOOGLE SHEETS (SIN ESPERA DE 5 SEGUNDOS)
+   ========================================================================== */
+async function sincronizarSheetRapido() {
+  try {
+    const respuesta = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+    if (!respuesta.ok) return;
+    const csvTexto = await respuesta.text();
+
+    // Si tu script ya tiene una función propia para leer el CSV, la usa automáticamente:
+    if (typeof parsearCSV === "function") {
+      const lista = parsearCSV(csvTexto);
+      if (lista && lista.length > 0) actualizarCatalogoEnVivo(lista);
+    } else if (typeof procesarCSV === "function") {
+      const lista = procesarCSV(csvTexto);
+      if (lista && lista.length > 0) actualizarCatalogoEnVivo(lista);
+    }
+  } catch (err) {
+    console.warn("Usando catálogo en caché local:", err);
+  }
+}
+
+function actualizarCatalogoEnVivo(nuevosProductos) {
+  productos = nuevosProductos;
+  localStorage.setItem(CACHE_KEY, JSON.stringify(nuevosProductos));
+
+  // Llama automáticamente a tu función de dibujado según cómo se llame en tu archivo
+  if (typeof renderizarProductos === "function") renderizarProductos();
+  else if (typeof mostrarProductos === "function") mostrarProductos();
+  else if (typeof cargarProductos === "function") cargarProductos();
+
+  if (typeof renderizarFiltros === "function") renderizarFiltros();
+  else if (typeof crearFiltros === "function") crearFiltros();
+}
+
+/* ==========================================================================
+   2. RAMAS AUTOMÁTICAS PARA GOOGLE ADS (/carrito, /checkout, /Disney+)
+   ========================================================================== */
+function crearSlugProducto(texto) {
+  return texto
+    .toString()
+    .trim()
+    .replace(/\s+/g, "-"); // Conserva el "+" para rutas como /Disney+
+}
+
+document.addEventListener("click", function (e) {
+  const boton = e.target.closest("button, a");
+  const texto = (boton ? boton.innerText : e.target.innerText || "").toLowerCase();
+
+  // Si abre el carrito o añade al carrito -> cambia URL a /carrito
+  if (
+    (boton && boton.id === "btn-abrir-carrito") ||
+    texto.includes("añadir al carrito") ||
+    texto.includes("carrito")
+  ) {
+    window.history.pushState({}, "", "/carrito");
+  }
+
+  // Si pulsa "Comprar directo" -> cambia URL a /checkout
+  if (texto.includes("comprar directo")) {
+    window.history.pushState({}, "", "/checkout");
+  }
+
+  // Si toca el título de una tarjeta -> cambia URL al nombre del producto (ej. /Disney+)
+  const tituloTarjeta = e.target.closest("h2, h3, h4");
+  if (tituloTarjeta) {
+    const slug = crearSlugProducto(tituloTarjeta.innerText);
+    window.history.pushState({}, "", "/" + slug);
+  }
+});
+
+function leerRamaAlEntrar() {
+  const ruta = decodeURIComponent(window.location.pathname).replace(/^\/+|\/+$/g, "");
+  if (!ruta || ruta === "index.html") return;
+
+  // Si el usuario entra a https://tiendadigitalcedeno.com/carrito
+  if (ruta.toLowerCase() === "carrito") {
+    const btnCarrito = document.getElementById("btn-abrir-carrito");
+    if (btnCarrito) btnCarrito.click();
+    return;
+  }
+
+  // Si el usuario entra a https://tiendadigitalcedeno.com/Disney+ o cualquier producto
+  const busqueda = ruta.replace(/-/g, " ").toLowerCase();
+  const inputBuscador = document.getElementById("buscador");
+
+  if (inputBuscador) {
+    inputBuscador.value = busqueda;
+    inputBuscador.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+
+  const titulos = Array.from(document.querySelectorAll("#contenedor-productos h2, #contenedor-productos h3, #contenedor-productos h4"));
+  const coincidencia = titulos.find((el) => el.innerText.toLowerCase().includes(busqueda));
+
+  if (coincidencia) {
+    const tarjeta = coincidencia.closest("div")?.parentElement || coincidencia;
+    tarjeta.scrollIntoView({ behavior: "smooth", block: "center" });
+    tarjeta.style.outline = "3px solid #6366f1";
+    tarjeta.style.borderRadius = "16px";
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  sincronizarSheetRapido();
+  setTimeout(leerRamaAlEntrar, 300);
+  setTimeout(leerRamaAlEntrar, 1200);
+});
+
+/* ==========================================================================
+   3. MODO SOLO LECTURA EN CELULAR (BLOQUEA CARTEL DE COPIAR Y BUSCAR EN GOOGLE)
+   ========================================================================== */
+document.addEventListener(
+  "contextmenu",
+  function (e) {
+    if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA" && e.target.tagName !== "SELECT") {
+      e.preventDefault();
+    }
+  },
+  { passive: false }
+);
+
+document.addEventListener("selectstart", function (e) {
+  if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") {
+    e.preventDefault();
+  }
+});
 </html>

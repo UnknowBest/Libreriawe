@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
-<link rel="stylesheet" href="style.css">
 <head>
   <!-- Título y descripción principal -->
-<title>Tienda Digital Cedeño | La Mejor Tienda Digital</title>
-<meta name="description" content="La mejor tienda digital en Ecuador. Catálogo oficial de streaming, licencias de software, IA y servicios digitales con entrega inmediata." />
+  <title>Tienda Digital Cedeño | La Mejor Tienda Digital</title>
+  <meta name="description" content="La mejor tienda digital en Ecuador. Catálogo oficial de streaming, licencias de software, IA y servicios digitales con entrega inmediata." />
 
-<!-- Color de la barra lateral del cuadro en Discord (puedes cambiar el código hex) -->
-<meta name="theme-color" content="#3b82f6" />
+  <!-- Color de la barra lateral del cuadro en Discord -->
+  <meta name="theme-color" content="#3b82f6" />
 
-<!-- Etiquetas Open Graph (Discord, WhatsApp, Facebook, Instagram) -->
-<meta property="og:type" content="website" />
-<meta property="og:site_name" content="Tienda Digital Cedeño" />
-<meta property="og:url" content="https://tiendadigitalcedeno.com/" />
-<meta property="og:title" content="🔥 Tienda Digital Cedeño · La Mejor Tienda Digital" />
-<meta property="og:description" content="Explora nuestro catálogo online con los mejores precios en streaming, software y herramientas digitales. ¡Atención y entrega inmediata!" />
-<meta property="og:image" content="https://tiendadigitalcedeno.com/preview.jpg" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
+  <!-- Etiquetas Open Graph (Discord, WhatsApp, Facebook, Instagram) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Tienda Digital Cedeño" />
+  <meta property="og:url" content="https://tiendadigitalcedeno.com/" />
+  <meta property="og:title" content="🔥 Tienda Digital Cedeño · La Mejor Tienda Digital" />
+  <meta property="og:description" content="Explora nuestro catálogo online con los mejores precios en streaming, software y herramientas digitales. ¡Atención y entrega inmediata!" />
+  <meta property="og:image" content="https://tiendadigitalcedeno.com/preview.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
 
-<!-- Obliga a Discord a mostrar la imagen GRANDE igual al cuadro de TikTok -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="🔥 Tienda Digital Cedeño · La Mejor Tienda Digital" />
-<meta name="twitter:description" content="Explora nuestro catálogo online con los mejores precios en streaming, software y herramientas digitales. ¡Atención y entrega inmediata!" />
-<meta name="twitter:image" content="https://tiendadigitalcedeno.com/preview.jpg" />
+  <!-- Tarjeta grande para Discord y Twitter/X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="🔥 Tienda Digital Cedeño · La Mejor Tienda Digital" />
+  <meta name="twitter:description" content="Explora nuestro catálogo online con los mejores precios en streaming, software y herramientas digitales. ¡Atención y entrega inmediata!" />
+  <meta name="twitter:image" content="https://tiendadigitalcedeno.com/preview.jpg" />
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tienda Digital Cedeño | Catálogo Oficial</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%236366f1'/><stop offset='100%' stop-color='%23a855f7'/></linearGradient></defs><rect width='100' height='100' rx='24' fill='url(%23g)'/><text x='50%' y='64%' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-weight='900' font-size='38'>TDC</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@700;900&family=Outfit:wght@400;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   
   <style>
     :root {
@@ -437,7 +437,7 @@
       letter-spacing: -0.5px;
     }
 
-    /* Etiquetas Flotantes (Categoría, Stock y Descuento) */
+    /* Etiquetas Flotantes */
     .badge-flotante {
       position: absolute;
       top: 11px;
@@ -616,7 +616,7 @@
       font-size: 0.88rem;
     }
 
-    /* MODAL DEL CARRITO */
+    /* MODAL DEL CARRITO Y LEGAL */
     .modal-fondo {
       position: fixed;
       inset: 0;
@@ -716,69 +716,6 @@
       text-align: right;
       color: #818cf8;
       font-size: 0.92rem;
-    }
-
-    .caja-cupon {
-      margin-top: 14px;
-      padding: 12px;
-      background-color: rgba(99, 102, 241, 0.08);
-      border: 1px dashed var(--acento);
-      border-radius: 10px;
-    }
-
-    .caja-cupon label {
-      display: block;
-      font-size: 0.84rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #c7d2fe;
-    }
-
-    .fila-cupon {
-      display: flex;
-      gap: 8px;
-    }
-
-    .fila-cupon input {
-      flex: 1;
-      padding: 9px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--borde);
-      background-color: var(--fondo);
-      color: var(--texto);
-      font-size: 0.88rem;
-      text-transform: uppercase;
-    }
-
-    .btn-cupon {
-      background-color: var(--acento);
-      color: white;
-      border: none;
-      padding: 0 14px;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .desglose-totales {
-      margin: 14px 0;
-      padding: 12px;
-      background-color: rgba(255, 255, 255, 0.03);
-      border-radius: 10px;
-      border: 1px solid var(--borde);
-    }
-
-    .fila-desglose {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.88rem;
-      color: var(--texto-secundario);
-      margin-bottom: 6px;
-    }
-
-    .descuento-linea {
-      color: #4ade80;
-      font-weight: 600;
     }
 
     .fila-total {
@@ -1049,6 +986,12 @@
           </div>
         </div>
 
+        <!-- Casilla de Aceptación Legal Obligatoria -->
+        <label class="check-legal-carrito">
+          <input type="checkbox" id="check-acepto-terminos" checked>
+          <span>He leído y acepto los <a href="#terminos" class="link-legal-interno">Términos</a>, <a href="#garantia" class="link-legal-interno">Políticas de Garantía</a> y <a href="#privacidad" class="link-legal-interno">Privacidad</a>.</span>
+        </label>
+
         <button id="btn-finalizar-pedido" class="btn-whatsapp-pago">
           ✅ Enviar Pedido por WhatsApp
         </button>
@@ -1056,11 +999,104 @@
     </div>
   </div>
 
-  <!-- Pie de página -->
+  <!-- MODAL DE POLÍTICAS Y TÉRMINOS LEGALES -->
+  <div id="modal-legal" class="modal-fondo oculto">
+    <div class="modal-contenido modal-legal-ancho">
+      <div class="modal-header">
+        <h3 id="titulo-modal-legal">⚖️ Información Legal y Políticas</h3>
+        <button id="btn-cerrar-legal" class="btn-cerrar">&times;</button>
+      </div>
+
+      <!-- Pestañas de navegación legal -->
+      <div class="tabs-legales">
+        <button class="tab-legal activo" data-tab="terminos">📜 Términos</button>
+        <button class="tab-legal" data-tab="garantia">🛡️ Garantía</button>
+        <button class="tab-legal" data-tab="privacidad">🔒 Privacidad</button>
+      </div>
+
+      <!-- Contenido 1: Términos y Condiciones -->
+      <div id="contenido-terminos" class="cuerpo-legal">
+        <h4>1. Identificación y Objeto</h4>
+        <p>Bienvenido a <strong>Tienda Digital Cedeño</strong> (<code>tiendadigitalcedeno.com</code>), administrada por <strong>Jostin Alejandro Cedeño López</strong> en la República del Ecuador. Al adquirir cualquier suscripción de streaming, licencia de software o servicio digital de nuestro catálogo, el cliente acepta íntegramente los presentes Términos y Condiciones conforme a la Ley de Comercio Electrónico, Firmas y Mensajes de Datos del Ecuador.</p>
+
+        <h4>2. Reglas de Uso de Cuentas y Perfiles</h4>
+        <ul>
+          <li><strong>Uso Personal:</strong> Las pantallas o perfiles adquiridos son para uso exclusivo en el número de dispositivos contratados (1 pantalla simultánea salvo que el producto indique cuenta completa).</li>
+          <li><strong>Prohibición de Modificaciones:</strong> Queda estrictamente prohibido cambiar la contraseña, correo electrónico, métodos de pago, PIN o eliminar/editar perfiles de terceros en cuentas compartidas.</li>
+          <li><strong>Incumplimiento:</strong> Cualquier intento de manipulación no autorizada anulará automáticamente la garantía sin derecho a reposición ni reembolso.</li>
+        </ul>
+
+        <h4>3. Precios, Pagos y Promociones</h4>
+        <ul>
+          <li>Todos los precios están expresados en <strong>Dólares de los Estados Unidos de América (USD)</strong>.</li>
+          <li>Los pagos se receptan mediante transferencia bancaria o Deuna! a la Cuenta de Ahorros Banco Pichincha N° <strong>2213128245</strong> a nombre de <strong>Jostin Alejandro Cedeño López</strong>.</li>
+          <li>Los descuentos promocionales en productos y los cupones de descuento <strong>no son acumulables entre sí</strong>.</li>
+        </ul>
+
+        <h4>4. Propiedad Intelectual</h4>
+        <p>Tienda Digital Cedeño es un comercio independiente. Las marcas exhibidas en el catálogo se utilizan únicamente con fines identificativos del servicio digital comercializado.</p>
+      </div>
+
+      <!-- Contenido 2: Política de Garantía y Reembolsos -->
+      <div id="contenido-garantia" class="cuerpo-legal oculto">
+        <h4>1. Cobertura de Garantía</h4>
+        <p>Todos nuestros productos cuentan con garantía real por la totalidad del periodo contratado (1 mes, 2 meses, 3 meses, 6 meses, 12 meses o 3 años según corresponda al plan elegido).</p>
+
+        <h4>2. Tiempo de Respuesta y Reposición</h4>
+        <ul>
+          <li>En caso de caída, bloqueo involuntario o inconveniente técnico con una cuenta o licencia, el cliente debe reportarlo a nuestro WhatsApp oficial de soporte (<strong>+593 96 325 9492</strong>).</li>
+          <li>El tiempo de solución, reactivación o reemplazo por una cuenta funcional es de <strong>1 a 24 horas máximo</strong> tras el reporte.</li>
+        </ul>
+
+        <h4>3. Política de No Reembolso en Productos Digitales</h4>
+        <ul>
+          <li>Por tratarse de bienes intangibles, credenciales de acceso y licencias digitales de consumo inmediato, <strong>una vez entregados los datos de acceso al cliente no se realizan devoluciones de dinero en efectivo ni reversos bancarios</strong>.</li>
+          <li>La garantía consiste exclusivamente en el soporte técnico, reactivación o entrega de un nuevo acceso equivalente por los días restantes del plan.</li>
+          <li>Solo procederá un reembolso o saldo a favor si Tienda Digital Cedeño no dispone de stock para reponer el servicio dentro de las 48 horas posteriores al reclamo.</li>
+        </ul>
+
+        <h4>4. Causales de Pérdida de Garantía</h4>
+        <p>La garantía quedará anulada inmediatamente si el cliente comparte el acceso en más dispositivos de los permitidos, altera datos de seguridad de la cuenta o infringe las normas de la plataforma correspondiente.</p>
+      </div>
+
+      <!-- Contenido 3: Política de Privacidad (LOPDP Ecuador) -->
+      <div id="contenido-privacidad" class="cuerpo-legal oculto">
+        <h4>1. Cumplimiento con la LOPDP (Ecuador)</h4>
+        <p>En cumplimiento con la <strong>Ley Orgánica de Protección de Datos Personales (LOPDP)</strong> de la República del Ecuador, informamos a nuestros usuarios sobre el tratamiento transparente y seguro de su información.</p>
+
+        <h4>2. Datos que Recopilamos</h4>
+        <ul>
+          <li><strong>Datos de Transacción:</strong> Número de comprobante o documento bancario de Banco Pichincha / Deuna! ingresado en nuestro verificador para validar el pago.</li>
+          <li><strong>Datos de Contacto:</strong> Número de teléfono de WhatsApp y nombre de perfil cuando el cliente envía su orden de compra para recibir sus accesos.</li>
+          <li><strong>Almacenamiento Local (Cookies técnicas):</strong> Utilizamos <code>localStorage</code> en tu navegador únicamente para guardar temporalmente los productos de tu carrito y acelerar la carga del catálogo.</li>
+        </ul>
+
+        <h4>3. Finalidad del Tratamiento</h4>
+        <p>Tus datos se utilizan única y exclusivamente para: (a) verificar la autenticidad del pago, (b) entregar las cuentas o licencias adquiridas vía WhatsApp, (c) brindar soporte y garantía durante la vigencia de tu suscripción, y (d) prevenir el fraude.</p>
+
+        <h4>4. Confidencialidad y Derechos ARCO</h4>
+        <p>Tienda Digital Cedeño <strong>jamás vende, alquila ni cede datos personales a terceros</strong>. El titular de los datos puede ejercer sus derechos de acceso, rectificación, actualización o eliminación escribiendo directamente a nuestro canal oficial de WhatsApp (+593 96 325 9492).</p>
+      </div>
+
+      <div class="footer-modal-legal">
+        <button type="button" id="btn-entendido-legal" class="btn-agregar-carrito">✔ Entendido y Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pie de página con Enlaces Legales y Aviso de Marcas -->
   <footer class="footer">
     <div class="container">
+      <div class="footer-enlaces-legales">
+        <a href="#terminos">📜 Términos y Condiciones</a>
+        <a href="#garantia">🛡️ Política de Garantía y Reembolsos</a>
+        <a href="#privacidad">🔒 Política de Privacidad (LOPDP)</a>
+      </div>
       <p>© 2026 Tienda Digital Cedeño. Todos los derechos reservados.</p>
-      <p class="footer-sub">Pagos seguros vía Banco Pichincha (Cta: 2213128245) y Deuna!</p>
+      <p class="footer-sub">Pagos seguros vía Banco Pichincha (Cta: 2213128245) y Deuna! | Titular: Jostin Alejandro Cedeño López</p>
+      <p class="footer-disclaimer">
+        Aviso Legal: Todas las marcas comerciales, logotipos y nombres de plataformas (incluyendo Netflix, Disney+, HBO Max, Prime Video, Spotify, Canva, YouTube, entre otros) son propiedad de sus respectivos dueños. Tienda Digital Cedeño opera como distribuidor independiente de servicios y licencias digitales en Ecuador.
+      </p>
     </div>
   </footer>
 

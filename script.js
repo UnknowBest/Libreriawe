@@ -1,14 +1,21 @@
 const NUMERO_WHATSAPP = "593963259492";
 
-// URL directa publicada en CSV (Carga ultrarrápida)
+// 1. URL directa publicada en CSV (Carga ultrarrápida)
 const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNz682jLUpz3P7eKqahpH2NiLqctI5V1B2utHZ2ZMS4rsmYSwd0huivG5Qt_sM4FyxHtvS7AliVNm9/pub?output=csv";
 
-// Respaldo con gviz por si Google tarda en refrescar el enlace pub
+// Respaldo con gviz para Productos y Cupones
 const SHEET_ID = "1zN4bHeBl8iZ4NETcDN7kKfv7z3GSHZ8kf-EX0UqJHtg";
 const SHEET_GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+const SHEET_CUPONES_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Cupones`;
 
-// URL de tu Google Apps Script actualizado
+// URL completa de tu Google Apps Script (Versión 15 actualizada)
 const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwmO7jW90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMAUdpx1ttutlRY/exec";
+
+// Cupones de respaldo inmediato por si la red del usuario falla al consultar el Sheet
+const CUPONES_LOCALES = {
+  "CEDENO10": { porcentaje: 10, categoriaRequerida: "todos", minimoProductos: 1, activo: true },
+  "STREAM5":  { porcentaje: 5,  categoriaRequerida: "streaming", minimoProductos: 1, activo: true }
+};
 
 const DATOS_BANCO = {
   tipoCuenta: "Cuenta de Ahorros - Banco Pichincha",
@@ -19,6 +26,7 @@ const DATOS_BANCO = {
 const CACHE_KEY = "productos_cedeno_cache";
 const CARRITO_KEY = "carrito_cedeno";
 
+// Carga TODOS los productos guardados al instante (0.01s)
 let productos = JSON.parse(localStorage.getItem(CACHE_KEY)) || [
   {
     nombre: "Canva Pro 3 Años",
@@ -36,11 +44,13 @@ let categoriaActual = "todos";
 let pagoVerificadoAutomaticamente = false;
 let cuponActivo = null;
 
+// Referencias del DOM
 const contenedor = document.getElementById("contenedor-productos");
 const contenedorFiltros = document.getElementById("contenedor-filtros");
 const buscador = document.getElementById("buscador");
 const navWhatsapp = document.getElementById("nav-whatsapp");
 
+// Referencias del Carrito y Cupones
 const modalCarrito = document.getElementById("modal-carrito");
 const btnAbrirCarrito = document.getElementById("btn-abrir-carrito");
 const btnCerrarCarrito = document.getElementById("btn-cerrar-carrito");
@@ -63,6 +73,14 @@ const btnVerificarPago = document.getElementById("btn-verificar-pago");
 const estadoVerificacion = document.getElementById("estado-verificacion");
 const btnFinalizarPedido = document.getElementById("btn-finalizar-pedido");
 
+// Referencias Legales
+const modalLegal = document.getElementById("modal-legal");
+const btnCerrarLegal = document.getElementById("btn-cerrar-legal");
+const btnEntendidoLegal = document.getElementById("btn-entendido-legal");
+const tabsLegales = document.querySelectorAll(".tab-legal");
+const checkAceptoTerminos = document.getElementById("check-acepto-terminos");
+
+// Mostrar datos bancarios
 document.getElementById("banco-tipo").textContent = DATOS_BANCO.tipoCuenta;
 document.getElementById("banco-numero").textContent = DATOS_BANCO.numeroCuenta;
 document.getElementById("banco-titular").textContent = DATOS_BANCO.titular;
@@ -75,9 +93,13 @@ document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
   setTimeout(() => (e.target.textContent = "Copiar"), 2000);
 });
 
+// ==========================================
+// 2. LOGOS OFICIALES ADAPTABLES A MÓVIL Y PC
+// ==========================================
 function obtenerDisenoVisualProducto(prod) {
   const n = (prod.nombre || "").toLowerCase();
 
+  // 1. NETFLIX
   if (n.includes("netflix")) {
     return {
       fondo: "radial-gradient(circle at center, #7f1d1d 0%, #1a0404 65%, #050505 100%)",
@@ -85,95 +107,213 @@ function obtenerDisenoVisualProducto(prod) {
       htmlLogo: `<div class="logo-netflix">NETFLIX</div>`
     };
   }
+
+  // 2. DISNEY+
   if (n.includes("disney")) {
     return {
       fondo: "radial-gradient(circle at center, #113ccf 0%, #07133a 65%, #030712 100%)",
       colorMarca: "#38bdf8",
-      htmlLogo: `<div class="logo-disney"><svg class="arco-disney" viewBox="0 0 180 42" fill="none"><path d="M8 36 Q 90 -8 172 30" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/><circle cx="172" cy="30" r="4" fill="#ffffff"/></svg><span>Disney</span><span class="mas-disney">+</span></div>`
+      htmlLogo: `
+        <div class="logo-disney">
+          <svg class="arco-disney" viewBox="0 0 180 42" fill="none">
+            <path d="M8 36 Q 90 -8 172 30" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="172" cy="30" r="4" fill="#ffffff"/>
+          </svg>
+          <span>Disney</span><span class="mas-disney">+</span>
+        </div>`
     };
   }
+
+  // 3. HBO MAX
   if (n.includes("hbo") || n.includes("max")) {
     return {
       fondo: "radial-gradient(circle at center, #4c1d95 0%, #1e0b4b 65%, #070312 100%)",
       colorMarca: "#a855f7",
-      htmlLogo: `<div class="logo-hbomax"><span class="txt-hbo">HB<svg width="34" height="34" viewBox="0 0 36 36" style="margin-left:1px;"><circle cx="18" cy="18" r="14" fill="none" stroke="#ffffff" stroke-width="7"/><circle cx="18" cy="18" r="4.5" fill="#ffffff"/></svg></span><span class="txt-max">max</span></div>`
+      htmlLogo: `
+        <div class="logo-hbomax">
+          <span class="txt-hbo">HB<svg width="34" height="34" viewBox="0 0 36 36" style="margin-left:1px;"><circle cx="18" cy="18" r="14" fill="none" stroke="#ffffff" stroke-width="7"/><circle cx="18" cy="18" r="4.5" fill="#ffffff"/></svg></span>
+          <span class="txt-max">max</span>
+        </div>`
     };
   }
+
+  // 4. PARAMOUNT+
   if (n.includes("paramount")) {
     return {
       fondo: "radial-gradient(circle at center, #0055ff 0%, #001e6c 68%, #020817 100%)",
       colorMarca: "#3b82f6",
-      htmlLogo: `<div class="logo-paramount"><svg width="78" height="46" viewBox="0 0 100 58"><path d="M50 8 C28 8 16 26 16 40" fill="none" stroke="#93c5fd" stroke-width="3" stroke-dasharray="3 5" stroke-linecap="round"/><path d="M50 8 C72 8 84 26 84 40" fill="none" stroke="#93c5fd" stroke-width="3" stroke-dasharray="3 5" stroke-linecap="round"/><path d="M50 12 L20 54 L36 54 L50 32 L64 54 L80 54 Z" fill="#ffffff"/></svg><span>Paramount+</span></div>`
+      htmlLogo: `
+        <div class="logo-paramount">
+          <svg width="78" height="46" viewBox="0 0 100 58">
+            <path d="M50 8 C28 8 16 26 16 40" fill="none" stroke="#93c5fd" stroke-width="3" stroke-dasharray="3 5" stroke-linecap="round"/>
+            <path d="M50 8 C72 8 84 26 84 40" fill="none" stroke="#93c5fd" stroke-width="3" stroke-dasharray="3 5" stroke-linecap="round"/>
+            <path d="M50 12 L20 54 L36 54 L50 32 L64 54 L80 54 Z" fill="#ffffff"/>
+          </svg>
+          <span>Paramount+</span>
+        </div>`
     };
   }
+
+  // 5. CRUNCHYROLL
   if (n.includes("crunchyroll") || n.includes("anime")) {
     return {
       fondo: "radial-gradient(circle at center, #ea580c 0%, #7c2d12 65%, #140703 100%)",
       colorMarca: "#f97316",
-      htmlLogo: `<div class="logo-texto-icono"><svg width="42" height="42" viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" fill="#ffffff"/><circle cx="28" cy="27" r="14" fill="#ea580c"/><circle cx="32" cy="22" r="5" fill="#ffffff"/></svg><span>crunchyroll</span></div>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="42" height="42" viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="22" fill="#ffffff"/>
+            <circle cx="28" cy="27" r="14" fill="#ea580c"/>
+            <circle cx="32" cy="22" r="5" fill="#ffffff"/>
+          </svg>
+          <span>crunchyroll</span>
+        </div>`
     };
   }
+
+  // 6. PRIME VIDEO
   if (n.includes("prime") || n.includes("amazon")) {
     return {
       fondo: "radial-gradient(circle at center, #0284c7 0%, #082f49 65%, #020b14 100%)",
       colorMarca: "#00a8e1",
-      htmlLogo: `<div class="logo-prime"><span class="txt-prime">prime video</span><svg viewBox="0 0 140 28"><path d="M 18 8 Q 70 26 122 6" fill="none" stroke="#00a8e1" stroke-width="4.5" stroke-linecap="round"/><path d="M 112 3 L 125 5 L 118 17" fill="none" stroke="#00a8e1" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`
+      htmlLogo: `
+        <div class="logo-prime">
+          <span class="txt-prime">prime video</span>
+          <svg viewBox="0 0 140 28">
+            <path d="M 18 8 Q 70 26 122 6" fill="none" stroke="#00a8e1" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M 112 3 L 125 5 L 118 17" fill="none" stroke="#00a8e1" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>`
     };
   }
+
+  // 7. CANVA PRO
   if (n.includes("canva")) {
     return {
       fondo: "linear-gradient(135deg, #008996 0%, #00c4cc 35%, #5b21b6 75%, #3b0764 100%)",
       colorMarca: "#00c4cc",
-      htmlLogo: `<div class="logo-canva"><div class="circulo-canva">Canva</div><span class="tag-pro">👑 PRO</span></div>`
+      htmlLogo: `
+        <div class="logo-canva">
+          <div class="circulo-canva">Canva</div>
+          <span class="tag-pro">👑 PRO</span>
+        </div>`
     };
   }
+
+  // 8. SPOTIFY
   if (n.includes("spotify")) {
     return {
       fondo: "radial-gradient(circle at center, #15803d 0%, #052e16 68%, #020f07 100%)",
       colorMarca: "#1db954",
-      htmlLogo: `<div class="logo-texto-icono"><svg width="42" height="42" viewBox="0 0 50 50"><circle cx="25" cy="25" r="23" fill="#1db954"/><path d="M 14 19 Q 25 14 36 20" fill="none" stroke="#060911" stroke-width="4" stroke-linecap="round"/><path d="M 16 26 Q 25 22 34 27" fill="none" stroke="#060911" stroke-width="3.5" stroke-linecap="round"/><path d="M 18 33 Q 25 30 32 34" fill="none" stroke="#060911" stroke-width="3" stroke-linecap="round"/></svg><span>Spotify</span></div>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="42" height="42" viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="23" fill="#1db954"/>
+            <path d="M 14 19 Q 25 14 36 20" fill="none" stroke="#060911" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 16 26 Q 25 22 34 27" fill="none" stroke="#060911" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M 18 33 Q 25 30 32 34" fill="none" stroke="#060911" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <span>Spotify</span>
+        </div>`
     };
   }
+
+  // 9. YOUTUBE
   if (n.includes("youtube")) {
     return {
       fondo: "radial-gradient(circle at center, #991b1b 0%, #2a0404 68%, #090101 100%)",
       colorMarca: "#ff0000",
-      htmlLogo: `<div class="logo-texto-icono"><svg width="46" height="34" viewBox="0 0 56 40"><rect x="0" y="0" width="56" height="40" rx="11" fill="#ff0000"/><polygon points="22,11 22,29 38,20" fill="#ffffff"/></svg><span>YouTube</span></div>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="46" height="34" viewBox="0 0 56 40">
+            <rect x="0" y="0" width="56" height="40" rx="11" fill="#ff0000"/>
+            <polygon points="22,11 22,29 38,20" fill="#ffffff"/>
+          </svg>
+          <span>YouTube</span>
+        </div>`
     };
   }
+
+  // 10. APPLE MUSIC
   if (n.includes("apple")) {
     return {
       fondo: "linear-gradient(135deg, #fa243c 0%, #8e2de2 60%, #1c1c1e 100%)",
       colorMarca: "#fa243c",
-      htmlLogo: `<div class="logo-texto-icono"><svg width="38" height="38" viewBox="0 0 50 50"><rect width="50" height="50" rx="12" fill="#fa243c"/><path d="M34 13 L20 16 L20 33 C20 36 17 38 14 37 C11 36 11 32 14 31 C16 30 18 31 18 31 L18 19 L32 16 L32 29 C32 32 29 34 26 33 C23 32 23 28 26 27 C28 26 30 27 30 27 L34 13 Z" fill="#ffffff"/></svg><span>Apple Music</span></div>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="38" height="38" viewBox="0 0 50 50">
+            <rect width="50" height="50" rx="12" fill="#fa243c"/>
+            <path d="M34 13 L20 16 L20 33 C20 36 17 38 14 37 C11 36 11 32 14 31 C16 30 18 31 18 31 L18 19 L32 16 L32 29 C32 32 29 34 26 33 C23 32 23 28 26 27 C28 26 30 27 30 27 L34 13 Z" fill="#ffffff"/>
+          </svg>
+          <span>Apple Music</span>
+        </div>`
     };
   }
+
+  // 11. DEEZER
   if (n.includes("deezer")) {
     return {
       fondo: "radial-gradient(circle at center, #a855f7 0%, #3b0764 65%, #090314 100%)",
       colorMarca: "#a855f7",
-      htmlLogo: `<div class="logo-texto-icono"><svg width="40" height="36" viewBox="0 0 48 40"><rect x="2" y="24" width="8" height="12" rx="2" fill="#a855f7"/><rect x="13" y="16" width="8" height="20" rx="2" fill="#ec4899"/><rect x="24" y="8" width="8" height="28" rx="2" fill="#eab308"/><rect x="35" y="18" width="8" height="18" rx="2" fill="#22c55e"/></svg><span>deezer</span></div>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="40" height="36" viewBox="0 0 48 40">
+            <rect x="2" y="24" width="8" height="12" rx="2" fill="#a855f7"/>
+            <rect x="13" y="16" width="8" height="20" rx="2" fill="#ec4899"/>
+            <rect x="24" y="8" width="8" height="28" rx="2" fill="#eab308"/>
+            <rect x="35" y="18" width="8" height="18" rx="2" fill="#22c55e"/>
+          </svg>
+          <span>deezer</span>
+        </div>`
     };
   }
+
+  // 12. CHATGPT
   if (n.includes("chatgpt") || n.includes("openai") || n.includes("gpt")) {
     return {
       fondo: "radial-gradient(circle at center, #0d9488 0%, #064e3b 65%, #021713 100%)",
       colorMarca: "#10a37f",
-      htmlLogo: `<div class="logo-texto-icono"><svg width="40" height="40" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="#ffffff" stroke-width="4" stroke-dasharray="12 5"/><circle cx="25" cy="25" r="8" fill="#10a37f"/></svg><span>ChatGPT</span></div>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="40" height="40" viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="20" fill="none" stroke="#ffffff" stroke-width="4" stroke-dasharray="12 5"/>
+            <circle cx="25" cy="25" r="8" fill="#10a37f"/>
+          </svg>
+          <span>ChatGPT</span>
+        </div>`
     };
   }
+
+  // 13. GEMINI
   if (n.includes("gemini") || n.includes("google")) {
     return {
       fondo: "linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #7e22ce 100%)",
       colorMarca: "#60a5fa",
-      htmlLogo: `<div class="logo-texto-icono"><svg width="40" height="40" viewBox="0 0 50 50"><path d="M25 4 Q25 25 46 25 Q25 25 25 46 Q25 25 4 25 Q25 25 25 4 Z" fill="#60a5fa"/></svg><span>Gemini</span></div>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="40" height="40" viewBox="0 0 50 50">
+            <path d="M25 4 Q25 25 46 25 Q25 25 25 46 Q25 25 4 25 Q25 25 25 4 Z" fill="#60a5fa"/>
+          </svg>
+          <span>Gemini</span>
+        </div>`
     };
   }
+
+  // 14. ROBLOX
   if (n.includes("roblox") || n.includes("robux")) {
     return {
       fondo: "radial-gradient(circle at center, #374151 0%, #111827 70%, #030712 100%)",
       colorMarca: "#ef4444",
-      htmlLogo: `<div class="logo-texto-icono"><svg width="38" height="38" viewBox="0 0 50 50"><g transform="translate(25,25) rotate(14)"><rect x="-18" y="-18" width="36" height="36" rx="4" fill="#ffffff"/><rect x="-6" y="-6" width="12" height="12" fill="#111827"/></g></svg><span style="letter-spacing:1px;">ROBLOX</span></div>`
+      htmlLogo: `
+        <div class="logo-texto-icono">
+          <svg width="38" height="38" viewBox="0 0 50 50">
+            <g transform="translate(25,25) rotate(14)">
+              <rect x="-18" y="-18" width="36" height="36" rx="4" fill="#ffffff"/>
+              <rect x="-6" y="-6" width="12" height="12" fill="#111827"/>
+            </g>
+          </svg>
+          <span style="letter-spacing:1px;">ROBLOX</span>
+        </div>`
     };
   }
 
@@ -185,6 +325,9 @@ function obtenerDisenoVisualProducto(prod) {
   };
 }
 
+// ==========================================
+// 3. MOSTRAR PRODUCTOS, STOCK, DESCUENTO Y DURACIÓN FIJA
+// ==========================================
 function obtenerPrecioNumerico(precioTexto) {
   const limpio = String(precioTexto).replace(/[^0-9.,]/g, "").replace(",", ".");
   return parseFloat(limpio) || 0;
@@ -193,13 +336,19 @@ function obtenerPrecioNumerico(precioTexto) {
 function permiteElegirMeses(prod) {
   const per = (prod.periodo || "").toLowerCase().trim();
   const nom = (prod.nombre || "").toLowerCase();
-  if (/\d/.test(per) || per.includes("año") || per.includes("anual")) return false;
-  if (/\d+\s*mes/.test(nom)) return false;
+
+  if (/\d/.test(per) || per.includes("año") || per.includes("anual")) {
+    return false;
+  }
+  if (/\d+\s*mes/.test(nom)) {
+    return false;
+  }
   return per === "/ mes" || per === "mes" || per === "mensual";
 }
 
 function actualizarBotonesFiltro() {
   if (!contenedorFiltros) return;
+
   const categoriasUnicas = [...new Set(productos.map(p => (p.categoria || "otros").toLowerCase()))];
   contenedorFiltros.innerHTML = `<button class="btn-filtro ${categoriaActual === 'todos' ? 'activo' : ''}" data-categoria="todos">Todos</button>`;
 
@@ -213,9 +362,10 @@ function actualizarBotonesFiltro() {
     contenedorFiltros.appendChild(btn);
   });
 
-  contenedorFiltros.querySelectorAll(".btn-filtro").forEach((boton) => {
+  const botonesFiltro = contenedorFiltros.querySelectorAll(".btn-filtro");
+  botonesFiltro.forEach((boton) => {
     boton.addEventListener("click", () => {
-      contenedorFiltros.querySelectorAll(".btn-filtro").forEach((b) => b.classList.remove("activo"));
+      botonesFiltro.forEach((b) => b.classList.remove("activo"));
       boton.classList.add("activo");
       categoriaActual = boton.getAttribute("data-categoria");
       filtrarCatalogo();
@@ -225,6 +375,7 @@ function actualizarBotonesFiltro() {
 
 function mostrarProductos(lista) {
   contenedor.innerHTML = "";
+
   if (lista.length === 0) {
     contenedor.innerHTML = `<p style="color: #94a3b8; grid-column: 1/-1; text-align: center; padding: 30px;">No se encontraron productos con esa búsqueda.</p>`;
     return;
@@ -234,9 +385,13 @@ function mostrarProductos(lista) {
     const precioOriginalBase = obtenerPrecioNumerico(prod.precio);
     const descPorcentaje = parseFloat(prod.descuento) || 0;
     const tieneDescuento = descPorcentaje > 0;
-    const precioConDescuentoBase = tieneDescuento ? precioOriginalBase * (1 - descPorcentaje / 100) : precioOriginalBase;
+    const precioConDescuentoBase = tieneDescuento
+      ? precioOriginalBase * (1 - descPorcentaje / 100)
+      : precioOriginalBase;
 
-    const stockDisponible = (prod.stock === null || prod.stock === undefined || prod.stock === "" || isNaN(prod.stock)) ? null : parseInt(prod.stock, 10);
+    const stockDisponible = (prod.stock === null || prod.stock === undefined || prod.stock === "" || isNaN(prod.stock))
+      ? null
+      : parseInt(prod.stock, 10);
     const estaAgotado = stockDisponible !== null && stockDisponible <= 0;
 
     const tieneSelectorMeses = permiteElegirMeses(prod);
@@ -253,7 +408,10 @@ function mostrarProductos(lista) {
       htmlBadgeDerecha = `<span class="badge-derecha stock-limitado">📦 Stock: ${stockDisponible}</span>`;
     }
 
-    const htmlBadgeDescuento = tieneDescuento ? `<span class="badge-descuento-card">🔥 -${descPorcentaje}% OFF</span>` : "";
+    const htmlBadgeDescuento = tieneDescuento
+      ? `<span class="badge-descuento-card">🔥 -${descPorcentaje}% OFF</span>`
+      : "";
+
     const htmlSelectorMeses = (tieneSelectorMeses && !estaAgotado) ? `
       <div class="caja-selector-meses">
         <label>📅 Duración:</label>
@@ -268,7 +426,10 @@ function mostrarProductos(lista) {
     ` : "";
 
     const precioMostradoTexto = `$${precioConDescuentoBase.toFixed(2)}`;
-    const htmlPrecioOriginalTachado = tieneDescuento ? `<span class="precio-original">$${precioOriginalBase.toFixed(2)}</span>` : "";
+    const htmlPrecioOriginalTachado = tieneDescuento
+      ? `<span class="precio-original">$${precioOriginalBase.toFixed(2)}</span>`
+      : "";
+
     const mensajeInicial = `¡Hola! Me interesa comprar: *${prod.nombre}*${tieneSelectorMeses ? " (1 mes)" : ""} (${precioMostradoTexto} ${prod.periodo})`;
     const urlWhatsappInicial = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeInicial)}`;
 
@@ -314,7 +475,9 @@ function mostrarProductos(lista) {
         const etiquetaMeses = meses === 1 ? "1 mes" : `${meses} meses`;
 
         valorPrecioEl.textContent = `$${nuevoTotal}`;
-        if (precioOrigEl) precioOrigEl.textContent = `$${(precioOriginalBase * meses).toFixed(2)}`;
+        if (precioOrigEl) {
+          precioOrigEl.textContent = `$${(precioOriginalBase * meses).toFixed(2)}`;
+        }
         textoPeriodoEl.textContent = meses === 1 ? prod.periodo : `por ${meses} meses`;
 
         const nuevoMensaje = `¡Hola! Me interesa comprar: *${prod.nombre} (${etiquetaMeses})* - Total: $${nuevoTotal}`;
@@ -339,13 +502,21 @@ function mostrarProductos(lista) {
   });
 }
 
+// ==========================================
+// 4. CARRITO, REGLA DE NO ACUMULAR DESCUENTOS Y STOCK
+// ==========================================
 function carritoTieneProductoConDescuento() {
   return carrito.some(item => (parseFloat(item.descuentoProducto) || 0) > 0);
 }
 
 function agregarAlCarrito(prod, meses = 1, mostrarMeses = false) {
-  const stockMax = (prod.stock === null || prod.stock === undefined || prod.stock === "" || isNaN(prod.stock)) ? null : parseInt(prod.stock, 10);
-  const unidadesEnCarrito = carrito.filter(item => item.nombreBase === prod.nombre).reduce((acc, item) => acc + item.cantidad, 0);
+  const stockMax = (prod.stock === null || prod.stock === undefined || prod.stock === "" || isNaN(prod.stock))
+    ? null
+    : parseInt(prod.stock, 10);
+
+  const unidadesEnCarrito = carrito
+    .filter(item => item.nombreBase === prod.nombre)
+    .reduce((acc, item) => acc + item.cantidad, 0);
 
   if (stockMax !== null && unidadesEnCarrito + 1 > stockMax) {
     alert(`⚠️ Solo quedan ${stockMax} unidad(es) disponibles en stock de "${prod.nombre}".`);
@@ -354,10 +525,14 @@ function agregarAlCarrito(prod, meses = 1, mostrarMeses = false) {
 
   const precioOriginalBase = obtenerPrecioNumerico(prod.precio);
   const descPorcentaje = parseFloat(prod.descuento) || 0;
+
   const yaHayDescuentoEnCarrito = carritoTieneProductoConDescuento();
   const aplicaDescuentoProducto = descPorcentaje > 0 && (!yaHayDescuentoEnCarrito || carrito.some(i => i.nombreBase === prod.nombre && i.descuentoProducto > 0));
 
-  const precioUnitarioBase = aplicaDescuentoProducto ? precioOriginalBase * (1 - descPorcentaje / 100) : precioOriginalBase;
+  const precioUnitarioBase = aplicaDescuentoProducto
+    ? precioOriginalBase * (1 - descPorcentaje / 100)
+    : precioOriginalBase;
+
   const precioFinalNum = precioUnitarioBase * meses;
   const precioFinalTexto = `$${precioFinalNum.toFixed(2)}`;
 
@@ -389,7 +564,10 @@ function agregarAlCarrito(prod, meses = 1, mostrarMeses = false) {
 window.cambiarCantidad = function(index, cambio) {
   const item = carrito[index];
   if (cambio > 0 && item.stockMax !== null && item.stockMax !== undefined) {
-    const totalMismoProducto = carrito.filter(i => i.nombreBase === item.nombreBase).reduce((acc, i) => acc + i.cantidad, 0);
+    const totalMismoProducto = carrito
+      .filter(i => i.nombreBase === item.nombreBase)
+      .reduce((acc, i) => acc + i.cantidad, 0);
+
     if (totalMismoProducto + cambio > item.stockMax) {
       alert(`⚠️ No puedes agregar más: solo hay ${item.stockMax} en stock.`);
       return;
@@ -397,28 +575,39 @@ window.cambiarCantidad = function(index, cambio) {
   }
 
   item.cantidad += cambio;
-  if (item.cantidad <= 0) carrito.splice(index, 1);
+  if (item.cantidad <= 0) {
+    carrito.splice(index, 1);
+  }
   actualizarVistaCarrito();
 };
 
 function verificarRequisitosCarritoParaCupon(cupon) {
   if (!cupon) return { cumple: false, motivo: "" };
+
   if (carritoTieneProductoConDescuento()) {
-    return { cumple: false, motivo: "⚠️ Ya tienes un producto con descuento en el carrito, así que ya no aplica otro descuento adicional." };
+    return {
+      cumple: false,
+      motivo: "⚠️ Ya tienes un producto con descuento en el carrito, así que ya no aplica otro descuento adicional."
+    };
   }
 
   const catReq = (cupon.categoriaRequerida || "todos").toLowerCase().trim();
   const minProd = parseInt(cupon.minimoProductos, 10) || 1;
-  let cantidadValida = 0;
 
+  let cantidadValida = 0;
   carrito.forEach((item) => {
     const catItem = (item.categoria || "otros").toLowerCase().trim();
-    if (catReq === "todos" || catReq === "" || catItem === catReq) cantidadValida += item.cantidad;
+    if (catReq === "todos" || catReq === "" || catItem === catReq) {
+      cantidadValida += item.cantidad;
+    }
   });
 
   if (cantidadValida < minProd) {
     const textoCat = (catReq === "todos" || catReq === "") ? "en total" : `de la categoría "${catReq}"`;
-    return { cumple: false, motivo: `⚠️ El cupón ${cupon.codigo} requiere al menos ${minProd} producto(s) ${textoCat} en tu carrito.` };
+    return {
+      cumple: false,
+      motivo: `⚠️ El cupón ${cupon.codigo} requiere al menos ${minProd} producto(s) ${textoCat} en tu carrito (tienes ${cantidadValida}).`
+    };
   }
 
   return { cumple: true, motivo: "" };
@@ -444,9 +633,12 @@ function obtenerResumenTotales() {
       const catReq = (cuponActivo.categoriaRequerida || "todos").toLowerCase().trim();
       const baseDescuento = carrito.reduce((acc, item) => {
         const catItem = (item.categoria || "otros").toLowerCase().trim();
-        if (catReq === "todos" || catReq === "" || catItem === catReq) return acc + (item.precioNum * item.cantidad);
+        if (catReq === "todos" || catReq === "" || catItem === catReq) {
+          return acc + (item.precioNum * item.cantidad);
+        }
         return acc;
       }, 0);
+
       montoDescCupon = baseDescuento * (cuponActivo.porcentaje / 100);
     } else {
       motivoNoCumple = validacion.motivo;
@@ -454,13 +646,23 @@ function obtenerResumenTotales() {
   }
 
   const totalFinal = Math.max(0, subtotal - montoDescCupon);
-  return { subtotal, tieneProdConDescuento, aplicaCupon, montoDescCupon, motivoNoCumple, totalFinal };
+
+  return {
+    subtotal,
+    tieneProdConDescuento,
+    aplicaCupon,
+    montoDescCupon,
+    motivoNoCumple,
+    totalFinal
+  };
 }
 
 function actualizarVistaCarrito() {
   localStorage.setItem(CARRITO_KEY, JSON.stringify(carrito));
+
   const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
   contadorCarrito.textContent = totalItems;
+
   listaCarrito.innerHTML = "";
 
   if (carrito.length === 0) {
@@ -473,7 +675,10 @@ function actualizarVistaCarrito() {
 
   carrito.forEach((item, index) => {
     const subtotalItem = item.precioNum * item.cantidad;
-    const tagDescuento = item.descuentoProducto > 0 ? `<span class="tag-oferta-carrito">-${item.descuentoProducto}% OFF</span>` : "";
+    const tagDescuento = item.descuentoProducto > 0
+      ? `<span class="tag-oferta-carrito">-${item.descuentoProducto}% OFF</span>`
+      : "";
+
     const div = document.createElement("div");
     div.className = "item-carrito";
     div.innerHTML = `
@@ -514,7 +719,7 @@ function actualizarVistaCarrito() {
       } else if (resumen.tieneProdConDescuento && mensajeCupon) {
         mensajeCupon.classList.remove("oculto", "exito");
         mensajeCupon.classList.add("error");
-        mensajeCupon.textContent = "ℹ️ Ya tienes un producto con descuento en el carrito.";
+        mensajeCupon.textContent = "ℹ️ Ya tienes un producto con descuento en el carrito (no aplica descuento adicional).";
       } else if (!cuponActivo && mensajeCupon) {
         mensajeCupon.classList.add("oculto");
       }
@@ -543,14 +748,53 @@ async function consultarAppsScript(url) {
       script.remove();
       resolve(datos);
     };
+
     script.onerror = () => {
       delete window[nombreCallback];
       script.remove();
       reject(new Error("Fallo de red"));
     };
+
     script.src = `${url}${separador}callback=${nombreCallback}`;
     document.body.appendChild(script);
   });
+}
+
+async function buscarCuponEnSheetCSV(codigoBuscado) {
+  try {
+    const res = await fetch(`${SHEET_CUPONES_CSV_URL}&t=${Date.now()}`, { cache: "no-store" });
+    if (!res.ok) return null;
+    const csv = await res.text();
+    const filas = csv.split(/\r?\n/);
+
+    for (let i = 0; i < filas.length; i++) {
+      const col = dividirFilaCSV(filas[i]);
+      const codigoFila = (col[0] || "").replace(/"/g, "").trim().toUpperCase();
+      if (codigoFila === codigoBuscado) {
+        const porcentaje = parseFloat((col[1] || "0").replace("%", "").trim()) || 0;
+        const estado = (col[2] || "activo").toLowerCase().trim();
+        const categoriaReq = (col[3] || "todos").toLowerCase().trim();
+        const minProd = parseInt(col[4] || "1", 10) || 1;
+
+        if (estado === "inactivo" || estado === "usado" || estado === "no" || estado === "0") {
+          return { valido: false, mensaje: "⚠️ Este cupón ya expiró o fue utilizado." };
+        }
+        if (porcentaje > 0) {
+          return {
+            valido: true,
+            codigo: codigoFila,
+            porcentaje: porcentaje,
+            categoriaRequerida: categoriaReq,
+            minimoProductos: minProd,
+            mensaje: `🎉 ¡Cupón ${codigoFila} (-${porcentaje}%) aplicado!`
+          };
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("No se pudo leer hoja Cupones CSV:", e);
+  }
+  return null;
 }
 
 if (btnAplicarCupon) {
@@ -560,7 +804,7 @@ if (btnAplicarCupon) {
 
     if (carritoTieneProductoConDescuento()) {
       cuponActivo = null;
-      mensajeCupon.textContent = "⚠️ Ya tienes un producto con descuento en el carrito.";
+      mensajeCupon.textContent = "⚠️ Ya tienes un producto con descuento en el carrito, así que ya no aplica el descuento.";
       mensajeCupon.classList.add("error");
       actualizarVistaCarrito();
       return;
@@ -574,42 +818,67 @@ if (btnAplicarCupon) {
 
     btnAplicarCupon.disabled = true;
     btnAplicarCupon.textContent = "Validando...";
-    mensajeCupon.textContent = "🔄 Verificando cupón...";
+    mensajeCupon.textContent = "🔄 Verificando cupón en el sistema...";
 
+    let data = null;
+
+    // 1. Intenta primero con tu Google Apps Script actualizado
     try {
       const url = `${URL_VERIFICADOR_PICHINCHA}?accion=validarCupon&cupon=${encodeURIComponent(codigo)}&t=${Date.now()}`;
-      const data = await consultarAppsScript(url);
+      data = await consultarAppsScript(url);
+    } catch (err) {
+      console.warn("Intentando leer pestaña Cupones CSV...");
+    }
 
-      if (data.valido) {
-        const candidatoCupon = {
-          codigo: data.codigo,
-          porcentaje: data.porcentaje,
-          categoriaRequerida: data.categoriaRequerida || "todos",
-          minimoProductos: data.minimoProductos || 1
+    // 2. Si Apps Script no responde, busca directamente en la hoja "Cupones" del Sheet
+    if (!data) {
+      data = await buscarCuponEnSheetCSV(codigo);
+    }
+
+    // 3. Respaldo en CUPONES_LOCALES para que nunca falle por conexión
+    if (!data && CUPONES_LOCALES[codigo]) {
+      const cLocal = CUPONES_LOCALES[codigo];
+      if (cLocal.activo) {
+        data = {
+          valido: true,
+          codigo: codigo,
+          porcentaje: cLocal.porcentaje,
+          categoriaRequerida: cLocal.categoriaRequerida,
+          minimoProductos: cLocal.minimoProductos,
+          mensaje: `🎉 ¡Cupón ${codigo} (-${cLocal.porcentaje}%) aplicado!`
         };
-        const checkCarrito = verificarRequisitosCarritoParaCupon(candidatoCupon);
-        cuponActivo = candidatoCupon;
-
-        if (checkCarrito.cumple) {
-          mensajeCupon.textContent = data.mensaje;
-          mensajeCupon.classList.add("exito");
-        } else {
-          mensajeCupon.textContent = checkCarrito.motivo;
-          mensajeCupon.classList.add("error");
-        }
       } else {
-        cuponActivo = null;
+        data = { valido: false, mensaje: "⚠️ Este cupón ya no está activo." };
+      }
+    }
+
+    if (data && data.valido) {
+      const candidatoCupon = {
+        codigo: data.codigo,
+        porcentaje: data.porcentaje,
+        categoriaRequerida: data.categoriaRequerida || "todos",
+        minimoProductos: data.minimoProductos || 1
+      };
+
+      const checkCarrito = verificarRequisitosCarritoParaCupon(candidatoCupon);
+      cuponActivo = candidatoCupon;
+
+      if (checkCarrito.cumple) {
         mensajeCupon.textContent = data.mensaje;
+        mensajeCupon.classList.add("exito");
+      } else {
+        mensajeCupon.textContent = checkCarrito.motivo;
         mensajeCupon.classList.add("error");
       }
-      actualizarVistaCarrito();
-    } catch (err) {
-      mensajeCupon.textContent = "⚠️ No se pudo validar el cupón. Revisa tu conexión.";
+    } else {
+      cuponActivo = null;
+      mensajeCupon.textContent = (data && data.mensaje) ? data.mensaje : "❌ El cupón ingresado no existe o no es válido.";
       mensajeCupon.classList.add("error");
-    } finally {
-      btnAplicarCupon.disabled = false;
-      btnAplicarCupon.textContent = "Aplicar";
     }
+
+    actualizarVistaCarrito();
+    btnAplicarCupon.disabled = false;
+    btnAplicarCupon.textContent = "Aplicar";
   });
 }
 
@@ -623,7 +892,11 @@ btnVerificarPago.addEventListener("click", async () => {
   const resumen = obtenerResumenTotales();
   const monto = resumen.totalFinal.toFixed(2);
   const codigoCupon = (cuponActivo && resumen.aplicaCupon) ? cuponActivo.codigo : "";
-  const itemsParaStock = carrito.map(i => ({ nombreBase: i.nombreBase || i.nombre, cantidad: i.cantidad }));
+
+  const itemsParaStock = carrito.map(i => ({
+    nombreBase: i.nombreBase || i.nombre,
+    cantidad: i.cantidad
+  }));
 
   estadoVerificacion.classList.remove("oculto", "exito", "error");
 
@@ -645,6 +918,7 @@ btnVerificarPago.addEventListener("click", async () => {
     if (data.verificado) {
       pagoVerificadoAutomaticamente = true;
       estadoVerificacion.classList.add("exito");
+
       itemsParaStock.forEach((comprado) => {
         const prodEnCatalogo = productos.find(p => p.nombre.toLowerCase() === String(comprado.nombreBase).toLowerCase());
         if (prodEnCatalogo && prodEnCatalogo.stock !== null && prodEnCatalogo.stock !== undefined && !isNaN(prodEnCatalogo.stock)) {
@@ -666,14 +940,99 @@ btnVerificarPago.addEventListener("click", async () => {
   }
 });
 
-btnAbrirCarrito.addEventListener("click", () => modalCarrito.classList.remove("oculto"));
-btnCerrarCarrito.addEventListener("click", () => modalCarrito.classList.add("oculto"));
-modalCarrito.addEventListener("click", (e) => {
-  if (e.target === modalCarrito) modalCarrito.classList.add("oculto");
+// ==========================================
+// 5. RUTAS DINÁMICAS (#carrito, #catalogo, #terminos, #garantia, #privacidad)
+// ==========================================
+btnAbrirCarrito.addEventListener("click", () => {
+  modalCarrito.classList.remove("oculto");
+  window.location.hash = "carrito";
 });
 
+function cerrarModalCarrito() {
+  modalCarrito.classList.add("oculto");
+  if (window.location.hash === "#carrito") {
+    history.pushState("", document.title, window.location.pathname + window.location.search);
+  }
+}
+
+btnCerrarCarrito.addEventListener("click", cerrarModalCarrito);
+modalCarrito.addEventListener("click", (e) => {
+  if (e.target === modalCarrito) cerrarModalCarrito();
+});
+
+function abrirPestanaLegal(nombreTab, actualizarHash = true) {
+  if (!modalLegal) return;
+  modalLegal.classList.remove("oculto");
+
+  tabsLegales.forEach((btn) => {
+    btn.classList.toggle("activo", btn.getAttribute("data-tab") === nombreTab);
+  });
+
+  ["terminos", "garantia", "privacidad"].forEach((id) => {
+    const contenedorTab = document.getElementById(`contenido-${id}`);
+    if (contenedorTab) {
+      contenedorTab.classList.toggle("oculto", id !== nombreTab);
+    }
+  });
+
+  if (actualizarHash) {
+    window.location.hash = nombreTab;
+  }
+}
+
+function cerrarModalLegal() {
+  if (!modalLegal) return;
+  modalLegal.classList.add("oculto");
+  if (["#terminos", "#garantia", "#privacidad", "#legal"].includes(window.location.hash)) {
+    history.pushState("", document.title, window.location.pathname + window.location.search);
+  }
+}
+
+tabsLegales.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    abrirPestanaLegal(btn.getAttribute("data-tab"), true);
+  });
+});
+
+if (btnCerrarLegal) btnCerrarLegal.addEventListener("click", cerrarModalLegal);
+if (btnEntendidoLegal) {
+  btnEntendidoLegal.addEventListener("click", () => {
+    if (checkAceptoTerminos) checkAceptoTerminos.checked = true;
+    cerrarModalLegal();
+  });
+}
+
+if (modalLegal) {
+  modalLegal.addEventListener("click", (e) => {
+    if (e.target === modalLegal) cerrarModalLegal();
+  });
+}
+
+function sincronizarRutasHash() {
+  const hash = window.location.hash.replace("#", "").toLowerCase();
+  if (hash === "terminos" || hash === "legal") {
+    abrirPestanaLegal("terminos", false);
+  } else if (hash === "garantia") {
+    abrirPestanaLegal("garantia", false);
+  } else if (hash === "privacidad") {
+    abrirPestanaLegal("privacidad", false);
+  } else if (hash === "carrito") {
+    if (modalLegal) modalLegal.classList.add("oculto");
+    if (modalCarrito) modalCarrito.classList.remove("oculto");
+  }
+}
+
+window.addEventListener("hashchange", sincronizarRutasHash);
+window.addEventListener("load", sincronizarRutasHash);
+
+// Enviar pedido por WhatsApp con validación legal
 btnFinalizarPedido.addEventListener("click", () => {
   if (carrito.length === 0) return;
+
+  if (checkAceptoTerminos && !checkAceptoTerminos.checked) {
+    alert("⚠️ Para continuar con tu compra, debes aceptar los Términos y Condiciones y la Política de Garantía.");
+    return;
+  }
 
   let detalleProductos = "";
   carrito.forEach((item) => {
@@ -683,6 +1042,7 @@ btnFinalizarPedido.addEventListener("click", () => {
   });
 
   const resumen = obtenerResumenTotales();
+
   if (cuponActivo && resumen.aplicaCupon && !pagoVerificadoAutomaticamente) {
     const urlUso = `${URL_VERIFICADOR_PICHINCHA}?accion=usarCupon&cupon=${encodeURIComponent(cuponActivo.codigo)}&t=${Date.now()}`;
     consultarAppsScript(urlUso).catch(() => {});
@@ -690,14 +1050,22 @@ btnFinalizarPedido.addEventListener("click", () => {
 
   let lineaCuponTexto = "🎟️ *Descuento / Cupón:* Ninguno\n";
   if (resumen.tieneProdConDescuento) {
-    lineaCuponTexto = "🔥 *Descuento aplicado:* Producto en Promoción\n";
+    lineaCuponTexto = "🔥 *Descuento aplicado:* Producto en Promoción (No acumulable con otro descuento)\n";
   } else if (cuponActivo && resumen.aplicaCupon) {
     lineaCuponTexto = `🎟️ *Cupón aplicado:* ${cuponActivo.codigo} (-${cuponActivo.porcentaje}% | -$${resumen.montoDescCupon.toFixed(2)})\n`;
   }
 
   const comprobanteEscrito = inputComprobante.value.trim();
   const comprobanteTexto = comprobanteEscrito ? comprobanteEscrito : "No ingresado (Enviaré captura por aquí)";
-  let estadoOrdenTexto = pagoVerificadoAutomaticamente ? "✅ ORDEN COMPLETA (Pago Verificado y Stock Descontado)" : (comprobanteEscrito ? "⏳ ORDEN PENDIENTE DE VERIFICACIÓN MANUAL" : "⚠️ ORDEN SIN COMPLETAR PAGO");
+
+  let estadoOrdenTexto = "";
+  if (pagoVerificadoAutomaticamente) {
+    estadoOrdenTexto = "✅ ORDEN COMPLETA (Pago Verificado y Stock Descontado)";
+  } else if (comprobanteEscrito) {
+    estadoOrdenTexto = "⏳ ORDEN PENDIENTE DE VERIFICACIÓN MANUAL";
+  } else {
+    estadoOrdenTexto = "⚠️ ORDEN SIN COMPLETAR PAGO (Pendiente enviar comprobante)";
+  }
 
   const mensaje = 
     `¡Hola *Tienda Digital Cedeño*! 🛒 Quiero realizar este pedido:\n\n` +
@@ -707,11 +1075,16 @@ btnFinalizarPedido.addEventListener("click", () => {
     `💰 *Total a pagar:* $${resumen.totalFinal.toFixed(2)}\n\n` +
     `🏦 *Cuenta Pichincha:* ${DATOS_BANCO.numeroCuenta}\n` +
     `🧾 *N° Comprobante:* ${comprobanteTexto}\n` +
-    `📌 *Estado de Orden:* ${estadoOrdenTexto}`;
+    `📌 *Estado de Orden:* ${estadoOrdenTexto}\n` +
+    `⚖️ *Términos y Garantía:* Aceptados por el cliente`;
 
-  window.open(`https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`, "_blank");
+  const url = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, "_blank");
 });
 
+// ==========================================
+// 6. BUSCADOR, FILTROS Y CARGA RÁPIDA DESDE GOOGLE SHEETS
+// ==========================================
 function filtrarCatalogo() {
   const texto = buscador.value.toLowerCase();
   const filtrados = productos.filter((prod) => {
@@ -746,13 +1119,22 @@ function dividirFilaCSV(fila) {
 
 function normalizarProductoFila(nombre, categoria, descripcion, precioRaw, periodoRaw, stockRaw, descuentoRaw) {
   let precioBruto = String(precioRaw || "0.00").replace(/\\/g, "").trim();
-  if (!precioBruto.startsWith("\$")) precioBruto = "$" + precioBruto.replace("$", "");
+  if (!precioBruto.startsWith("\$")) {
+    precioBruto = "$" + precioBruto.replace("$", "");
+  }
 
   let descTexto = String(descripcion || "").trim();
-  if (descTexto.startsWith("\$")) descTexto = descTexto.substring(1).trim();
+  if (descTexto.startsWith("\$")) {
+    descTexto = descTexto.substring(1).trim();
+  }
 
-  const stockLimpio = (stockRaw === undefined || stockRaw === null || String(stockRaw).trim() === "") ? null : parseInt(String(stockRaw).trim(), 10);
-  const descuentoLimpio = (descuentoRaw === undefined || descuentoRaw === null || String(descuentoRaw).trim() === "") ? 0 : parseFloat(String(descuentoRaw).replace("%", "").trim()) || 0;
+  const stockLimpio = (stockRaw === undefined || stockRaw === null || String(stockRaw).trim() === "")
+    ? null
+    : parseInt(String(stockRaw).trim(), 10);
+
+  const descuentoLimpio = (descuentoRaw === undefined || descuentoRaw === null || String(descuentoRaw).trim() === "")
+    ? 0
+    : parseFloat(String(descuentoRaw).replace("%", "").trim()) || 0;
 
   return {
     nombre: String(nombre).trim(),
@@ -772,6 +1154,7 @@ function parsearTextoCSV(csv) {
   filas.forEach((fila, index) => {
     if (!fila.trim()) return;
     const col = dividirFilaCSV(fila);
+
     if (!col[0] || (index === 0 && col[0].toLowerCase().includes("nombre"))) return;
 
     let col2Limpia = (col[2] || "").replace(/\\/g, "").trim();
@@ -784,7 +1167,9 @@ function parsearTextoCSV(csv) {
 
     if (!precioBruto && !descripcionTexto) return;
 
-    listaSheet.push(normalizarProductoFila(col[0], col[1], descripcionTexto, precioBruto, periodoTexto, col[5], col[6]));
+    listaSheet.push(
+      normalizarProductoFila(col[0], col[1], descripcionTexto, precioBruto, periodoTexto, col[5], col[6])
+    );
   });
 
   return listaSheet;
@@ -800,6 +1185,7 @@ async function leerCSVDesdeUrl(urlBase) {
 }
 
 async function cargarDesdeGoogleSheets() {
+  // 1. CARGA RÁPIDA: Lee primero tu CSV publicado (~0.2s) sin esperar al Apps Script
   try {
     let listaCSV = await leerCSVDesdeUrl(GOOGLE_SHEET_CSV_URL);
     if (listaCSV.length === 0) {
@@ -825,11 +1211,14 @@ async function cargarDesdeGoogleSheets() {
     }
   }
 
+  // 2. SINCRONIZACIÓN EN SEGUNDO PLANO: Actualiza stock en vivo desde Apps Script
   try {
     const urlVivo = `${URL_VERIFICADOR_PICHINCHA}?accion=obtenerProductos&t=${Date.now()}`;
     const dataVivo = await consultarAppsScript(urlVivo);
     if (dataVivo && dataVivo.ok && Array.isArray(dataVivo.productos) && dataVivo.productos.length > 0) {
-      productos = dataVivo.productos.map(p => normalizarProductoFila(p.nombre, p.categoria, p.descripcion, p.precio, p.periodo, p.stock, p.descuento));
+      productos = dataVivo.productos.map(p =>
+        normalizarProductoFila(p.nombre, p.categoria, p.descripcion, p.precio, p.periodo, p.stock, p.descuento)
+      );
       localStorage.setItem(CACHE_KEY, JSON.stringify(productos));
       actualizarBotonesFiltro();
       filtrarCatalogo();

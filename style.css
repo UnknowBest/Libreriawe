@@ -72,6 +72,131 @@
   border-top: 1px solid var(--borde);
 }
 
+/* Estilos de la Sección Legal, Pestañas y Footer */
+.footer-enlaces-legales {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+
+.footer-enlaces-legales a {
+  color: #a5b4fc;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.86rem;
+  transition: color 0.2s;
+}
+
+.footer-enlaces-legales a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.footer-disclaimer {
+  max-width: 850px;
+  margin: 12px auto 0;
+  font-size: 0.72rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.check-legal-carrito {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--texto-secundario);
+  margin-bottom: 12px;
+  cursor: pointer;
+  line-height: 1.35;
+}
+
+.check-legal-carrito input {
+  margin-top: 2px;
+  accent-color: var(--acento);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.link-legal-interno {
+  color: #818cf8;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.modal-legal-ancho {
+  max-width: 640px;
+}
+
+.tabs-legales {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--borde);
+  padding-bottom: 12px;
+}
+
+.tab-legal {
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--texto-secundario);
+  border: 1px solid var(--borde);
+  padding: 9px 10px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.tab-legal.activo {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.cuerpo-legal {
+  font-size: 0.88rem;
+  color: #cbd5e1;
+  line-height: 1.6;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.cuerpo-legal h4 {
+  color: #ffffff;
+  font-size: 0.98rem;
+  margin: 14px 0 6px;
+}
+
+.cuerpo-legal h4:first-child {
+  margin-top: 0;
+}
+
+.cuerpo-legal p {
+  margin-bottom: 10px;
+}
+
+.cuerpo-legal ul {
+  padding-left: 20px;
+  margin-bottom: 12px;
+}
+
+.cuerpo-legal li {
+  margin-bottom: 6px;
+}
+
+.footer-modal-legal {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--borde);
+}
+
+/* Protección anti-selección y arrastre */
 *, *::before, *::after {
   -webkit-user-select: none !important;
   -moz-user-select: none !important;

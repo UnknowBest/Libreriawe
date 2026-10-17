@@ -8,8 +8,7 @@ const SHEET_ID = "1zN4bHeBl8iZ4NETcDN7kKfv7z3GSHZ8kf-EX0UqJHtg";
 const SHEET_GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
 
 // Mantén tu URL completa de Google Apps Script:
-const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwmO7jw90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMVUdpx1/exec";
-
+const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwmO7jW90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMAUdpx1ttutlRY/exec";
 const DATOS_BANCO = {
   tipoCuenta: "Cuenta de Ahorros - Banco Pichincha",
   numeroCuenta: "2213128245",

@@ -1,1194 +1,186 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <!-- Título y descripción principal -->
-<title>Tienda Digital Cedeño | La Mejor Tienda Digital</title>
-<meta name="description" content="La mejor tienda digital en Ecuador. Catálogo oficial de streaming, licencias de software, IA y servicios digitales con entrega inmediata." />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-<!-- Color de la barra lateral del cuadro en Discord (puedes cambiar el código hex) -->
-<meta name="theme-color" content="#3b82f6" />
-
-<!-- Etiquetas Open Graph (Discord, WhatsApp, Facebook, Instagram) -->
-<meta property="og:type" content="website" />
-<meta property="og:site_name" content="Tienda Digital Cedeño" />
-<meta property="og:url" content="https://tiendadigitalcedeno.com/" />
-<meta property="og:title" content="🔥 Tienda Digital Cedeño · La Mejor Tienda Digital" />
-<meta property="og:description" content="Explora nuestro catálogo online con los mejores precios en streaming, software y herramientas digitales. ¡Atención y entrega inmediata!" />
-<meta property="og:image" content="https://tiendadigitalcedeno.com/preview.jpg" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-
-<!-- Obliga a Discord a mostrar la imagen GRANDE igual al cuadro de TikTok -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="🔥 Tienda Digital Cedeño · La Mejor Tienda Digital" />
-<meta name="twitter:description" content="Explora nuestro catálogo online con los mejores precios en streaming, software y herramientas digitales. ¡Atención y entrega inmediata!" />
-<meta name="twitter:image" content="https://tiendadigitalcedeno.com/preview.jpg" />
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Título y SEO principal -->
   <title>Tienda Digital Cedeño | Catálogo Oficial</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%236366f1'/><stop offset='100%' stop-color='%23a855f7'/></linearGradient></defs><rect width='100' height='100' rx='24' fill='url(%23g)'/><text x='50%' y='64%' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-weight='900' font-size='38'>TDC</text></svg>">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@700;900&family=Outfit:wght@400;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
-  
+  <meta name="description" content="La mejor tienda digital en Ecuador. Catálogo oficial de streaming, licencias de software, IA y servicios digitales con entrega inmediata." />
+  <meta name="theme-color" content="#6366f1" />
+
+  <!-- Cuadro de vista previa grande para Discord, WhatsApp, Facebook e Instagram -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Tienda Digital Cedeño" />
+  <meta property="og:url" content="https://tiendadigitalcedeno.com/" />
+  <meta property="og:title" content="🔥 Tienda Digital Cedeño · La Mejor Tienda Digital" />
+  <meta property="og:description" content="Explora nuestro catálogo online con los mejores precios en streaming, software y herramientas digitales. ¡Atención y entrega inmediata!" />
+  <meta property="og:image" content="https://tiendadigitalcedeno.com/preview.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Obliga a Discord a mostrar la tarjeta grande estilo TikTok -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="🔥 Tienda Digital Cedeño · La Mejor Tienda Digital" />
+  <meta name="twitter:description" content="Explora nuestro catálogo online con los mejores precios en streaming, software y herramientas digitales. ¡Atención y entrega inmediata!" />
+  <meta name="twitter:image" content="https://tiendadigitalcedeno.com/preview.jpg" />
+
+  <!-- Conexión anticipada a Google Sheets para acelerar la descarga del catálogo -->
+  <link rel="preconnect" href="https://docs.google.com" />
+  <link rel="dns-prefetch" href="https://docs.google.com" />
+
+  <!-- Fuentes e Iconos -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tus estilos principales -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Bloqueo de selección de texto y cartel de búsqueda de Google en celulares -->
   <style>
-    :root {
-      --fondo: #060911;
-      --fondo-tarjeta: rgba(17, 24, 39, 0.86);
-      --texto: #f8fafc;
-      --texto-secundario: #94a3b8;
-      --acento: #6366f1;
-      --acento-hover: #4f46e5;
-      --whatsapp: #22c55e;
-      --whatsapp-hover: #16a34a;
-      --borde: rgba(255, 255, 255, 0.1);
-      --pichincha-amarillo: #ffdd00;
-      --pichincha-azul: #0f265c;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Outfit', 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
-
-    body {
-      background-color: var(--fondo);
-      background-image: 
-        radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.16) 0%, transparent 45%),
-        radial-gradient(circle at 90% 15%, rgba(168, 85, 247, 0.14) 0%, transparent 45%),
-        radial-gradient(circle at 50% 90%, rgba(14, 165, 233, 0.1) 0%, transparent 50%);
-      color: var(--texto);
-      line-height: 1.5;
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 0 18px;
-    }
-
-    .oculto {
-      display: none !important;
-    }
-
-    /* Barra de Navegación */
-    .navbar {
-      background-color: rgba(6, 9, 17, 0.9);
-      border-bottom: 1px solid var(--borde);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(16px);
-    }
-
-    .nav-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      min-height: 68px;
-      padding: 10px 0;
-      gap: 10px;
-    }
-
-    .logo {
-      font-size: 1.4rem;
-      font-weight: 900;
-      letter-spacing: -0.3px;
-      line-height: 1.15;
-      white-space: nowrap;
-    }
-
-    .logo span {
-      background: linear-gradient(90deg, #818cf8, #c084fc, #38bdf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .nav-acciones {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .btn-contacto {
-      background-color: rgba(255, 255, 255, 0.06);
-      color: var(--texto);
-      text-decoration: none;
-      padding: 9px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--borde);
-      font-size: 0.88rem;
-      font-weight: 700;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn-carrito {
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      color: white;
-      border: none;
-      padding: 9px 15px;
-      border-radius: 10px;
-      font-weight: 800;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 0.88rem;
-      white-space: nowrap;
-      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
-    }
-
-    .btn-carrito span {
-      background-color: rgba(0, 0, 0, 0.35);
-      padding: 2px 7px;
-      border-radius: 99px;
-      font-size: 0.78rem;
-    }
-
-    /* Hero */
-    .hero {
-      text-align: center;
-      padding: 48px 16px 32px;
-    }
-
-    .badge {
-      background: rgba(99, 102, 241, 0.14);
-      color: #a5b4fc;
-      padding: 7px 16px;
-      border-radius: 99px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: inline-block;
-      margin-bottom: 16px;
-      border: 1px solid rgba(99, 102, 241, 0.35);
-    }
-
-    .hero h2 {
-      font-size: 2.3rem;
-      max-width: 720px;
-      margin: 0 auto 12px;
-      line-height: 1.18;
-      font-weight: 900;
-    }
-
-    .hero p {
-      color: var(--texto-secundario);
-      max-width: 580px;
-      margin: 0 auto 22px;
-      font-size: 1rem;
-    }
-
-    .btn-principal {
-      display: inline-block;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      color: white;
-      text-decoration: none;
-      padding: 12px 28px;
-      border-radius: 12px;
-      font-weight: 700;
-      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
-    }
-
-    /* Buscador y Filtros */
-    .controles {
-      margin: 10px 0 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    #buscador {
-      width: 100%;
-      padding: 14px 18px;
-      border-radius: 13px;
-      border: 1px solid var(--borde);
-      background-color: rgba(17, 24, 39, 0.85);
-      color: var(--texto);
-      font-size: 0.96rem;
-      outline: none;
-    }
-
-    #buscador:focus {
-      border-color: var(--acento);
-    }
-
-    .filtros {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .btn-filtro {
-      background-color: rgba(17, 24, 39, 0.8);
-      color: var(--texto-secundario);
-      border: 1px solid var(--borde);
-      padding: 8px 18px;
-      border-radius: 99px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.88rem;
-      transition: 0.2s;
-    }
-
-    .btn-filtro.activo, .btn-filtro:hover {
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      color: white;
-      border-color: transparent;
-    }
-
-    /* Grid y Tarjetas */
-    .grid-productos {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
-      gap: 24px;
-      padding-bottom: 65px;
-    }
-
-    .tarjeta {
-      --color-marca: #6366f1;
-      background-color: var(--fondo-tarjeta);
-      border: 1px solid var(--borde);
-      border-radius: 20px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    }
-
-    .tarjeta:hover {
-      transform: translateY(-6px);
-      border-color: var(--color-marca);
-      box-shadow: 0 18px 34px -12px rgba(0, 0, 0, 0.75), 0 0 24px -4px var(--color-marca);
-    }
-
-    .tarjeta.sin-stock {
-      opacity: 0.65;
-    }
-
-    .tarjeta-media {
-      height: 155px;
-      width: 100%;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      padding: 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .tarjeta-media::before {
-      content: "";
-      position: absolute;
-      width: 140px;
-      height: 140px;
-      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .contenedor-logo-oficial {
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      padding-top: 12px;
-      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.5));
-    }
-
-    /* Logos Oficiales */
-    .logo-netflix {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 3.3rem;
-      color: #e50914;
-      letter-spacing: 5px;
-      text-shadow: 0 4px 16px rgba(229, 9, 20, 0.75);
-      line-height: 1;
-    }
-
-    .logo-disney {
-      position: relative;
-      display: inline-flex;
-      align-items: baseline;
-      font-family: 'Cinzel', Georgia, serif;
-      font-weight: 900;
-      font-size: 2.3rem;
-      color: #ffffff;
-      letter-spacing: 0.5px;
-      padding-top: 10px;
-    }
-    .logo-disney .arco-disney {
-      position: absolute;
-      top: -6px;
-      left: 5%;
-      width: 90%;
-      height: 28px;
-      pointer-events: none;
-    }
-    .logo-disney .mas-disney {
-      color: #38bdf8;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 900;
-      font-size: 2.1rem;
-      margin-left: 2px;
-      text-shadow: 0 0 10px #38bdf8;
-    }
-
-    .logo-hbomax {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .logo-hbomax .txt-hbo {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 900;
-      font-size: 2.4rem;
-      color: #ffffff;
-      letter-spacing: -1px;
-      display: inline-flex;
-      align-items: center;
-    }
-    .logo-hbomax .txt-max {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 800;
-      font-size: 2.2rem;
-      color: #d8b4fe;
-      letter-spacing: -0.5px;
-    }
-
-    .logo-prime {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .logo-prime .txt-prime {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 800;
-      font-size: 1.95rem;
-      color: #ffffff;
-      letter-spacing: -0.5px;
-      line-height: 1;
-    }
-    .logo-prime svg {
-      width: 120px;
-      height: 24px;
-      margin-top: 2px;
-    }
-
-    .logo-canva {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .logo-canva .circulo-canva {
-      width: 66px;
-      height: 66px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #00c4cc 0%, #3b82f6 50%, #8b5cf6 100%);
-      border: 2.5px solid rgba(255, 255, 255, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Pacifico', cursive;
-      font-size: 1.45rem;
-      color: #ffffff;
-      box-shadow: 0 6px 16px rgba(0, 196, 204, 0.4);
-    }
-    .logo-canva .tag-pro {
-      background: #facc15;
-      color: #0f172a;
-      font-weight: 900;
-      font-size: 0.78rem;
-      padding: 3px 9px;
-      border-radius: 99px;
-    }
-
-    .logo-paramount {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-    }
-    .logo-paramount span {
-      font-family: 'Cinzel', Georgia, serif;
-      font-weight: 900;
-      font-size: 1.4rem;
-      color: #ffffff;
-    }
-
-    .logo-texto-icono {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 900;
-      font-size: 1.85rem;
-      color: #ffffff;
-      letter-spacing: -0.5px;
-    }
-
-    /* Etiquetas Flotantes (Categoría, Stock y Descuento) */
-    .badge-flotante {
-      position: absolute;
-      top: 11px;
-      left: 11px;
-      z-index: 3;
-      background-color: rgba(6, 9, 17, 0.78);
-      backdrop-filter: blur(8px);
-      color: #f1f5f9;
-      padding: 4px 11px;
-      border-radius: 99px;
-      font-size: 0.68rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-    }
-
-    .badge-derecha {
-      position: absolute;
-      top: 11px;
-      right: 11px;
-      z-index: 3;
-      padding: 4px 10px;
-      border-radius: 99px;
-      font-size: 0.68rem;
-      font-weight: 800;
-      backdrop-filter: blur(8px);
-    }
-
-    .badge-derecha.oficial {
-      background-color: rgba(34, 197, 94, 0.18);
-      color: #4ade80;
-      border: 1px solid rgba(34, 197, 94, 0.4);
-    }
-
-    .badge-derecha.stock-limitado {
-      background-color: rgba(245, 158, 11, 0.22);
-      color: #fbbf24;
-      border: 1px solid rgba(245, 158, 11, 0.5);
-    }
-
-    .badge-derecha.agotado {
-      background-color: rgba(239, 68, 68, 0.25);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.5);
-    }
-
-    .badge-descuento-card {
-      position: absolute;
-      bottom: 10px;
-      right: 11px;
-      z-index: 3;
-      background: linear-gradient(135deg, #ef4444, #f97316);
-      color: #ffffff;
-      padding: 4px 11px;
-      border-radius: 99px;
-      font-size: 0.72rem;
-      font-weight: 900;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
-    }
-
-    .tarjeta-cuerpo {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      justify-content: space-between;
-    }
-
-    .tarjeta h3 {
-      font-size: 1.25rem;
-      margin-bottom: 6px;
-      font-weight: 800;
-      color: #ffffff;
-    }
-
-    .tarjeta p {
-      color: var(--texto-secundario);
-      font-size: 0.88rem;
-      margin-bottom: 16px;
-      line-height: 1.45;
-    }
-
-    .precio {
-      font-size: 1.75rem;
-      font-weight: 900;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: baseline;
-      flex-wrap: wrap;
-      gap: 7px;
-      color: #ffffff;
-    }
-
-    .precio .precio-original {
-      font-size: 1rem;
-      color: #64748b;
-      text-decoration: line-through;
-      font-weight: 600;
-    }
-
-    .precio .valor-precio.en-oferta {
-      color: #4ade80;
-    }
-
-    .precio span.texto-periodo {
-      font-size: 0.84rem;
-      color: var(--texto-secundario);
-      font-weight: 500;
-    }
-
-    .caja-selector-meses {
-      margin-bottom: 14px;
-      background-color: rgba(6, 9, 17, 0.65);
-      padding: 9px 12px;
-      border-radius: 11px;
-      border: 1px solid var(--borde);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .caja-selector-meses label {
-      font-size: 0.82rem;
-      color: #cbd5e1;
-      font-weight: 600;
-    }
-
-    .select-meses {
-      background-color: #0f172a;
-      color: var(--texto);
-      border: 1px solid var(--acento);
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 0.86rem;
-      font-weight: 700;
-      cursor: pointer;
-      outline: none;
-    }
-
-    .botones-tarjeta {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .btn-agregar-carrito {
-      width: 100%;
-      background: linear-gradient(135deg, #6366f1, #4f46e5);
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 11px;
-      font-weight: 700;
-      font-size: 0.94rem;
-      cursor: pointer;
-    }
-
-    .btn-agregar-carrito:disabled {
-      background: #334155;
-      color: #94a3b8;
-      cursor: not-allowed;
-    }
-
-    .btn-comprar-directo {
-      display: block;
-      text-align: center;
-      background-color: rgba(34, 197, 94, 0.08);
-      color: #4ade80;
-      border: 1px solid rgba(34, 197, 94, 0.4);
-      text-decoration: none;
-      padding: 9px;
-      border-radius: 11px;
-      font-weight: 700;
-      font-size: 0.88rem;
-    }
-
-    /* MODAL DEL CARRITO */
-    .modal-fondo {
-      position: fixed;
-      inset: 0;
-      background-color: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(6px);
-      z-index: 200;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 14px;
-    }
-
-    .modal-contenido {
-      background-color: #111827;
-      border: 1px solid var(--borde);
-      border-radius: 20px;
-      width: 100%;
-      max-width: 520px;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 20px;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--borde);
-      padding-bottom: 12px;
-      margin-bottom: 14px;
-    }
-
-    .btn-cerrar {
-      background: none;
-      border: none;
-      color: var(--texto-secundario);
-      font-size: 1.8rem;
-      cursor: pointer;
-      line-height: 1;
-    }
-
-    .carrito-vacio {
-      text-align: center;
-      color: var(--texto-secundario);
-      padding: 30px 0;
-    }
-
-    .item-carrito {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--borde);
-      gap: 10px;
-    }
-
-    .item-info h4 {
-      font-size: 0.92rem;
-    }
-
-    .item-info span {
-      font-size: 0.78rem;
-      color: var(--texto-secundario);
-    }
-
-    .tag-oferta-carrito {
-      display: inline-block;
-      background: rgba(239, 68, 68, 0.2);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      font-size: 0.7rem;
-      font-weight: 800;
-      padding: 1px 6px;
-      border-radius: 6px;
-      margin-left: 4px;
-    }
-
-    .item-controles {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .item-controles button {
-      background-color: var(--fondo);
-      color: var(--texto);
-      border: 1px solid var(--borde);
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .item-subtotal {
-      min-width: 58px;
-      text-align: right;
-      color: #818cf8;
-      font-size: 0.92rem;
-    }
-
-    .caja-cupon {
-      margin-top: 14px;
-      padding: 12px;
-      background-color: rgba(99, 102, 241, 0.08);
-      border: 1px dashed var(--acento);
-      border-radius: 10px;
-    }
-
-    .caja-cupon label {
-      display: block;
-      font-size: 0.84rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #c7d2fe;
-    }
-
-    .fila-cupon {
-      display: flex;
-      gap: 8px;
-    }
-
-    .fila-cupon input {
-      flex: 1;
-      padding: 9px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--borde);
-      background-color: var(--fondo);
-      color: var(--texto);
-      font-size: 0.88rem;
-      text-transform: uppercase;
-    }
-
-    .btn-cupon {
-      background-color: var(--acento);
-      color: white;
-      border: none;
-      padding: 0 14px;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .desglose-totales {
-      margin: 14px 0;
-      padding: 12px;
-      background-color: rgba(255, 255, 255, 0.03);
-      border-radius: 10px;
-      border: 1px solid var(--borde);
-    }
-
-    .fila-desglose {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.88rem;
-      color: var(--texto-secundario);
-      margin-bottom: 6px;
-    }
-
-    .descuento-linea {
-      color: #4ade80;
-      font-weight: 600;
-    }
-
-    .fila-total {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 1.15rem;
-      margin: 10px 0 0 0;
-      padding-top: 10px;
-      border-top: 1px solid var(--borde);
-    }
-
-    .fila-total strong {
-      color: var(--whatsapp);
-      font-size: 1.4rem;
-    }
-
-    .caja-pichincha {
-      background-color: #0b132b;
-      border: 2px solid var(--pichincha-amarillo);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 16px;
-    }
-
-    .pichincha-titulo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .icono-banco {
-      font-size: 1.5rem;
-    }
-
-    .pichincha-titulo h4 {
-      color: var(--pichincha-amarillo);
-      font-size: 0.95rem;
-    }
-
-    .pichincha-titulo p {
-      font-size: 0.78rem;
-      color: var(--texto-secundario);
-    }
-
-    .datos-cuenta {
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      margin-bottom: 12px;
-    }
-
-    .datos-cuenta p {
-      margin-bottom: 5px;
-    }
-
-    .btn-copiar {
-      background-color: var(--pichincha-amarillo);
-      color: var(--pichincha-azul);
-      border: none;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin-left: 6px;
-    }
-
-    .campo-comprobante label {
-      display: block;
-      font-size: 0.8rem;
-      color: var(--texto-secundario);
-      margin-bottom: 6px;
-    }
-
-    .fila-verificacion {
-      display: flex;
-      gap: 8px;
-    }
-
-    .fila-verificacion input {
-      flex: 1;
-      padding: 9px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--borde);
-      background-color: var(--fondo);
-      color: var(--texto);
-      font-size: 0.88rem;
-    }
-
-    .btn-verificar {
-      background-color: var(--pichincha-amarillo);
-      color: var(--pichincha-azul);
-      border: none;
-      padding: 0 12px;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .estado-verificacion {
-      font-size: 0.8rem;
-      margin-top: 8px;
-      padding: 8px 10px;
-      border-radius: 6px;
-      background-color: rgba(255, 255, 255, 0.06);
-    }
-
-    .estado-verificacion.exito {
-      background-color: rgba(34, 197, 94, 0.15);
-      color: #4ade80;
-      border: 1px solid rgba(34, 197, 94, 0.4);
-    }
-
-    .estado-verificacion.error {
-      background-color: rgba(239, 68, 68, 0.15);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.4);
-    }
-
-    .btn-whatsapp-pago {
-      width: 100%;
-      background-color: var(--whatsapp);
-      color: white;
-      border: none;
-      padding: 13px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 0.96rem;
-      cursor: pointer;
-    }
-
-    .footer {
-      text-align: center;
-      padding: 30px 0;
-      border-top: 1px solid var(--borde);
-      color: var(--texto-secundario);
-      font-size: 0.85rem;
-    }
-
-    .footer-sub {
-      font-size: 0.76rem;
-      margin-top: 4px;
-    }
-
-    @media (max-width: 600px) {
-      .container { padding: 0 14px; }
-      .nav-content { min-height: 60px; padding: 8px 0; gap: 6px; }
-      .logo { font-size: 1.05rem; white-space: normal; max-width: 145px; line-height: 1.15; }
-      .btn-contacto { padding: 7px 10px; font-size: 0.78rem; border-radius: 8px; }
-      .btn-carrito { padding: 7px 11px; font-size: 0.78rem; border-radius: 8px; gap: 5px; }
-      .hero { padding: 32px 10px 24px; }
-      .badge { font-size: 0.74rem; padding: 6px 12px; }
-      .hero h2 { font-size: 1.65rem; }
-      .hero p { font-size: 0.9rem; }
-      .grid-productos { grid-template-columns: 1fr; gap: 18px; }
+    *, *::before, *::after {
+      -webkit-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
+      -webkit-touch-callout: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+
+    img, svg, a {
+      -webkit-user-drag: none !important;
+      user-drag: none !important;
+    }
+
+    input, textarea, select {
+      -webkit-user-select: text !important;
+      user-select: text !important;
     }
   </style>
 </head>
 <body>
 
-  <!-- Encabezado -->
+  <!-- Barra de navegación superior -->
   <header class="navbar">
-    <div class="container nav-content">
-      <h1 class="logo">Tienda Digital <span>Cedeño</span></h1>
-      <div class="nav-acciones">
-        <a href="#catalogo" class="btn-contacto" id="nav-whatsapp" target="_blank">💬 Soporte</a>
-        <button id="btn-abrir-carrito" class="btn-carrito">
-          🛒 Carrito <span id="contador-carrito">0</span>
+    <div class="nav-container">
+      <a href="/" class="logo" style="text-decoration: none; color: inherit;">
+        <h1>Tienda Digital <span class="texto-gradiente">Cedeño</span></h1>
+      </a>
+
+      <div class="nav-actions">
+        <a id="nav-whatsapp" href="https://wa.me/593963259492" target="_blank" rel="noopener noreferrer" class="btn-soporte">
+          💬 Soporte
+        </a>
+        <button id="btn-abrir-carrito" class="btn-carrito" type="button">
+          🛒 Carrito <span id="contador-carrito" class="badge-carrito">0</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Banner Principal -->
-  <section class="hero">
-    <div class="container">
-      <span class="badge">✨ Entrega Inmediata + Ofertas y Cupones Activos</span>
-      <h2>Tus plataformas, software y recargas al mejor precio</h2>
-      <p>Elige tus plataformas favoritas, aprovecha los descuentos y verifica tu transferencia con Banco Pichincha o Deuna! al instante.</p>
-      <a href="#catalogo" class="btn-principal">Explorar Catálogo</a>
-    </div>
-  </section>
-
-  <!-- Catálogo -->
-  <main id="catalogo" class="container">
-    <div class="controles">
-      <input type="text" id="buscador" placeholder="🔍 Buscar plataforma o software (ej. Netflix, Disney+, HBO Max, Spotify, Canva)...">
-      
-      <div class="filtros" id="contenedor-filtros">
-        <button class="btn-filtro activo" data-categoria="todos">Todos</button>
+  <!-- Contenido Principal del Catálogo -->
+  <main class="contenedor-principal">
+    <!-- Buscador y Filtros de Categorías -->
+    <section class="controles-catalogo">
+      <div class="buscador-wrapper" style="margin-bottom: 14px;">
+        <input
+          type="search"
+          id="buscador"
+          class="input-buscador"
+          placeholder="🔍 Buscar plataforma o servicio (ej. Netflix, Disney+, Canva)..."
+          autocomplete="off"
+        />
       </div>
-    </div>
 
-    <div id="contenedor-productos" class="grid-productos">
-      <p id="mensaje-cargando" style="color: #94a3b8; grid-column: 1/-1; text-align: center; padding: 40px; font-size: 1.05rem;">
-        ⏳ Cargando catálogo oficial...
-      </p>
-    </div>
+      <div id="contenedor-filtros" class="filtros-categorias">
+        <button class="filtro-btn activo" data-categoria="todos">Todos</button>
+      </div>
+    </section>
+
+    <!-- Grilla donde se cargan todos los productos del Google Sheet -->
+    <section id="contenedor-productos" class="grid-productos">
+      <!-- Las tarjetas se inyectan al instante desde script.js -->
+    </section>
   </main>
 
-  <!-- MODAL DEL CARRITO -->
-  <div id="modal-carrito" class="modal-fondo oculto">
+  <!-- Modal del Carrito de Compras y Verificación de Pago -->
+  <div id="modal-carrito" class="modal-overlay oculto">
     <div class="modal-contenido">
       <div class="modal-header">
-        <h3>🛒 Tu Carrito de Compras</h3>
-        <button id="btn-cerrar-carrito" class="btn-cerrar">&times;</button>
+        <h2>🛒 Tu Carrito de Compras</h2>
+        <button id="btn-cerrar-carrito" class="btn-cerrar" type="button">&times;</button>
       </div>
 
-      <div id="lista-carrito" class="lista-carrito"></div>
+      <div id="lista-carrito" class="carrito-items">
+        <!-- Productos agregados al carrito -->
+      </div>
 
-      <div id="seccion-pago" class="seccion-pago oculto">
-        <div class="caja-cupon">
-          <label for="input-cupon">🎟️ ¿Tienes un cupón de descuento?</label>
-          <div class="fila-cupon">
-            <input type="text" id="input-cupon" placeholder="Ej: STREAM5 o CEDENO10">
-            <button type="button" id="btn-aplicar-cupon" class="btn-cupon">Aplicar</button>
-          </div>
-          <p id="mensaje-cupon" class="estado-verificacion oculto"></p>
+      <!-- Sección de Cupones de Descuento -->
+      <div class="cupon-seccion">
+        <input type="text" id="input-cupon" placeholder="Código de cupón" autocomplete="off" />
+        <button id="btn-aplicar-cupon" type="button">Aplicar</button>
+      </div>
+      <p id="mensaje-cupon" class="mensaje-cupon"></p>
+
+      <!-- Datos de Transferencia y Total -->
+      <div class="carrito-resumen">
+        <div class="fila-total">
+          <span>Total a pagar:</span>
+          <strong id="carrito-total">$0.00</strong>
         </div>
 
-        <div class="desglose-totales">
-          <div class="fila-desglose">
-            <span>Subtotal:</span>
-            <span id="subtotal-carrito">$0.00</span>
-          </div>
-          <div id="fila-desc-auto" class="fila-desglose descuento-linea oculto">
-            <span>🔥 Descuento Promocional:</span>
-            <span id="monto-desc-auto">-$0.00</span>
-          </div>
-          <div id="fila-desc-cupon" class="fila-desglose descuento-linea oculto">
-            <span id="texto-desc-cupon">🎟️ Cupón aplicado:</span>
-            <span id="monto-desc-cupon">-$0.00</span>
-          </div>
-          <div class="fila-total">
-            <span>Total a pagar:</span>
-            <strong id="total-carrito">$0.00</strong>
-          </div>
+        <div class="caja-banco">
+          <p><strong>🏦 Datos de pago:</strong></p>
+          <p>Cuenta de Ahorros - Banco Pichincha: <strong>2213128245</strong> (o Deuna!)</p>
+          <p>Titular: <strong>Jostin Alejandro Cedeño López</strong></p>
         </div>
 
-        <div class="caja-pichincha">
-          <div class="pichincha-titulo">
-            <span class="icono-banco">🏦</span>
-            <div>
-              <h4>Transferencia Banco Pichincha / Deuna!</h4>
-              <p>Realiza el pago exacto a la siguiente cuenta:</p>
-            </div>
-          </div>
-
-          <div class="datos-cuenta">
-            <p><strong>Banco:</strong> <span id="banco-tipo">Cuenta de Ahorros - Banco Pichincha</span></p>
-            <p><strong>N° de Cuenta:</strong> <span id="banco-numero">2213128245</span> 
-              <button type="button" id="btn-copiar-cuenta" class="btn-copiar">Copiar</button>
-            </p>
-            <p><strong>Titular:</strong> <span id="banco-titular">Jostin Alejandro Cedeño López</span></p>
-          </div>
-
-          <div class="campo-comprobante">
-            <label for="input-comprobante">N° de Comprobante / Documento de transferencia:</label>
-            <div class="fila-verificacion">
-              <input type="text" id="input-comprobante" placeholder="Ej: 48291032">
-              <button type="button" id="btn-verificar-pago" class="btn-verificar">🔍 Verificar</button>
-            </div>
-            <p id="estado-verificacion" class="estado-verificacion oculto"></p>
-          </div>
+        <!-- Verificador de comprobante (si tu script.js lo usa) -->
+        <div id="seccion-verificador" class="verificador-pago">
+          <input
+            type="text"
+            id="input-comprobante"
+            placeholder="Nro. de comprobante (opcional)"
+            autocomplete="off"
+          />
+          <button id="btn-verificar-pago" type="button">Verificar pago</button>
+          <p id="estado-verificacion"></p>
         </div>
 
-        <button id="btn-finalizar-pedido" class="btn-whatsapp-pago">
-          ✅ Enviar Pedido por WhatsApp
-        </button>
+        <div class="modal-acciones">
+          <button id="btn-vaciar-carrito" class="btn-secundario" type="button">Vaciar</button>
+          <button id="btn-comprar-whatsapp" class="btn-primario" type="button">
+            ⚡ Completar pedido por WhatsApp
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Pie de página -->
   <footer class="footer">
-    <div class="container">
-      <p>© 2026 Tienda Digital Cedeño. Todos los derechos reservados.</p>
-      <p class="footer-sub">Pagos seguros vía Banco Pichincha (Cta: 2213128245) y Deuna!</p>
-    </div>
+    <p>&copy; 2026 Tienda Digital Cedeño. Todos los derechos reservados.</p>
+    <p>Pagos seguros vía Banco Pichincha (Cta: 2213128245) y Deuna!</p>
   </footer>
 
+  <!-- Tu lógica principal -->
   <script src="script.js"></script>
+
+  <!-- Bloqueo táctil en móviles y soporte de Ramas (/carrito, /Disney+) -->
+  <script>
+    // Impide que salga el menú de copiar o buscar en Google al mantener presionado en celular
+    document.addEventListener("contextmenu", function (e) {
+      if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA" && e.target.tagName !== "SELECT") {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    document.addEventListener("selectstart", function (e) {
+      if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") {
+        e.preventDefault();
+      }
+    });
+  </script>
 </body>
-/* ==========================================================================
-   1. SINCRONIZACIÓN ULTRARRÁPIDA CON GOOGLE SHEETS (SIN ESPERA DE 5 SEGUNDOS)
-   ========================================================================== */
-async function sincronizarSheetRapido() {
-  try {
-    const respuesta = await fetch(SHEET_CSV_URL, { cache: "no-store" });
-    if (!respuesta.ok) return;
-    const csvTexto = await respuesta.text();
-
-    // Si tu script ya tiene una función propia para leer el CSV, la usa automáticamente:
-    if (typeof parsearCSV === "function") {
-      const lista = parsearCSV(csvTexto);
-      if (lista && lista.length > 0) actualizarCatalogoEnVivo(lista);
-    } else if (typeof procesarCSV === "function") {
-      const lista = procesarCSV(csvTexto);
-      if (lista && lista.length > 0) actualizarCatalogoEnVivo(lista);
-    }
-  } catch (err) {
-    console.warn("Usando catálogo en caché local:", err);
-  }
-}
-
-function actualizarCatalogoEnVivo(nuevosProductos) {
-  productos = nuevosProductos;
-  localStorage.setItem(CACHE_KEY, JSON.stringify(nuevosProductos));
-
-  // Llama automáticamente a tu función de dibujado según cómo se llame en tu archivo
-  if (typeof renderizarProductos === "function") renderizarProductos();
-  else if (typeof mostrarProductos === "function") mostrarProductos();
-  else if (typeof cargarProductos === "function") cargarProductos();
-
-  if (typeof renderizarFiltros === "function") renderizarFiltros();
-  else if (typeof crearFiltros === "function") crearFiltros();
-}
-
-/* ==========================================================================
-   2. RAMAS AUTOMÁTICAS PARA GOOGLE ADS (/carrito, /checkout, /Disney+)
-   ========================================================================== */
-function crearSlugProducto(texto) {
-  return texto
-    .toString()
-    .trim()
-    .replace(/\s+/g, "-"); // Conserva el "+" para rutas como /Disney+
-}
-
-document.addEventListener("click", function (e) {
-  const boton = e.target.closest("button, a");
-  const texto = (boton ? boton.innerText : e.target.innerText || "").toLowerCase();
-
-  // Si abre el carrito o añade al carrito -> cambia URL a /carrito
-  if (
-    (boton && boton.id === "btn-abrir-carrito") ||
-    texto.includes("añadir al carrito") ||
-    texto.includes("carrito")
-  ) {
-    window.history.pushState({}, "", "/carrito");
-  }
-
-  // Si pulsa "Comprar directo" -> cambia URL a /checkout
-  if (texto.includes("comprar directo")) {
-    window.history.pushState({}, "", "/checkout");
-  }
-
-  // Si toca el título de una tarjeta -> cambia URL al nombre del producto (ej. /Disney+)
-  const tituloTarjeta = e.target.closest("h2, h3, h4");
-  if (tituloTarjeta) {
-    const slug = crearSlugProducto(tituloTarjeta.innerText);
-    window.history.pushState({}, "", "/" + slug);
-  }
-});
-
-function leerRamaAlEntrar() {
-  const ruta = decodeURIComponent(window.location.pathname).replace(/^\/+|\/+$/g, "");
-  if (!ruta || ruta === "index.html") return;
-
-  // Si el usuario entra a https://tiendadigitalcedeno.com/carrito
-  if (ruta.toLowerCase() === "carrito") {
-    const btnCarrito = document.getElementById("btn-abrir-carrito");
-    if (btnCarrito) btnCarrito.click();
-    return;
-  }
-
-  // Si el usuario entra a https://tiendadigitalcedeno.com/Disney+ o cualquier producto
-  const busqueda = ruta.replace(/-/g, " ").toLowerCase();
-  const inputBuscador = document.getElementById("buscador");
-
-  if (inputBuscador) {
-    inputBuscador.value = busqueda;
-    inputBuscador.dispatchEvent(new Event("input", { bubbles: true }));
-  }
-
-  const titulos = Array.from(document.querySelectorAll("#contenedor-productos h2, #contenedor-productos h3, #contenedor-productos h4"));
-  const coincidencia = titulos.find((el) => el.innerText.toLowerCase().includes(busqueda));
-
-  if (coincidencia) {
-    const tarjeta = coincidencia.closest("div")?.parentElement || coincidencia;
-    tarjeta.scrollIntoView({ behavior: "smooth", block: "center" });
-    tarjeta.style.outline = "3px solid #6366f1";
-    tarjeta.style.borderRadius = "16px";
-  }
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  sincronizarSheetRapido();
-  setTimeout(leerRamaAlEntrar, 300);
-  setTimeout(leerRamaAlEntrar, 1200);
-});
-
-/* ==========================================================================
-   3. MODO SOLO LECTURA EN CELULAR (BLOQUEA CARTEL DE COPIAR Y BUSCAR EN GOOGLE)
-   ========================================================================== */
-document.addEventListener(
-  "contextmenu",
-  function (e) {
-    if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA" && e.target.tagName !== "SELECT") {
-      e.preventDefault();
-    }
-  },
-  { passive: false }
-);
-
-document.addEventListener("selectstart", function (e) {
-  if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") {
-    e.preventDefault();
-  }
-});
 </html>

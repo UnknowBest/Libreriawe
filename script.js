@@ -1808,7 +1808,73 @@ async function cargarDesdeGoogleSheets() {
     }
   } catch (e) {}
 }
+// ==========================================
+// 9. ESCUDO DE SEGURIDAD (ANTI-XSS, ANTI-SPAM Y PROTECCIÓN DE DATOS)
+// ==========================================
 
+// 1. Limpia cualquier etiqueta HTML maliciosa (<script>, <iframe>, onclick, etc.)
+function escaparHTML(texto) {
+  return String(texto || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Sobrescribe la entrada de Reseñas y Tickets para filtrar código malicioso y bloquear Spam
+if (formPublicarResena) {
+  formPublicarResena.addEventListener("submit", (e) => {
+    const ultimaResenaTime = parseInt(localStorage.getItem("ultimo_envio_resena") || "0", 10);
+    const segundosRestantes = Math.ceil((60000 - (Date.now() - ultimaResenaTime)) / 1000);
+
+    if (Date.now() - ultimaResenaTime < 60000) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      alert(`🛡️ Seguridad Anti-Spam: Por favor espera ${segundosRestantes} segundos antes de publicar otra reseña.`);
+      return;
+    }
+
+    if (inputNombreResena) inputNombreResena.value = escaparHTML(inputNombreResena.value).slice(0, 45);
+    if (inputTextoResena) inputTextoResena.value = escaparHTML(inputTextoResena.value).slice(0, 280);
+    localStorage.setItem("ultimo_envio_resena", String(Date.now()));
+  }, true);
+}
+
+if (formTicketSoporte) {
+  formTicketSoporte.addEventListener("submit", (e) => {
+    const ultimoTicketTime = parseInt(localStorage.getItem("ultimo_envio_ticket") || "0", 10);
+    const segundosRestantes = Math.ceil((60000 - (Date.now() - ultimoTicketTime)) / 1000);
+
+    if (Date.now() - ultimoTicketTime < 60000) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      alert(`Seguridad Anti-Spam: Ya enviaste un ticket hace poco. Espera ${segundosRestantes} segundos.`);
+      return;
+    }
+
+    const campos = ["ticket-nombre", "ticket-contacto", "ticket-referencia", "ticket-mensaje"];
+    campos.forEach((idCampo) => {
+      const el = document.getElementById(idCampo);
+      if (el) el.value = escaparHTML(el.value).slice(0, 350);
+    });
+
+    localStorage.setItem("ultimo_envio_ticket", String(Date.now()));
+  }, true);
+}
+
+// 2. Bloquea clic derecho e inspección rápida (F12 / Ctrl+U / Ctrl+Shift+I) para curiosos
+document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+document.addEventListener("keydown", (e) => {
+  if (
+    e.key === "F12" ||
+    (e.ctrlKey && e.shiftKey && ["I", "J", "C", "i", "j", "c"].includes(e.key)) ||
+    (e.ctrlKey && ["U", "S", "u", "s"].includes(e.key))
+  ) {
+    e.preventDefault();
+  }
+});
 // Inicialización general
 actualizarBotonesFiltro();
 filtrarCatalogo();

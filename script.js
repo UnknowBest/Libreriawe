@@ -28,34 +28,21 @@ const DATOS_BANCO = {
 const CACHE_KEY = "productos_cedeno_cache";
 const CARRITO_KEY = "carrito_cedeno";
 const TICKETS_KEY = "tickets_cedeno_cliente";
+const RESENAS_CACHE_KEY = "resenas_cedeno_v2";
 
-// Reseñas iniciales verificadas (con fechas reales para calcular el tiempo transcurrido automáticamente)
-let resenasLista = [
+// Reseña real actual de tu perfil de Google Maps (1 comentario, 5.0 estrellas, sin descripción)
+const RESENA_BASE_GOOGLE = [
   {
-    nombre: "Mateo Zambrano",
+    nombre: "Tienda Digital Cedeño",
     estrellas: 5,
-    comentario: "Excelente servicio, compré Netflix y Disney+ con transferencia de Banco Pichincha y el verificador me validó el pago al instante. Entrega súper rápida.",
-    fecha: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // Hace 2 días
-  },
-  {
-    nombre: "Valeria Andrade",
-    estrellas: 5,
-    comentario: "100% recomendados. Adquirí Canva Pro por 3 años y Spotify, todo funciona perfecto y sin caídas. Muy buena atención.",
-    fecha: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() // Hace 5 días
-  },
-  {
-    nombre: "Kevin Moreira",
-    estrellas: 5,
-    comentario: "Los mejores precios de Ecuador en cuentas de streaming. Pagué por Deuna! y en menos de 2 minutos ya estaba viendo HBO Max.",
-    fecha: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString() // Hace 1 semana
-  },
-  {
-    nombre: "Andrea Cevallos",
-    estrellas: 5,
-    comentario: "Muy confiables y serios. Llevo 3 meses renovando mis pantallas aquí y siempre cumplen con la garantía.",
-    fecha: new Date(Date.now() - 26 * 24 * 60 * 60 * 1000).toISOString() // Hace 3 semanas
+    comentario: "", // Sin descripción escrita, exactamente como está en Google Maps
+    fecha: "2026-10-17T16:40:00-05:00",
+    esNueva: true
   }
 ];
+
+let resenasLista = JSON.parse(localStorage.getItem(RESENAS_CACHE_KEY)) || RESENA_BASE_GOOGLE;
+let estrellasSeleccionadasParaPublicar = 5;
 
 // Carga TODOS los productos guardados al instante (0.01s)
 let productos = JSON.parse(localStorage.getItem(CACHE_KEY)) || [
@@ -112,7 +99,11 @@ const btnCerrarResenas = document.getElementById("btn-cerrar-resenas");
 const listaResenasContenedor = document.getElementById("lista-resenas-contenedor");
 const promedioResenasEl = document.getElementById("promedio-resenas");
 const totalResenasCountEl = document.getElementById("total-resenas-count");
+const textoOpinionPluralEl = document.getElementById("texto-opinion-plural");
 const estrellasPublicarBtns = document.querySelectorAll("#estrellas-publicar button");
+const formPublicarResena = document.getElementById("form-publicar-resena");
+const inputNombreResena = document.getElementById("input-nombre-resena");
+const inputTextoResena = document.getElementById("input-texto-resena");
 
 // Referencias de Soporte por Tickets
 const modalSoporte = document.getElementById("modal-soporte");
@@ -817,6 +808,10 @@ async function buscarCuponEnSheetCSV(codigoBuscado) {
     const csv = await res.text();
     const filas = csv.split(/\r?\n/);
 
+    // Evita confundir la hoja de Productos si no existe la pestaña Cupones
+    const cabecera = (filas[0] || "").toLowerCase();
+    if (cabecera.includes("descripcion") || cabecera.includes("periodo")) return null;
+
     for (let i = 0; i < filas.length; i++) {
       const col = dividirFilaCSV(filas[i]);
       const codigoFila = (col[0] || "").replace(/"/g, "").trim().toUpperCase();
@@ -841,9 +836,7 @@ async function buscarCuponEnSheetCSV(codigoBuscado) {
         }
       }
     }
-  } catch (e) {
-    console.warn("No se pudo leer hoja Cupones CSV:", e);
-  }
+  } catch (e) {}
   return null;
 }
 
@@ -875,9 +868,7 @@ if (btnAplicarCupon) {
     try {
       const url = `${URL_VERIFICADOR_PICHINCHA}?accion=validarCupon&cupon=${encodeURIComponent(codigo)}&t=${Date.now()}`;
       data = await consultarAppsScript(url);
-    } catch (err) {
-      console.warn("Intentando leer pestaña Cupones CSV...");
-    }
+    } catch (err) {}
 
     if (!data) {
       data = await buscarCuponEnSheetCSV(codigo);
@@ -988,20 +979,21 @@ btnVerificarPago.addEventListener("click", async () => {
 });
 
 // ==========================================
-// 5. SISTEMA DE RESEÑAS EN PÁGINA + TIEMPO RELATIVO + REDIRECCIÓN A GOOGLE
+// 5. SISTEMA DE RESEÑAS EN TIEMPO REAL (ADMITE SIN DESCRIPCIÓN)
 // ==========================================
 function calcularTiempoRelativo(fechaInput) {
-  if (!fechaInput) return "Hace poco";
+  if (!fechaInput) return "Recién";
   const texto = String(fechaInput).trim();
 
-  // Si en el Excel ya escribiste "Hace 3 días", lo muestra tal cual
-  if (texto.toLowerCase().startsWith("hace")) return texto;
+  if (texto.toLowerCase().startsWith("hace") || texto.toLowerCase() === "recién" || texto.toLowerCase() === "recien") {
+    return texto;
+  }
 
   const fechaObj = new Date(texto);
-  if (isNaN(fechaObj.getTime())) return texto;
+  if (isNaN(fechaObj.getTime())) return "Recién";
 
   const segundos = Math.max(1, Math.floor((Date.now() - fechaObj.getTime()) / 1000));
-  if (segundos < 60) return "Hace unos segundos";
+  if (segundos < 90) return "Recién";
   const minutos = Math.floor(segundos / 60);
   if (minutos < 60) return `Hace ${minutos} ${minutos === 1 ? "minuto" : "minutos"}`;
   const horas = Math.floor(minutos / 60);
@@ -1026,69 +1018,148 @@ function renderizarResenas() {
 
   if (promedioResenasEl) promedioResenasEl.textContent = promedio;
   if (totalResenasCountEl) totalResenasCountEl.textContent = total;
+  if (textoOpinionPluralEl) {
+    textoOpinionPluralEl.textContent = total === 1 ? "comentario" : "comentarios";
+  }
 
   resenasLista.forEach((rev) => {
     const numEstrellas = Math.min(5, Math.max(1, parseInt(rev.estrellas, 10) || 5));
     const estrellasTxt = "★".repeat(numEstrellas) + "☆".repeat(5 - numEstrellas);
-    const inicial = (rev.nombre || "C").trim().charAt(0).toUpperCase();
+    const nombreLimpio = (rev.nombre || "Cliente").trim();
+    const esTDC = nombreLimpio.toLowerCase().includes("tienda digital cede");
+    const inicial = esTDC ? "TDC" : nombreLimpio.charAt(0).toUpperCase();
     const tiempoTexto = calcularTiempoRelativo(rev.fecha);
+    const textoComentario = (rev.comentario || "").trim();
+
+    // Etiqueta NUEVA igual a Google Maps si tiene menos de 24 horas
+    const badgeNueva = (tiempoTexto === "Recién" || tiempoTexto.includes("minuto") || tiempoTexto.includes("hora"))
+      ? `<span style="background:rgba(255,255,255,0.1); color:#e2e8f0; font-size:0.65rem; padding:2px 6px; border-radius:4px; margin-left:6px; font-weight:700;">NUEVA</span>`
+      : "";
+
+    // Si la reseña no tiene descripción (como en Google Maps), muestra solo las estrellas sin comillas vacías
+    const htmlComentario = textoComentario
+      ? `<p class="comentario-resena">"${textoComentario}"</p>`
+      : "";
 
     const card = document.createElement("div");
     card.className = "tarjeta-resena-item";
     card.innerHTML = `
-      <div class="resena-cabecera">
+      <div class="resena-cabecera" style="${!textoComentario ? 'margin-bottom:0;' : ''}">
         <div class="resena-usuario">
-          <div class="avatar-resena">${inicial}</div>
+          <div class="avatar-resena" style="${esTDC ? 'font-size:0.75rem; background:#0f172a; border:1px solid #38bdf8;' : ''}">${inicial}</div>
           <div>
-            <h4>${rev.nombre} <span class="badge-verificado-google" title="Reseña de Google">✔ Google</span></h4>
-            <span class="tiempo-resena">🕒 ${tiempoTexto}</span>
+            <h4>${nombreLimpio} <span class="badge-verificado-google" title="Reseña verificada">✔ Google</span></h4>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:2px;">
+              <span class="estrellas-item" style="font-size:0.88rem;">${estrellasTxt}</span>
+              <span class="tiempo-resena">${tiempoTexto}</span>
+              ${badgeNueva}
+            </div>
           </div>
         </div>
-        <div class="estrellas-item">${estrellasTxt}</div>
       </div>
-      <p class="comentario-resena">"${rev.comentario}"</p>
+      ${htmlComentario}
     `;
     listaResenasContenedor.appendChild(card);
   });
 }
 
-async function cargarResenasDesdeSheet() {
+async function sincronizarResenasEnTiempoReal() {
+  // 1. Intenta obtener reseñas en tiempo real desde tu Google Apps Script
+  try {
+    const urlVivo = `${URL_VERIFICADOR_PICHINCHA}?accion=obtenerResenas&t=${Date.now()}`;
+    const data = await consultarAppsScript(urlVivo);
+    if (data && data.ok && Array.isArray(data.resenas) && data.resenas.length > 0) {
+      resenasLista = data.resenas;
+      localStorage.setItem(RESENAS_CACHE_KEY, JSON.stringify(resenasLista));
+      renderizarResenas();
+      return;
+    }
+  } catch (e) {}
+
+  // 2. Lee la pestaña "Resenas" del CSV, pero VERIFICA que NO sea la hoja de Productos
   try {
     const res = await fetch(`${SHEET_RESENAS_CSV_URL}&t=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) return;
     const csv = await res.text();
     if (csv.includes("<!DOCTYPE") || csv.includes("<html")) return;
 
-    const filas = csv.split(/\r?\n/);
+    const filas = csv.split(/\r?\n/).filter(f => f.trim() !== "");
+    if (filas.length === 0) return;
+
+    // VALIDACIÓN CRÍTICA: Si la fila 0 tiene "categoria", "precio" o "periodo", es la hoja de Productos (la ignora)
+    const filaCabecera = dividirFilaCSV(filas[0]).map(c => c.toLowerCase().replace(/"/g, "").trim());
+    const esHojaDeProductos = filaCabecera.includes("categoria") || filaCabecera.includes("categoría") || filaCabecera.includes("precio") || filaCabecera.includes("periodo") || filaCabecera.includes("stock");
+    const esHojaDeResenas = filaCabecera.includes("estrellas") || filaCabecera.includes("comentario") || filaCabecera.includes("resena") || filaCabecera.includes("reseña") || filaCabecera.includes("calificacion");
+
+    if (esHojaDeProductos || !esHojaDeResenas) {
+      return; // Mantiene tu reseña real de Google Maps sin mezclar productos
+    }
+
     const nuevasResenas = [];
+    for (let i = 1; i < filas.length; i++) {
+      const col = dividirFilaCSV(filas[i]);
+      const nombre = (col[0] || "").replace(/"/g, "").trim();
+      if (!nombre) continue;
 
-    filas.forEach((fila, idx) => {
-      if (!fila.trim()) return;
-      const col = dividirFilaCSV(fila);
-      if (!col[0] || (idx === 0 && col[0].toLowerCase().includes("nombre"))) return;
-      if (!col[2]) return; // Requiere comentario en Columna C
+      const estrellas = parseInt((col[1] || "5").replace(/[^0-9]/g, ""), 10) || 5;
+      const comentario = (col[2] || "").replace(/"/g, "").trim(); // Puede estar vacío (sin descripción)
+      const fecha = (col[3] || "").replace(/"/g, "").trim() || "Recién";
 
-      nuevasResenas.push({
-        nombre: col[0].replace(/"/g, "").trim(),
-        estrellas: parseInt(col[1], 10) || 5,
-        comentario: col[2].replace(/"/g, "").trim(),
-        fecha: col[3] ? col[3].replace(/"/g, "").trim() : "Hace poco"
-      });
-    });
+      nuevasResenas.push({ nombre, estrellas, comentario, fecha });
+    }
 
     if (nuevasResenas.length > 0) {
       resenasLista = nuevasResenas;
+      localStorage.setItem(RESENAS_CACHE_KEY, JSON.stringify(resenasLista));
       renderizarResenas();
     }
   } catch (e) {}
 }
 
-// Al hacer clic en las estrellas de publicar, lleva directo al enlace de Google Review
+// Selector interactivo de 1 a 5 estrellas
 estrellasPublicarBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
-    window.open(URL_GOOGLE_REVIEW, "_blank", "noopener,noreferrer");
+    estrellasSeleccionadasParaPublicar = parseInt(btn.getAttribute("data-star"), 10) || 5;
+    estrellasPublicarBtns.forEach((b) => {
+      const valorB = parseInt(b.getAttribute("data-star"), 10);
+      b.style.opacity = valorB <= estrellasSeleccionadasParaPublicar ? "1" : "0.3";
+    });
   });
 });
+
+// Publicar reseña en tiempo real en la web + redirigir a Google Maps
+if (formPublicarResena) {
+  formPublicarResena.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const nombre = (inputNombreResena.value || "").trim() || "Cliente Verificado";
+    const comentario = (inputTextoResena.value || "").trim(); // Opcional
+
+    const nuevaResena = {
+      nombre: nombre,
+      estrellas: estrellasSeleccionadasParaPublicar,
+      comentario: comentario,
+      fecha: new Date().toISOString()
+    };
+
+    // Agrega al principio de la lista en tiempo real
+    resenasLista.unshift(nuevaResena);
+    localStorage.setItem(RESENAS_CACHE_KEY, JSON.stringify(resenasLista));
+    renderizarResenas();
+
+    // Guarda en Google Sheets mediante tu Apps Script para que todos la vean en tiempo real
+    const urlGuardar = `${URL_VERIFICADOR_PICHINCHA}?accion=agregarResena&nombre=${encodeURIComponent(nombre)}&estrellas=${encodeURIComponent(estrellasSeleccionadasParaPublicar)}&comentario=${encodeURIComponent(comentario)}&fecha=${encodeURIComponent(nuevaResena.fecha)}&t=${Date.now()}`;
+    consultarAppsScript(urlGuardar).catch(() => {});
+
+    formPublicarResena.reset();
+    window.open(URL_GOOGLE_REVIEW, "_blank", "noopener,noreferrer");
+  });
+}
+
+// Refresca el tiempo ("Recién", "Hace X min") y las reseñas nuevas cada 10 segundos en vivo
+setInterval(() => {
+  renderizarResenas();
+  sincronizarResenasEnTiempoReal();
+}, 10000);
 
 // ==========================================
 // 6. SISTEMA DE TICKETS DE SOPORTE (SIN ENVIAR DIRECTO A WHATSAPP)
@@ -1171,12 +1242,11 @@ if (formTicketSoporte) {
       estado: "🟡 Recibido - Te responderemos pronto"
     };
 
-    // Envía el ticket al Google Apps Script para guardarlo en tu Google Sheet
     try {
       const urlTicket = `${URL_VERIFICADOR_PICHINCHA}?accion=crearTicket&id=${encodeURIComponent(codigoTicket)}&nombre=${encodeURIComponent(nombre)}&contacto=${encodeURIComponent(contacto)}&asunto=${encodeURIComponent(asunto)}&referencia=${encodeURIComponent(referencia)}&mensaje=${encodeURIComponent(mensaje)}&t=${Date.now()}`;
       await consultarAppsScript(urlTicket);
     } catch (err) {
-      console.warn("Ticket guardado localmente y registrado en cola.");
+      console.warn("Ticket guardado localmente.");
     }
 
     misTickets.push(nuevoTicket);
@@ -1210,7 +1280,6 @@ function limpiarHashUrl() {
   history.pushState("", document.title, window.location.pathname + window.location.search);
 }
 
-// Abrir/Cerrar Carrito
 btnAbrirCarrito.addEventListener("click", () => {
   cerrarTodosLosModales();
   modalCarrito.classList.remove("oculto");
@@ -1229,11 +1298,11 @@ modalCarrito.addEventListener("click", (e) => {
   }
 });
 
-// Abrir/Cerrar Reseñas
 if (btnAbrirResenas) {
   btnAbrirResenas.addEventListener("click", () => {
     cerrarTodosLosModales();
     renderizarResenas();
+    sincronizarResenasEnTiempoReal();
     modalResenas.classList.remove("oculto");
     window.location.hash = "resenas";
   });
@@ -1255,7 +1324,6 @@ if (modalResenas) {
   });
 }
 
-// Abrir/Cerrar Soporte por Tickets
 if (btnAbrirSoporte) {
   btnAbrirSoporte.addEventListener("click", () => {
     cerrarTodosLosModales();
@@ -1281,7 +1349,6 @@ if (modalSoporte) {
   });
 }
 
-// Abrir/Cerrar Legal
 function abrirPestanaLegal(nombreTab, actualizarHash = true) {
   if (!modalLegal) return;
   cerrarTodosLosModales();
@@ -1345,6 +1412,7 @@ function sincronizarRutasHash() {
   } else if (hash === "resenas") {
     cerrarTodosLosModales();
     renderizarResenas();
+    sincronizarResenasEnTiempoReal();
     if (modalResenas) modalResenas.classList.remove("oculto");
   } else if (hash === "soporte") {
     cerrarTodosLosModales();
@@ -1573,4 +1641,4 @@ actualizarVistaCarrito();
 renderizarResenas();
 renderizarMisTickets();
 cargarDesdeGoogleSheets();
-cargarResenasDesdeSheet();
+sincronizarResenasEnTiempoReal();

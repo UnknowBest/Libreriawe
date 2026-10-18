@@ -944,7 +944,7 @@
   </main>
 
   <!-- ========================================== -->
-  <!-- MODAL DE RESEÑAS DE CLIENTES (GOOGLE)      -->
+  <!-- MODAL DE RESEÑAS DE CLIENTES (EN VIVO)     -->
   <!-- ========================================== -->
   <div id="modal-resenas" class="modal-fondo oculto">
     <div class="modal-contenido modal-legal-ancho">
@@ -953,32 +953,42 @@
         <button id="btn-cerrar-resenas" class="btn-cerrar">&times;</button>
       </div>
 
-      <!-- Cabecera de Calificación y Botón para Publicar en Google -->
+      <!-- Cabecera de Calificación y Formulario Rápido en Tiempo Real -->
       <div class="cabecera-resenas-google">
         <div class="resumen-puntaje">
           <div class="numero-puntaje" id="promedio-resenas">5.0</div>
           <div>
-            <div class="estrellas-doradas">★★★★★</div>
-            <p class="texto-total-resenas">Perfil verificado en <strong>Google Maps</strong> (<span id="total-resenas-count">0</span> opiniones)</p>
+            <div class="estrellas-doradas" id="estrellas-promedio-visual">★★★★★</div>
+            <p class="texto-total-resenas">
+              Perfil verificado en <strong>Google Maps</strong> (<span id="total-resenas-count">1</span> <span id="texto-opinion-plural">comentario</span>)
+              <span style="color:#4ade80; font-size:0.75rem; margin-left:6px;">● En tiempo real</span>
+            </p>
           </div>
         </div>
 
-        <div class="caja-calificar-rapido">
-          <span>¿Compraste con nosotros? Elige tus estrellas para publicar tu reseña:</span>
+        <form id="form-publicar-resena" class="caja-calificar-rapido">
+          <span>Deja tu calificación aquí y publícala en Google Maps:</span>
+
           <div class="estrellas-interactivas" id="estrellas-publicar">
-            <button type="button" data-star="5" title="5 Estrellas">★</button>
-            <button type="button" data-star="5" title="5 Estrellas">★</button>
-            <button type="button" data-star="5" title="5 Estrellas">★</button>
-            <button type="button" data-star="5" title="5 Estrellas">★</button>
-            <button type="button" data-star="5" title="5 Estrellas">★</button>
+            <button type="button" data-star="1" class="estrella-btn activa" title="1 Estrella">★</button>
+            <button type="button" data-star="2" class="estrella-btn activa" title="2 Estrellas">★</button>
+            <button type="button" data-star="3" class="estrella-btn activa" title="3 Estrellas">★</button>
+            <button type="button" data-star="4" class="estrella-btn activa" title="4 Estrellas">★</button>
+            <button type="button" data-star="5" class="estrella-btn activa" title="5 Estrellas">★</button>
           </div>
-          <a href="https://g.page/r/CcVHRoL30LsdECE/review" target="_blank" rel="noopener noreferrer" class="btn-publicar-google">
+
+          <div style="width:100%; display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">
+            <input type="text" id="input-nombre-resena" placeholder="Tu nombre (Ej: Juan Pérez)" required style="flex:1; min-width:140px; padding:8px 11px; border-radius:8px; border:1px solid var(--borde); background:var(--fondo); color:var(--texto); font-size:0.84rem;">
+            <input type="text" id="input-texto-resena" placeholder="Comentario (Opcional, puedes dejarlo vacío)" style="flex:2; min-width:180px; padding:8px 11px; border-radius:8px; border:1px solid var(--borde); background:var(--fondo); color:var(--texto); font-size:0.84rem;">
+          </div>
+
+          <button type="submit" class="btn-publicar-google" style="border:none; cursor:pointer; margin-top:4px;">
             ✍️ Publicar reseña en Google
-          </a>
-        </div>
+          </button>
+        </form>
       </div>
 
-      <!-- Lista de Reseñas dentro de la página con tiempo relativo -->
+      <!-- Lista de Reseñas en vivo dentro de la página -->
       <div id="lista-resenas-contenedor" class="lista-resenas-grid"></div>
     </div>
   </div>

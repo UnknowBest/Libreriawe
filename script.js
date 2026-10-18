@@ -33,18 +33,34 @@ const CARRITO_KEY = "carrito_cedeno";
 const TICKETS_KEY = "tickets_cedeno_cliente";
 const RESENAS_CACHE_KEY = "resenas_cedeno_v2";
 
-// Reseña real actual de tu perfil de Google Maps
+// Reseña oficial verificada en Google Maps
 const RESENA_BASE_GOOGLE = [
   {
     nombre: "Tienda Digital Cedeño",
     estrellas: 5,
     comentario: "",
     fecha: "2026-10-17T16:40:00-05:00",
-    esNueva: true
+    origen: "google"
   }
 ];
 
-let resenasLista = JSON.parse(localStorage.getItem(RESENAS_CACHE_KEY)) || RESENA_BASE_GOOGLE;
+function normalizarOrigenResena(rev) {
+  const nombreLimpio = String(rev.nombre || "").trim().toLowerCase();
+  const origenGuardado = String(rev.origen || "").trim().toLowerCase();
+
+  // Si en el Excel (Columna E) dice explícitamente "google", o es la reseña oficial de Tienda Digital Cedeño en Maps
+  if (origenGuardado === "google" || (!origenGuardado && nombreLimpio.includes("tienda digital cede"))) {
+    return "google";
+  }
+  return "web";
+}
+
+let resenasLista = (JSON.parse(localStorage.getItem(RESENAS_CACHE_KEY)) || RESENA_BASE_GOOGLE).map(r => ({
+  ...r,
+  origen: normalizarOrigenResena(r)
+}));
+localStorage.setItem(RESENAS_CACHE_KEY, JSON.stringify(resenasLista));
+
 let estrellasSeleccionadasParaPublicar = 5;
 
 // Carga TODOS los productos guardados al instante (0.01s)
@@ -67,7 +83,7 @@ let categoriaActual = "todos";
 let pagoVerificadoAutomaticamente = false;
 let cuponActivo = null;
 
-// Limpia cualquier referencia corrupta guardada previamente como "${tk.referencia}"
+// Limpia cualquier referencia corrupta guardada previamente
 misTickets = misTickets.map(tk => {
   if (tk.referencia && String(tk.referencia).includes("tk.referencia")) {
     tk.referencia = "";
@@ -112,10 +128,13 @@ const listaResenasContenedor = document.getElementById("lista-resenas-contenedor
 const promedioResenasEl = document.getElementById("promedio-resenas");
 const totalResenasCountEl = document.getElementById("total-resenas-count");
 const textoOpinionPluralEl = document.getElementById("texto-opinion-plural");
+const conteoGoogleTxtEl = document.getElementById("conteo-google-txt");
+const conteoWebTxtEl = document.getElementById("conteo-web-txt");
 const estrellasPublicarBtns = document.querySelectorAll("#estrellas-publicar button");
 const formPublicarResena = document.getElementById("form-publicar-resena");
 const inputNombreResena = document.getElementById("input-nombre-resena");
 const inputTextoResena = document.getElementById("input-texto-resena");
+const mensajeResenaPublicada = document.getElementById("mensaje-resena-publicada");
 
 // Referencias de Soporte por Tickets
 const modalSoporte = document.getElementById("modal-soporte");
@@ -990,7 +1009,7 @@ btnVerificarPago.addEventListener("click", async () => {
 });
 
 // ==========================================
-// 5. SISTEMA DE RESEÑAS EN TIEMPO REAL
+// 5. SISTEMA DE RESEÑAS EN TIEMPO REAL (DIFERENCIA WEB Y GOOGLE)
 // ==========================================
 function calcularTiempoRelativo(fechaInput) {
   if (!fechaInput) return "Recién";
@@ -1027,11 +1046,16 @@ function renderizarResenas() {
   const suma = resenasLista.reduce((acc, r) => acc + (parseFloat(r.estrellas) || 5), 0);
   const promedio = total > 0 ? (suma / total).toFixed(1) : "5.0";
 
+  const totalGoogle = resenasLista.filter(r => normalizarOrigenResena(r) === "google").length;
+  const totalWeb = total - totalGoogle;
+
   if (promedioResenasEl) promedioResenasEl.textContent = promedio;
   if (totalResenasCountEl) totalResenasCountEl.textContent = total;
   if (textoOpinionPluralEl) {
-    textoOpinionPluralEl.textContent = total === 1 ? "comentario" : "comentarios";
+    textoOpinionPluralEl.textContent = total === 1 ? "opinión" : "opiniones";
   }
+  if (conteoGoogleTxtEl) conteoGoogleTxtEl.textContent = `${totalGoogle} en Google`;
+  if (conteoWebTxtEl) conteoWebTxtEl.textContent = `${totalWeb} en Web`;
 
   resenasLista.forEach((rev) => {
     const numEstrellas = Math.min(5, Math.max(1, parseInt(rev.estrellas, 10) || 5));
@@ -1041,6 +1065,11 @@ function renderizarResenas() {
     const inicial = esTDC ? "TDC" : nombreLimpio.charAt(0).toUpperCase();
     const tiempoTexto = calcularTiempoRelativo(rev.fecha);
     const textoComentario = (rev.comentario || "").trim();
+
+    const origenTipo = normalizarOrigenResena(rev);
+    const htmlBadgeOrigen = origenTipo === "google"
+      ? `<span class="badge-verificado-google" title="Reseña publicada en Google Maps">✔ Google</span>`
+      : `<span style="font-size:0.68rem; background:rgba(168,85,247,0.18); color:#d8b4fe; border:1px solid rgba(168,85,247,0.45); padding:1px 7px; border-radius:99px; font-weight:800;" title="Reseña publicada en la página web">🌐 Web</span>`;
 
     const badgeNueva = (tiempoTexto === "Recién" || tiempoTexto.includes("minuto") || tiempoTexto.includes("hora"))
       ? `<span style="background:rgba(255,255,255,0.1); color:#e2e8f0; font-size:0.65rem; padding:2px 6px; border-radius:4px; margin-left:6px; font-weight:700;">NUEVA</span>`
@@ -1057,7 +1086,7 @@ function renderizarResenas() {
         <div class="resena-usuario">
           <div class="avatar-resena" style="${esTDC ? 'font-size:0.75rem; background:#0f172a; border:1px solid #38bdf8;' : ''}">${inicial}</div>
           <div>
-            <h4>${nombreLimpio} <span class="badge-verificado-google" title="Reseña verificada">✔ Google</span></h4>
+            <h4>${nombreLimpio} ${htmlBadgeOrigen}</h4>
             <div style="display:flex; align-items:center; gap:6px; margin-top:2px;">
               <span class="estrellas-item" style="font-size:0.88rem;">${estrellasTxt}</span>
               <span class="tiempo-resena">${tiempoTexto}</span>
@@ -1073,47 +1102,60 @@ function renderizarResenas() {
 }
 
 async function sincronizarResenasEnTiempoReal() {
+  // 1. Lee la pestaña "Resenas" del CSV (verifica que NO sea la hoja de Productos)
+  try {
+    const res = await fetch(`${SHEET_RESENAS_CSV_URL}&t=${Date.now()}`, { cache: "no-store" });
+    if (res.ok) {
+      const csv = await res.text();
+      if (!csv.includes("<!DOCTYPE") && !csv.includes("<html")) {
+        const filas = csv.split(/\r?\n/).filter(f => f.trim() !== "");
+        if (filas.length > 0) {
+          const filaCabecera = dividirFilaCSV(filas[0]).map(c => c.toLowerCase().replace(/"/g, "").trim());
+          const esHojaDeProductos = filaCabecera.includes("categoria") || filaCabecera.includes("categoría") || filaCabecera.includes("precio") || filaCabecera.includes("periodo") || filaCabecera.includes("stock");
+          const esHojaDeResenas = filaCabecera.includes("estrellas") || filaCabecera.includes("comentario") || filaCabecera.includes("resena") || filaCabecera.includes("reseña") || filaCabecera.includes("calificacion");
+
+          if (!esHojaDeProductos && esHojaDeResenas) {
+            const nuevasResenas = [];
+            for (let i = ( filas.length - 1 ); i >= 1; i--) {
+              const col = dividirFilaCSV(filas[i]);
+              const nombre = (col[0] || "").replace(/"/g, "").trim();
+              if (!nombre) continue;
+
+              const estrellas = parseInt((col[1] || "5").replace(/[^0-9]/g, ""), 10) || 5;
+              const comentario = (col[2] || "").replace(/"/g, "").trim();
+              const fecha = (col[3] || "").replace(/"/g, "").trim() || "Recién";
+              const origenRaw = (col[4] || "").replace(/"/g, "").trim(); // Columna E: "Web" o "Google"
+
+              nuevasResenas.push({
+                nombre,
+                estrellas,
+                comentario,
+                fecha,
+                origen: normalizarOrigenResena({ nombre, origen: origenRaw })
+              });
+            }
+
+            if (nuevasResenas.length > 0) {
+              resenasLista = nuevasResenas;
+              localStorage.setItem(RESENAS_CACHE_KEY, JSON.stringify(resenasLista));
+              renderizarResenas();
+              return;
+            }
+          }
+        }
+      }
+    }
+  } catch (e) {}
+
+  // 2. Respaldo desde Apps Script si está activo
   try {
     const urlVivo = `${URL_VERIFICADOR_PICHINCHA}?accion=obtenerResenas&t=${Date.now()}`;
     const data = await consultarAppsScript(urlVivo);
     if (data && data.ok && Array.isArray(data.resenas) && data.resenas.length > 0) {
-      resenasLista = data.resenas;
-      localStorage.setItem(RESENAS_CACHE_KEY, JSON.stringify(resenasLista));
-      renderizarResenas();
-      return;
-    }
-  } catch (e) {}
-
-  try {
-    const res = await fetch(`${SHEET_RESENAS_CSV_URL}&t=${Date.now()}`, { cache: "no-store" });
-    if (!res.ok) return;
-    const csv = await res.text();
-    if (csv.includes("<!DOCTYPE") || csv.includes("<html")) return;
-
-    const filas = csv.split(/\r?\n/).filter(f => f.trim() !== "");
-    if (filas.length === 0) return;
-
-    const filaCabecera = dividirFilaCSV(filas[0]).map(c => c.toLowerCase().replace(/"/g, "").trim());
-    const esHojaDeProductos = filaCabecera.includes("categoria") || filaCabecera.includes("categoría") || filaCabecera.includes("precio") || filaCabecera.includes("periodo") || filaCabecera.includes("stock");
-    const esHojaDeResenas = filaCabecera.includes("estrellas") || filaCabecera.includes("comentario") || filaCabecera.includes("resena") || filaCabecera.includes("reseña") || filaCabecera.includes("calificacion");
-
-    if (esHojaDeProductos || !esHojaDeResenas) return;
-
-    const nuevasResenas = [];
-    for (let i = 1; i < filas.length; i++) {
-      const col = dividirFilaCSV(filas[i]);
-      const nombre = (col[0] || "").replace(/"/g, "").trim();
-      if (!nombre) continue;
-
-      const estrellas = parseInt((col[1] || "5").replace(/[^0-9]/g, ""), 10) || 5;
-      const comentario = (col[2] || "").replace(/"/g, "").trim();
-      const fecha = (col[3] || "").replace(/"/g, "").trim() || "Recién";
-
-      nuevasResenas.push({ nombre, estrellas, comentario, fecha });
-    }
-
-    if (nuevasResenas.length > 0) {
-      resenasLista = nuevasResenas;
+      resenasLista = data.resenas.map(r => ({
+        ...r,
+        origen: normalizarOrigenResena(r)
+      }));
       localStorage.setItem(RESENAS_CACHE_KEY, JSON.stringify(resenasLista));
       renderizarResenas();
     }
@@ -1130,28 +1172,35 @@ estrellasPublicarBtns.forEach((btn) => {
   });
 });
 
+// Publicar reseña en la Web (Etiqueta 🌐 Web)
 if (formPublicarResena) {
   formPublicarResena.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const nombre = (inputNombreResena.value || "").trim() || "Cliente Verificado";
+    const nombre = (inputNombreResena.value || "").trim() || "Cliente";
     const comentario = (inputTextoResena.value || "").trim();
 
     const nuevaResena = {
       nombre: nombre,
       estrellas: estrellasSeleccionadasParaPublicar,
       comentario: comentario,
-      fecha: new Date().toISOString()
+      fecha: new Date().toISOString(),
+      origen: "web"
     };
 
     resenasLista.unshift(nuevaResena);
     localStorage.setItem(RESENAS_CACHE_KEY, JSON.stringify(resenasLista));
     renderizarResenas();
 
-    const urlGuardar = `${URL_VERIFICADOR_PICHINCHA}?accion=agregarResena&nombre=${encodeURIComponent(nombre)}&estrellas=${encodeURIComponent(estrellasSeleccionadasParaPublicar)}&comentario=${encodeURIComponent(comentario)}&fecha=${encodeURIComponent(nuevaResena.fecha)}&t=${Date.now()}`;
+    if (mensajeResenaPublicada) {
+      mensajeResenaPublicada.classList.remove("oculto");
+      mensajeResenaPublicada.innerHTML = `✅ ¡Gracias <strong>${nombre}</strong>! Tu reseña se publicó en la <strong>Web</strong>. Si deseas que aparezca en Google Maps, pulsa el botón amarillo.`;
+      setTimeout(() => mensajeResenaPublicada.classList.add("oculto"), 6000);
+    }
+
+    const urlGuardar = `${URL_VERIFICADOR_PICHINCHA}?accion=agregarResena&nombre=${encodeURIComponent(nombre)}&estrellas=${encodeURIComponent(estrellasSeleccionadasParaPublicar)}&comentario=${encodeURIComponent(comentario)}&fecha=${encodeURIComponent(nuevaResena.fecha)}&origen=Web&t=${Date.now()}`;
     consultarAppsScript(urlGuardar).catch(() => {});
 
     formPublicarResena.reset();
-    window.open(URL_GOOGLE_REVIEW, "_blank", "noopener,noreferrer");
   });
 }
 
@@ -1162,7 +1211,6 @@ function obtenerEstiloBadgeEstado(estadoRaw) {
   const est = String(estadoRaw || "Pendiente").trim();
   const estLower = est.toLowerCase();
 
-  // 1. RESUELTO / COMPLETADO / SOLUCIONADO -> VERDE
   if (estLower.includes("resuelto") || estLower.includes("solucionado") || estLower.includes("completado") || estLower.includes("listo") || estLower.includes("atendido")) {
     return {
       texto: `✅ ${est.charAt(0).toUpperCase() + est.slice(1)}`,
@@ -1170,7 +1218,6 @@ function obtenerEstiloBadgeEstado(estadoRaw) {
     };
   }
 
-  // 2. EN PROCESO / REVISANDO -> AZUL
   if (estLower.includes("proceso") || estLower.includes("revis") || estLower.includes("verificando")) {
     return {
       texto: `🔄 ${est.charAt(0).toUpperCase() + est.slice(1)}`,
@@ -1178,7 +1225,6 @@ function obtenerEstiloBadgeEstado(estadoRaw) {
     };
   }
 
-  // 3. RECHAZADO / CANCELADO / INCORRECTO -> ROJO
   if (estLower.includes("rechazado") || estLower.includes("cancelado") || estLower.includes("incorrecto") || estLower.includes("no válido")) {
     return {
       texto: `❌ ${est.charAt(0).toUpperCase() + est.slice(1)}`,
@@ -1186,7 +1232,6 @@ function obtenerEstiloBadgeEstado(estadoRaw) {
     };
   }
 
-  // 4. PENDIENTE / RECIBIDO -> AMARILLO
   if (estLower.includes("pendiente") || estLower.includes("recibido")) {
     return {
       texto: "⏳ Pendiente de revisión",
@@ -1194,14 +1239,12 @@ function obtenerEstiloBadgeEstado(estadoRaw) {
     };
   }
 
-  // Cualquier otro estado personalizado escrito en la Columna H
   return {
     texto: `📌 ${est}`,
     estilo: "background: rgba(168, 85, 247, 0.18); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.4);"
   };
 }
 
-// Lee la pestaña "Tickets" (gid=1115065148) de tu Google Sheet y actualiza Estado (Col H) y Referencia (Col F)
 async function sincronizarTicketsDesdeSheet() {
   let textoCSV = "";
   try {
@@ -1221,7 +1264,6 @@ async function sincronizarTicketsDesdeSheet() {
   const filas = textoCSV.split(/\r?\n/).filter(f => f.trim() !== "");
   if (filas.length === 0) return;
 
-  // Verifica que sea la hoja de Tickets ("id ticket", "asunto", "estado")
   const cabecera = dividirFilaCSV(filas[0]).map(c => c.toLowerCase().replace(/"/g, "").trim());
   if (!cabecera.some(c => c.includes("ticket") || c.includes("asunto") || c.includes("estado"))) {
     return;
@@ -1233,8 +1275,6 @@ async function sincronizarTicketsDesdeSheet() {
     const idTicket = (col[0] || "").replace(/"/g, "").trim().toUpperCase();
     if (!idTicket) continue;
 
-    // Columnas exactas de tu hoja Tickets:
-    // A(0): ID Ticket | B(1): Fecha | C(2): Nombre | D(3): Contacto Cliente | E(4): Asunto | F(5): Referencia | G(6): Mensaje | H(7): Estado | I(8): Respuesta opcional
     mapaTicketsSheet[idTicket] = {
       id: idTicket,
       fechaSheet: (col[1] || "").replace(/"/g, "").trim(),
@@ -1248,7 +1288,6 @@ async function sincronizarTicketsDesdeSheet() {
     };
   }
 
-  // Actualiza los tickets guardados en el navegador del cliente con los datos reales del Excel
   let huboCambios = false;
   misTickets = misTickets.map((tkLocal) => {
     const idLimpio = String(tkLocal.id || "").trim().toUpperCase();

@@ -143,12 +143,6 @@
       gap: 5px;
     }
 
-    .btn-excel {
-      background: rgba(34, 197, 94, 0.14);
-      color: #4ade80;
-      border-color: rgba(34, 197, 94, 0.4);
-    }
-
     .container {
       max-width: 1260px;
       margin: 22px auto 0;
@@ -475,7 +469,7 @@
         <div class="card-metrica">
           <div>
             <h4>Total Registrado</h4>
-            <div class="valor" id="metrica-ingresos" style="color:#38bdf8;">\$0.00</div>
+            <div class="valor" id="metrica-ingresos" style="color:#38bdf8;">$0.00</div>
           </div>
           <span style="font-size:1.7rem;">💵</span>
         </div>
@@ -497,7 +491,7 @@
                 <input type="text" id="cuenta-whatsapp" class="input-admin" placeholder="Ej: 0991234567">
               </div>
               <div>
-                <label class="label-form">💲 Precio Cobrado (\$):</label>
+                <label class="label-form">💲 Precio Cobrado ($):</label>
                 <input type="text" id="cuenta-precio" class="input-admin" placeholder="Ej: 2.75" value="0.00">
               </div>
             </div>
@@ -780,13 +774,13 @@
             <h4>
               <span>👤 ${c.cliente}</span>
               <span class="tag-servicio">${c.servicio}</span>
-              ${c.numPrecio > 0 ? `<span class="tag-precio">\$\${c.numPrecio.toFixed(2)}</span>` : ""}
+              ${c.numPrecio > 0 ? `<span class="tag-precio">$${c.numPrecio.toFixed(2)}</span>` : ""}
               <span class="badge-estado ${c.infoEst.clase}">${c.infoEst.texto}</span>
             </h4>
             <div class="datos-acceso">
               📧 <strong>Cuenta:</strong> ${c.correo || "No especificada"} &nbsp;|&nbsp; 🔑 <strong>Acceso:</strong> ${c.clavePerfil || "—"}
-              ${c.whatsapp ? `&nbsp;|&nbsp; 📱 \${c.whatsapp}` : ""}
-              ${c.notas ? `&nbsp;|&nbsp; 📝 \${c.notas}` : ""}
+              ${c.whatsapp ? `&nbsp;|&nbsp; 📱 ${c.whatsapp}` : ""}
+              ${c.notas ? `&nbsp;|&nbsp; 📝 ${c.notas}` : ""}
             </div>
             <div class="fechas-bloque">
               <span>📅 <strong>Inicio:</strong> ${c.inicio || "—"}</span>
@@ -795,8 +789,8 @@
           </div>
 
           <div class="acciones-cuenta">
-            ${linkEntregaWA ? `<a href="\${linkEntregaWA}" target="_blank" class="btn-accion btn-wa-datos" title="Enviar datos de acceso">🔑 Enviar Acceso</a>` : ""}
-            ${linkCobroWA ? `<a href="\${linkCobroWA}" target="_blank" class="btn-accion btn-wa-cobro" title="Enviar recordatorio de pago">🔔 Recordar Pago</a>` : ""}
+            ${linkEntregaWA ? `<a href="${linkEntregaWA}" target="_blank" class="btn-accion btn-wa-datos" title="Enviar datos de acceso">🔑 Enviar Acceso</a>` : ""}
+            ${linkCobroWA ? `<a href="${linkCobroWA}" target="_blank" class="btn-accion btn-wa-cobro" title="Enviar recordatorio de pago">🔔 Recordar Pago</a>` : ""}
             <button type="button" class="btn-accion btn-renovar" onclick="renovarMasUnMes('${c.id}', '${c.fin}')">⚡ +1 Mes</button>
             <button type="button" class="btn-accion" onclick="cargarEnFormulario('${c.id}')">✏️ Editar</button>
             <button type="button" class="btn-accion btn-borrar" onclick="borrarCuenta('${c.id}', '${c.cliente}')">🗑️</button>
@@ -826,7 +820,7 @@
           errorLogin.classList.remove("oculto");
         }
       } catch (err) {
-        errorLogin.textContent = "⚠️ Error de conexión con Google Apps Script.";
+        errorLogin.textContent = "⚠️ Error de conexión con el servidor.";
         errorLogin.classList.remove("oculto");
       } finally {
         btnEntrar.disabled = false;
@@ -871,7 +865,7 @@
           alert("⚠️ No se pudo guardar: " + (res.mensaje || "Verifica tu conexión"));
         }
       } catch (err) {
-        alert("⚠️ Error al guardar en Google Sheets.");
+        alert("⚠️ Error al guardar los cambios.");
       } finally {
         btnGuardarCuenta.disabled = false;
         btnGuardarCuenta.textContent = "💾 Guardar Cambios";

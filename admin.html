@@ -188,7 +188,7 @@
     /* LAYOUT */
     .layout-gestor {
       display: grid;
-      grid-template-columns: 360px 1fr;
+      grid-template-columns: 370px 1fr;
       gap: 20px;
       align-items: start;
     }
@@ -411,13 +411,11 @@
 </head>
 <body>
 
-  <!-- ========================================== -->
-  <!-- 1. PANTALLA DE LOGIN                       -->
-  <!-- ========================================== -->
+  <!-- PANTALLA DE LOGIN -->
   <div id="pantalla-login" class="contenedor-login">
     <div class="caja-login">
       <h1>Gestor <span>TDC</span></h1>
-      <p>Ingresa tu clave de administrador para gestionar y editar las cuentas de tus clientes.</p>
+      <p>Ingresa tu clave de administrador para gestionar las cuentas de tus clientes.</p>
 
       <form id="form-login">
         <input type="password" id="input-clave-admin" class="input-admin" placeholder="🔑 Contraseña de Administrador" required>
@@ -431,18 +429,13 @@
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- 2. PANEL GESTOR DE CUENTAS                 -->
-  <!-- ========================================== -->
+  <!-- PANEL GESTOR -->
   <div id="panel-admin" class="oculto">
     <header class="navbar-admin">
       <div class="nav-inner">
         <h2 style="font-size: 1.2rem; font-weight: 900;">📊 Gestor de Cuentas · <span style="color:#818cf8;">Tienda Digital Cedeño</span></h2>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <a href="https://docs.google.com/spreadsheets/d/1zN4bHeBl8iZ4NETcDN7kKfv7z3GSHZ8kf-EX0UqJHtg/edit" target="_blank" class="btn-secundario btn-excel">
-            📗 Editar en Google Sheets
-          </a>
-          <button type="button" id="btn-recargar" class="btn-secundario">🔄 Sincronizar</button>
+          <button type="button" id="btn-recargar" class="btn-secundario">🔄 Actualizar</button>
           <a href="index.html" class="btn-secundario">🏠 Tienda</a>
           <button type="button" id="btn-salir" class="btn-secundario" style="color:#f87171;">🔒 Salir</button>
         </div>
@@ -450,7 +443,6 @@
     </header>
 
     <main class="container">
-      <!-- Tarjetas de Resumen -->
       <div class="grid-metricas">
         <div class="card-metrica">
           <div>
@@ -490,7 +482,7 @@
       </div>
 
       <div class="layout-gestor">
-        <!-- FORMULARIO PARA AGREGAR O EDITAR CUANDO QUIERAS -->
+        <!-- FORMULARIO -->
         <div class="panel-caja">
           <h3 id="titulo-form">➕ Registrar Servicio a Cliente</h3>
           <form id="form-cuenta">
@@ -531,27 +523,40 @@
             <label class="label-form">🔑 Contraseña / Perfil / PIN:</label>
             <input type="text" id="cuenta-clave" class="input-admin" placeholder="Ej: Clave123 | Perfil 2 (PIN 1111)">
 
+            <!-- FECHA Y HORA DE INICIO -->
             <div class="fila-2-col">
               <div>
                 <label class="label-form">📅 Fecha de Inicio:</label>
-                <input type="date" id="cuenta-inicio" class="input-admin" required>
+                <input type="date" id="cuenta-inicio-fecha" class="input-admin" required>
               </div>
               <div>
-                <label class="label-form">⚡ Duración Rápida:</label>
-                <select id="select-duracion-rapida" class="input-admin">
-                  <option value="1">1 Mes</option>
-                  <option value="2">2 Meses</option>
-                  <option value="3">3 Meses</option>
-                  <option value="6">6 Meses</option>
-                  <option value="12">12 Meses (1 Año)</option>
-                  <option value="36">36 Meses (3 Años)</option>
-                  <option value="custom">Elegir fecha manual</option>
-                </select>
+                <label class="label-form">⏰ Hora Inicio (Opcional):</label>
+                <input type="time" id="cuenta-inicio-hora" class="input-admin" value="00:00">
               </div>
             </div>
 
-            <label class="label-form">🏁 Fecha de Finalización:</label>
-            <input type="date" id="cuenta-fin" class="input-admin" required>
+            <label class="label-form">⚡ Duración Rápida:</label>
+            <select id="select-duracion-rapida" class="input-admin" style="margin-bottom: 12px;">
+              <option value="1">1 Mes</option>
+              <option value="2">2 Meses</option>
+              <option value="3">3 Meses</option>
+              <option value="6">6 Meses</option>
+              <option value="12">12 Meses (1 Año)</option>
+              <option value="36">36 Meses (3 Años)</option>
+              <option value="custom">Elegir fecha manual</option>
+            </select>
+
+            <!-- FECHA Y HORA DE FINALIZACIÓN -->
+            <div class="fila-2-col">
+              <div>
+                <label class="label-form">🏁 Fecha de Finalización:</label>
+                <input type="date" id="cuenta-fin-fecha" class="input-admin" required>
+              </div>
+              <div>
+                <label class="label-form">⏰ Hora Fin (Opcional):</label>
+                <input type="time" id="cuenta-fin-hora" class="input-admin" value="23:59">
+              </div>
+            </div>
 
             <label class="label-form">📝 Notas adicionales:</label>
             <input type="text" id="cuenta-notas" class="input-admin" placeholder="Ej: Pagó por Deuna!">
@@ -561,7 +566,7 @@
           </form>
         </div>
 
-        <!-- LISTA DE CUENTAS Y BUSCADOR -->
+        <!-- LISTA Y FILTROS -->
         <div class="panel-caja">
           <div class="controles-tabla">
             <input type="text" id="buscador-cuentas" class="input-admin" placeholder="🔍 Buscar por cliente, servicio, correo o WhatsApp...">
@@ -604,10 +609,14 @@
     const cuentaServicioInput = document.getElementById("cuenta-servicio");
     const cuentaCorreoInput = document.getElementById("cuenta-correo");
     const cuentaClaveInput = document.getElementById("cuenta-clave");
-    const cuentaInicioInput = document.getElementById("cuenta-inicio");
+    
+    const cuentaInicioFechaInput = document.getElementById("cuenta-inicio-fecha");
+    const cuentaInicioHoraInput = document.getElementById("cuenta-inicio-hora");
     const selectDuracionRapida = document.getElementById("select-duracion-rapida");
-    const cuentaFinInput = document.getElementById("cuenta-fin");
+    const cuentaFinFechaInput = document.getElementById("cuenta-fin-fecha");
+    const cuentaFinHoraInput = document.getElementById("cuenta-fin-hora");
     const cuentaNotasInput = document.getElementById("cuenta-notas");
+
     const btnGuardarCuenta = document.getElementById("btn-guardar-cuenta");
     const btnCancelarEdicion = document.getElementById("btn-cancelar-edicion");
     const tituloForm = document.getElementById("titulo-form");
@@ -666,18 +675,19 @@
     function actualizarFechaFinAutomatica() {
       if (selectDuracionRapida.value === "custom") return;
       const meses = parseInt(selectDuracionRapida.value, 10) || 1;
-      cuentaFinInput.value = sumarMesesAFecha(cuentaInicioInput.value, meses);
+      cuentaFinFechaInput.value = sumarMesesAFecha(cuentaInicioFechaInput.value, meses);
     }
 
-    cuentaInicioInput.value = obtenerHoyISO();
+    cuentaInicioFechaInput.value = obtenerHoyISO();
     actualizarFechaFinAutomatica();
 
-    cuentaInicioInput.addEventListener("change", actualizarFechaFinAutomatica);
+    cuentaInicioFechaInput.addEventListener("change", actualizarFechaFinAutomatica);
     selectDuracionRapida.addEventListener("change", actualizarFechaFinAutomatica);
 
     function calcularEstadoCuenta(fechaFinStr) {
       if (!fechaFinStr) return { codigo: "activo", clase: "estado-activo", texto: "🟢 Activo", dias: 99 };
-      const partes = String(fechaFinStr).substring(0, 10).split("-").map(Number);
+      const soloFecha = String(fechaFinStr).substring(0, 10);
+      const partes = soloFecha.split("-").map(Number);
       if (partes.length < 3) return { codigo: "activo", clase: "estado-activo", texto: "🟢 Activo", dias: 99 };
 
       const hoy = new Date();
@@ -688,46 +698,22 @@
       const diffDias = Math.round((fin - hoy) / (1000 * 60 * 60 * 24));
 
       if (diffDias < 0) {
-        return {
-          codigo: "vencido",
-          clase: "estado-vencido",
-          texto: `🔴 Vencido (hace ${Math.abs(diffDias)}d)`,
-          dias: diffDias
-        };
+        return { codigo: "vencido", clase: "estado-vencido", texto: `🔴 Vencido (hace ${Math.abs(diffDias)}d)`, dias: diffDias };
       }
       if (diffDias === 0) {
-        return {
-          codigo: "por-vencer",
-          clase: "estado-por-vencer",
-          texto: "🟡 ¡Vence HOY!",
-          dias: 0
-        };
+        return { codigo: "por-vencer", clase: "estado-por-vencer", texto: "🟡 ¡Vence HOY!", dias: 0 };
       }
       if (diffDias <= 3) {
-        return {
-          codigo: "por-vencer",
-          clase: "estado-por-vencer",
-          texto: `🟡 Por vencer (quedan ${diffDias}d)`,
-          dias: diffDias
-        };
+        return { codigo: "por-vencer", clase: "estado-por-vencer", texto: `🟡 Por vencer (quedan ${diffDias}d)`, dias: diffDias };
       }
-      return {
-        codigo: "activo",
-        clase: "estado-activo",
-        texto: `🟢 Activo (quedan ${diffDias}d)`,
-        dias: diffDias
-      };
+      return { codigo: "activo", clase: "estado-activo", texto: `🟢 Activo (quedan ${diffDias}d)`, dias: diffDias };
     }
 
     function formatearTelefonoWhatsApp(telRaw) {
       let limpio = String(telRaw || "").replace(/[^0-9]/g, "");
       if (!limpio) return "";
-      if (limpio.startsWith("09") && limpio.length === 10) {
-        return "593" + limpio.substring(1);
-      }
-      if (limpio.length === 9 && limpio.startsWith("9")) {
-        return "593" + limpio;
-      }
+      if (limpio.startsWith("09") && limpio.length === 10) return "593" + limpio.substring(1);
+      if (limpio.length === 9 && limpio.startsWith("9")) return "593" + limpio;
       return limpio;
     }
 
@@ -809,8 +795,8 @@
           </div>
 
           <div class="acciones-cuenta">
-            ${linkEntregaWA ? `<a href="\${linkEntregaWA}" target="_blank" class="btn-accion btn-wa-datos" title="Enviar datos de acceso al cliente">🔑 Enviar Acceso</a>` : ""}
-            ${linkCobroWA ? `<a href="\${linkCobroWA}" target="_blank" class="btn-accion btn-wa-cobro" title="Enviar recordatorio de renovación">🔔 Recordar Pago</a>` : ""}
+            ${linkEntregaWA ? `<a href="\${linkEntregaWA}" target="_blank" class="btn-accion btn-wa-datos" title="Enviar datos de acceso">🔑 Enviar Acceso</a>` : ""}
+            ${linkCobroWA ? `<a href="\${linkCobroWA}" target="_blank" class="btn-accion btn-wa-cobro" title="Enviar recordatorio de pago">🔔 Recordar Pago</a>` : ""}
             <button type="button" class="btn-accion btn-renovar" onclick="renovarMasUnMes('${c.id}', '${c.fin}')">⚡ +1 Mes</button>
             <button type="button" class="btn-accion" onclick="cargarEnFormulario('${c.id}')">✏️ Editar</button>
             <button type="button" class="btn-accion btn-borrar" onclick="borrarCuenta('${c.id}', '${c.cliente}')">🗑️</button>
@@ -836,11 +822,11 @@
           renderizarCuentas();
         } else {
           sessionStorage.removeItem(SESSION_KEY);
-          errorLogin.textContent = (resp && resp.mensaje) ? resp.mensaje : "❌ Clave incorrecta o falta actualizar tu Apps Script.";
+          errorLogin.textContent = (resp && resp.mensaje) ? resp.mensaje : "❌ Clave incorrecta.";
           errorLogin.classList.remove("oculto");
         }
       } catch (err) {
-        errorLogin.textContent = "⚠️ Error de conexión con tu Google Apps Script.";
+        errorLogin.textContent = "⚠️ Error de conexión con Google Apps Script.";
         errorLogin.classList.remove("oculto");
       } finally {
         btnEntrar.disabled = false;
@@ -858,6 +844,9 @@
       btnGuardarCuenta.disabled = true;
       btnGuardarCuenta.textContent = "⏳ Guardando...";
 
+      const horaInicio = cuentaInicioHoraInput.value ? ` ${cuentaInicioHoraInput.value}` : "";
+      const horaFin = cuentaFinHoraInput.value ? ` ${cuentaFinHoraInput.value}` : "";
+
       const datosEnviar = {
         accion: "guardarCuenta",
         clave: claveAdminActual,
@@ -868,8 +857,8 @@
         servicio: cuentaServicioInput.value.trim(),
         correo: cuentaCorreoInput.value.trim(),
         clavePerfil: cuentaClaveInput.value.trim(),
-        inicio: cuentaInicioInput.value,
-        fin: cuentaFinInput.value,
+        inicio: cuentaInicioFechaInput.value + horaInicio,
+        fin: cuentaFinFechaInput.value + horaFin,
         notas: cuentaNotasInput.value.trim()
       };
 
@@ -893,7 +882,9 @@
       formCuenta.reset();
       cuentaIdInput.value = "";
       cuentaPrecioInput.value = "0.00";
-      cuentaInicioInput.value = obtenerHoyISO();
+      cuentaInicioFechaInput.value = obtenerHoyISO();
+      cuentaInicioHoraInput.value = "00:00";
+      cuentaFinHoraInput.value = "23:59";
       selectDuracionRapida.value = "1";
       actualizarFechaFinAutomatica();
       tituloForm.textContent = "➕ Registrar Servicio a Cliente";
@@ -912,9 +903,15 @@
       cuentaServicioInput.value = c.servicio;
       cuentaCorreoInput.value = c.correo;
       cuentaClaveInput.value = c.clavePerfil;
-      cuentaInicioInput.value = c.inicio;
-      selectDuracionRapida.value = "custom";
-      cuentaFinInput.value = c.fin;
+
+      const iniPartes = String(c.inicio || "").split(" ");
+      cuentaInicioFechaInput.value = iniPartes[0] || obtenerHoyISO();
+      cuentaInicioHoraInput.value = iniPartes[1] || "00:00";
+
+      const finPartes = String(c.fin || "").split(" ");
+      cuentaFinFechaInput.value = finPartes[0] || obtenerHoyISO();
+      cuentaFinHoraInput.value = finPartes[1] || "23:59";
+
       cuentaNotasInput.value = c.notas;
       tituloForm.textContent = `✏️ Editando a: ${c.cliente}`;
       btnCancelarEdicion.classList.remove("oculto");
@@ -922,16 +919,16 @@
     };
 
     window.renovarMasUnMes = async function(id, fechaFinActual) {
-      const baseFecha = fechaFinActual || obtenerHoyISO();
-      const nuevaFin = sumarMesesAFecha(baseFecha, 1);
-      if (!confirm(`¿Renovar suscripción por +1 mes hasta el ${nuevaFin}?`)) return;
+      const soloFecha = String(fechaFinActual || obtenerHoyISO()).substring(0, 10);
+      const nuevaFechaFmt = sumarMesesAFecha(soloFecha, 1) + (String(fechaFinActual).includes(":") ? String(fechaFinActual).substring(10) : " 23:59");
+      if (!confirm(`¿Renovar suscripción por +1 mes hasta el ${nuevaFechaFmt}?`)) return;
 
       try {
         const res = await consultarServidor({
           accion: "renovarCuenta",
           clave: claveAdminActual,
           id: id,
-          fin: nuevaFin
+          fin: nuevaFechaFmt
         });
         if (res && res.ok) {
           await iniciarSesionYCargar(claveAdminActual);

@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestor de Cuentas | Tienda Digital Cedeño</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%236366f1'/><text x='50%' y='64%' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-weight='900' font-size='38'>TDC</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --fondo: #060911;
+      --tarjeta: rgba(17, 24, 39, 0.92);
+      --texto: #f8fafc;
+      --texto-sec: #94a3b8;
+      --acento: #6366f1;
+      --borde: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--fondo);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(168, 85, 247, 0.12) 0%, transparent 45%);
+      color: var(--texto);
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    .oculto { display: none !important; }
+
+    /* LOGIN */
+    .contenedor-login {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .caja-login {
+      background: var(--tarjeta);
+      border: 1px solid var(--borde);
+      border-radius: 20px;
+      padding: 32px 26px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .caja-login h1 {
+      font-size: 1.55rem;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .caja-login h1 span {
+      background: linear-gradient(90deg, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .caja-login p {
+      font-size: 0.88rem;
+      color: var(--texto-sec);
+      margin-bottom: 20px;
+    }
+
+    .input-admin {
+      width: 100%;
+      padding: 11px 13px;
+      border-radius: 10px;
+      border: 1px solid var(--borde);
+      background: #0b1120;
+      color: var(--texto);
+      font-size: 0.9rem;
+      outline: none;
+      margin-bottom: 12px;
+    }
+
+    .input-admin:focus {
+      border-color: var(--acento);
+    }
+
+    .btn-primario {
+      width: 100%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 0.94rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-primario:hover { opacity: 0.92; }
+
+    /* BARRA SUPERIOR */
+    .navbar-admin {
+      background: rgba(6, 9, 17, 0.92);
+      border-bottom: 1px solid var(--borde);
+      padding: 14px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-inner {
+      max-width: 1260px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-secundario {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--texto);
+      border: 1px solid var(--borde);
+      padding: 8px 13px;
+      border-radius: 9px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-excel {
+      background: rgba(34, 197, 94, 0.14);
+      color: #4ade80;
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    .container {
+      max-width: 1260px;
+      margin: 22px auto 0;
+      padding: 0 16px;
+    }
+
+    /* MÉTRICAS */
+    .grid-metricas {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .card-metrica {
+      background: var(--tarjeta);
+      border: 1px solid var(--borde);
+      border-radius: 14px;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-metrica h4 {
+      font-size: 0.8rem;
+      color: var(--texto-sec);
+      font-weight: 600;
+    }
+
+    .card-metrica .valor {
+      font-size: 1.65rem;
+      font-weight: 900;
+      margin-top: 3px;
+    }
+
+    /* LAYOUT */
+    .layout-gestor {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 940px) {
+      .layout-gestor { grid-template-columns: 1fr; }
+    }
+
+    .panel-caja {
+      background: var(--tarjeta);
+      border: 1px solid var(--borde);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .panel-caja h3 {
+      font-size: 1.05rem;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--borde);
+    }
+
+    .label-form {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 4px;
+    }
+
+    .fila-2-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* BUSCADOR Y FILTROS */
+    .controles-tabla {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .controles-tabla input {
+      flex: 1;
+      min-width: 210px;
+      margin-bottom: 0;
+    }
+
+    .filtros-estado {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-filtro-est {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--texto-sec);
+      border: 1px solid var(--borde);
+      padding: 8px 12px;
+      border-radius: 9px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-filtro-est.activo {
+      background: var(--acento);
+      color: white;
+      border-color: transparent;
+    }
+
+    /* TARJETAS DE CUENTAS */
+    .lista-cuentas {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .item-cuenta {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--borde);
+      border-radius: 13px;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .item-cuenta:hover {
+      border-color: rgba(99, 102, 241, 0.45);
+    }
+
+    .info-principal h4 {
+      font-size: 0.98rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag-servicio {
+      background: rgba(99, 102, 241, 0.2);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      padding: 2px 9px;
+      border-radius: 99px;
+      font-size: 0.73rem;
+      font-weight: 800;
+    }
+
+    .tag-precio {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+
+    .datos-acceso {
+      font-size: 0.82rem;
+      color: var(--texto-sec);
+      margin-top: 6px;
+      line-height: 1.45;
+    }
+
+    .fechas-bloque {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      margin-top: 6px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .badge-estado {
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+
+    .estado-activo {
+      background: rgba(34, 197, 94, 0.16);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+
+    .estado-por-vencer {
+      background: rgba(234, 179, 8, 0.18);
+      color: #facc15;
+      border: 1px solid rgba(234, 179, 8, 0.45);
+    }
+
+    .estado-vencido {
+      background: rgba(239, 68, 68, 0.18);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.45);
+    }
+
+    .acciones-cuenta {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-accion {
+      border: 1px solid var(--borde);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--texto);
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-wa-datos {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .btn-wa-cobro {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    .btn-renovar {
+      background: rgba(99, 102, 241, 0.18);
+      color: #a5b4fc;
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-borrar {
+      background: rgba(239, 68, 68, 0.14);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.35);
+    }
+
+    .alerta-msg {
+      font-size: 0.82rem;
+      padding: 9px 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================== -->
+  <!-- 1. PANTALLA DE LOGIN                       -->
+  <!-- ========================================== -->
+  <div id="pantalla-login" class="contenedor-login">
+    <div class="caja-login">
+      <h1>Gestor <span>TDC</span></h1>
+      <p>Ingresa tu clave de administrador para gestionar y editar las cuentas de tus clientes.</p>
+
+      <form id="form-login">
+        <input type="password" id="input-clave-admin" class="input-admin" placeholder="🔑 Contraseña de Administrador" required>
+        <div id="error-login" class="alerta-msg oculto"></div>
+        <button type="submit" id="btn-entrar" class="btn-primario">🔓 Entrar al Gestor</button>
+      </form>
+
+      <div style="margin-top: 16px;">
+        <a href="index.html" style="color: var(--texto-sec); font-size: 0.82rem; text-decoration: none;">← Volver al catálogo público</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. PANEL GESTOR DE CUENTAS                 -->
+  <!-- ========================================== -->
+  <div id="panel-admin" class="oculto">
+    <header class="navbar-admin">
+      <div class="nav-inner">
+        <h2 style="font-size: 1.2rem; font-weight: 900;">📊 Gestor de Cuentas · <span style="color:#818cf8;">Tienda Digital Cedeño</span></h2>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <a href="https://docs.google.com/spreadsheets/d/1zN4bHeBl8iZ4NETcDN7kKfv7z3GSHZ8kf-EX0UqJHtg/edit" target="_blank" class="btn-secundario btn-excel">
+            📗 Editar en Google Sheets
+          </a>
+          <button type="button" id="btn-recargar" class="btn-secundario">🔄 Sincronizar</button>
+          <a href="index.html" class="btn-secundario">🏠 Tienda</a>
+          <button type="button" id="btn-salir" class="btn-secundario" style="color:#f87171;">🔒 Salir</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- Tarjetas de Resumen -->
+      <div class="grid-metricas">
+        <div class="card-metrica">
+          <div>
+            <h4>Total Cuentas</h4>
+            <div class="valor" id="metrica-total">0</div>
+          </div>
+          <span style="font-size:1.7rem;">📁</span>
+        </div>
+        <div class="card-metrica">
+          <div>
+            <h4>Activas</h4>
+            <div class="valor" id="metrica-activas" style="color:#4ade80;">0</div>
+          </div>
+          <span style="font-size:1.7rem;">🟢</span>
+        </div>
+        <div class="card-metrica">
+          <div>
+            <h4>Por Vencer (≤ 3 días)</h4>
+            <div class="valor" id="metrica-por-vencer" style="color:#facc15;">0</div>
+          </div>
+          <span style="font-size:1.7rem;">🟡</span>
+        </div>
+        <div class="card-metrica">
+          <div>
+            <h4>Vencidas</h4>
+            <div class="valor" id="metrica-vencidas" style="color:#f87171;">0</div>
+          </div>
+          <span style="font-size:1.7rem;">🔴</span>
+        </div>
+        <div class="card-metrica">
+          <div>
+            <h4>Total Registrado</h4>
+            <div class="valor" id="metrica-ingresos" style="color:#38bdf8;">\$0.00</div>
+          </div>
+          <span style="font-size:1.7rem;">💵</span>
+        </div>
+      </div>
+
+      <div class="layout-gestor">
+        <!-- FORMULARIO PARA AGREGAR O EDITAR CUANDO QUIERAS -->
+        <div class="panel-caja">
+          <h3 id="titulo-form">➕ Registrar Servicio a Cliente</h3>
+          <form id="form-cuenta">
+            <input type="hidden" id="cuenta-id">
+
+            <label class="label-form">👤 Nombre del Cliente:</label>
+            <input type="text" id="cuenta-cliente" class="input-admin" placeholder="Ej: Andrés Zambrano" required>
+
+            <div class="fila-2-col">
+              <div>
+                <label class="label-form">📱 WhatsApp Cliente:</label>
+                <input type="text" id="cuenta-whatsapp" class="input-admin" placeholder="Ej: 0991234567">
+              </div>
+              <div>
+                <label class="label-form">💲 Precio Cobrado (\$):</label>
+                <input type="text" id="cuenta-precio" class="input-admin" placeholder="Ej: 2.75" value="0.00">
+              </div>
+            </div>
+
+            <label class="label-form">📺 Servicio / Plataforma:</label>
+            <input type="text" id="cuenta-servicio" class="input-admin" list="lista-servicios" placeholder="Ej: Netflix 1 Pantalla" required>
+            <datalist id="lista-servicios">
+              <option value="Netflix Mensual">
+              <option value="Disney+ Mensual">
+              <option value="HBO Max Mensual">
+              <option value="Spotify Premium">
+              <option value="Prime Video">
+              <option value="Crunchyroll">
+              <option value="Paramount+">
+              <option value="YouTube Premium">
+              <option value="Canva Pro 3 Años">
+              <option value="ChatGPT Plus">
+            </datalist>
+
+            <label class="label-form">📧 Correo / Usuario de la Cuenta:</label>
+            <input type="text" id="cuenta-correo" class="input-admin" placeholder="Ej: cuenta1@gmail.com">
+
+            <label class="label-form">🔑 Contraseña / Perfil / PIN:</label>
+            <input type="text" id="cuenta-clave" class="input-admin" placeholder="Ej: Clave123 | Perfil 2 (PIN 1111)">
+
+            <div class="fila-2-col">
+              <div>
+                <label class="label-form">📅 Fecha de Inicio:</label>
+                <input type="date" id="cuenta-inicio" class="input-admin" required>
+              </div>
+              <div>
+                <label class="label-form">⚡ Duración Rápida:</label>
+                <select id="select-duracion-rapida" class="input-admin">
+                  <option value="1">1 Mes</option>
+                  <option value="2">2 Meses</option>
+                  <option value="3">3 Meses</option>
+                  <option value="6">6 Meses</option>
+                  <option value="12">12 Meses (1 Año)</option>
+                  <option value="36">36 Meses (3 Años)</option>
+                  <option value="custom">Elegir fecha manual</option>
+                </select>
+              </div>
+            </div>
+
+            <label class="label-form">🏁 Fecha de Finalización:</label>
+            <input type="date" id="cuenta-fin" class="input-admin" required>
+
+            <label class="label-form">📝 Notas adicionales:</label>
+            <input type="text" id="cuenta-notas" class="input-admin" placeholder="Ej: Pagó por Deuna!">
+
+            <button type="submit" id="btn-guardar-cuenta" class="btn-primario">💾 Guardar Cambios</button>
+            <button type="button" id="btn-cancelar-edicion" class="btn-secundario oculto" style="width:100%; margin-top:8px; justify-content:center;">✖ Cancelar edición</button>
+          </form>
+        </div>
+
+        <!-- LISTA DE CUENTAS Y BUSCADOR -->
+        <div class="panel-caja">
+          <div class="controles-tabla">
+            <input type="text" id="buscador-cuentas" class="input-admin" placeholder="🔍 Buscar por cliente, servicio, correo o WhatsApp...">
+            <div class="filtros-estado">
+              <button type="button" class="btn-filtro-est activo" data-estado="todos">Todos</button>
+              <button type="button" class="btn-filtro-est" data-estado="activo">🟢 Activos</button>
+              <button type="button" class="btn-filtro-est" data-estado="por-vencer">🟡 Por Vencer</button>
+              <button type="button" class="btn-filtro-est" data-estado="vencido">🔴 Vencidos</button>
+            </div>
+          </div>
+
+          <div id="contenedor-lista-cuentas" class="lista-cuentas">
+            <p style="text-align:center; color:var(--texto-sec); padding:30px;">Cargando cuentas...</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwmO7jW90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMAUdpx1ttutlRY/exec";
+    const SESSION_KEY = "tdc_admin_clave";
+
+    let claveAdminActual = sessionStorage.getItem(SESSION_KEY) || "";
+    let cuentasLista = [];
+    let filtroEstadoActual = "todos";
+
+    const pantallaLogin = document.getElementById("pantalla-login");
+    const panelAdmin = document.getElementById("panel-admin");
+    const formLogin = document.getElementById("form-login");
+    const inputClaveAdmin = document.getElementById("input-clave-admin");
+    const errorLogin = document.getElementById("error-login");
+    const btnEntrar = document.getElementById("btn-entrar");
+
+    const formCuenta = document.getElementById("form-cuenta");
+    const cuentaIdInput = document.getElementById("cuenta-id");
+    const cuentaClienteInput = document.getElementById("cuenta-cliente");
+    const cuentaWhatsappInput = document.getElementById("cuenta-whatsapp");
+    const cuentaPrecioInput = document.getElementById("cuenta-precio");
+    const cuentaServicioInput = document.getElementById("cuenta-servicio");
+    const cuentaCorreoInput = document.getElementById("cuenta-correo");
+    const cuentaClaveInput = document.getElementById("cuenta-clave");
+    const cuentaInicioInput = document.getElementById("cuenta-inicio");
+    const selectDuracionRapida = document.getElementById("select-duracion-rapida");
+    const cuentaFinInput = document.getElementById("cuenta-fin");
+    const cuentaNotasInput = document.getElementById("cuenta-notas");
+    const btnGuardarCuenta = document.getElementById("btn-guardar-cuenta");
+    const btnCancelarEdicion = document.getElementById("btn-cancelar-edicion");
+    const tituloForm = document.getElementById("titulo-form");
+
+    const buscadorCuentas = document.getElementById("buscador-cuentas");
+    const contenedorListaCuentas = document.getElementById("contenedor-lista-cuentas");
+    const btnsFiltroEstado = document.querySelectorAll(".btn-filtro-est");
+
+    async function consultarServidor(paramsObj) {
+      const query = new URLSearchParams({ ...paramsObj, t: Date.now() }).toString();
+      const urlCompleta = `${URL_APPS_SCRIPT}?${query}`;
+
+      try {
+        const res = await fetch(urlCompleta, { method: "GET", redirect: "follow", credentials: "omit" });
+        const txt = await res.text();
+        return JSON.parse(txt);
+      } catch (e) {}
+
+      return new Promise((resolve, reject) => {
+        const cbName = "cb_adm_" + Math.floor(Math.random() * 1000000);
+        const script = document.createElement("script");
+        window[cbName] = (data) => {
+          delete window[cbName];
+          script.remove();
+          resolve(data);
+        };
+        script.onerror = () => {
+          delete window[cbName];
+          script.remove();
+          reject(new Error("Error de conexión"));
+        };
+        script.src = `${urlCompleta}&callback=${cbName}`;
+        document.body.appendChild(script);
+      });
+    }
+
+    function obtenerHoyISO() {
+      const hoy = new Date();
+      const yyyy = hoy.getFullYear();
+      const mm = String(hoy.getMonth() + 1).padStart(2, "0");
+      const dd = String(hoy.getDate()).padStart(2, "0");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function sumarMesesAFecha(fechaStr, meses) {
+      if (!fechaStr) return "";
+      const partes = fechaStr.split("-").map(Number);
+      const fecha = new Date(partes[0], partes[1] - 1, partes[2]);
+      fecha.setMonth(fecha.getMonth() + meses);
+      const yyyy = fecha.getFullYear();
+      const mm = String(fecha.getMonth() + 1).padStart(2, "0");
+      const dd = String(fecha.getDate()).padStart(2, "0");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function actualizarFechaFinAutomatica() {
+      if (selectDuracionRapida.value === "custom") return;
+      const meses = parseInt(selectDuracionRapida.value, 10) || 1;
+      cuentaFinInput.value = sumarMesesAFecha(cuentaInicioInput.value, meses);
+    }
+
+    cuentaInicioInput.value = obtenerHoyISO();
+    actualizarFechaFinAutomatica();
+
+    cuentaInicioInput.addEventListener("change", actualizarFechaFinAutomatica);
+    selectDuracionRapida.addEventListener("change", actualizarFechaFinAutomatica);
+
+    function calcularEstadoCuenta(fechaFinStr) {
+      if (!fechaFinStr) return { codigo: "activo", clase: "estado-activo", texto: "🟢 Activo", dias: 99 };
+      const partes = String(fechaFinStr).substring(0, 10).split("-").map(Number);
+      if (partes.length < 3) return { codigo: "activo", clase: "estado-activo", texto: "🟢 Activo", dias: 99 };
+
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+      const fin = new Date(partes[0], partes[1] - 1, partes[2]);
+      fin.setHours(0, 0, 0, 0);
+
+      const diffDias = Math.round((fin - hoy) / (1000 * 60 * 60 * 24));
+
+      if (diffDias < 0) {
+        return {
+          codigo: "vencido",
+          clase: "estado-vencido",
+          texto: `🔴 Vencido (hace ${Math.abs(diffDias)}d)`,
+          dias: diffDias
+        };
+      }
+      if (diffDias === 0) {
+        return {
+          codigo: "por-vencer",
+          clase: "estado-por-vencer",
+          texto: "🟡 ¡Vence HOY!",
+          dias: 0
+        };
+      }
+      if (diffDias <= 3) {
+        return {
+          codigo: "por-vencer",
+          clase: "estado-por-vencer",
+          texto: `🟡 Por vencer (quedan ${diffDias}d)`,
+          dias: diffDias
+        };
+      }
+      return {
+        codigo: "activo",
+        clase: "estado-activo",
+        texto: `🟢 Activo (quedan ${diffDias}d)`,
+        dias: diffDias
+      };
+    }
+
+    function formatearTelefonoWhatsApp(telRaw) {
+      let limpio = String(telRaw || "").replace(/[^0-9]/g, "");
+      if (!limpio) return "";
+      if (limpio.startsWith("09") && limpio.length === 10) {
+        return "593" + limpio.substring(1);
+      }
+      if (limpio.length === 9 && limpio.startsWith("9")) {
+        return "593" + limpio;
+      }
+      return limpio;
+    }
+
+    function renderizarCuentas() {
+      let activas = 0, porVencer = 0, vencidas = 0, sumaIngresos = 0;
+
+      const cuentasConEstado = cuentasLista.map(c => {
+        const infoEst = calcularEstadoCuenta(c.fin);
+        if (infoEst.codigo === "activo") activas++;
+        else if (infoEst.codigo === "por-vencer") porVencer++;
+        else if (infoEst.codigo === "vencido") vencidas++;
+
+        const numPrecio = parseFloat(String(c.precio || "0").replace(",", ".")) || 0;
+        sumaIngresos += numPrecio;
+
+        return { ...c, infoEst, numPrecio };
+      });
+
+      document.getElementById("metrica-total").textContent = cuentasLista.length;
+      document.getElementById("metrica-activas").textContent = activas;
+      document.getElementById("metrica-por-vencer").textContent = porVencer;
+      document.getElementById("metrica-vencidas").textContent = vencidas;
+      document.getElementById("metrica-ingresos").textContent = `$${sumaIngresos.toFixed(2)}`;
+
+      const busq = buscadorCuentas.value.toLowerCase().trim();
+      const filtradas = cuentasConEstado.filter(c => {
+        const coincideEstado = filtroEstadoActual === "todos" || c.infoEst.codigo === filtroEstadoActual;
+        const textoTotal = `${c.cliente} ${c.servicio} ${c.correo} ${c.whatsapp} ${c.notas}`.toLowerCase();
+        return coincideEstado && textoTotal.includes(busq);
+      });
+
+      filtradas.sort((a, b) => a.infoEst.dias - b.infoEst.dias);
+
+      contenedorListaCuentas.innerHTML = "";
+      if (filtradas.length === 0) {
+        contenedorListaCuentas.innerHTML = `<p style="text-align:center; color:var(--texto-sec); padding:30px;">No hay cuentas registradas con ese filtro.</p>`;
+        return;
+      }
+
+      filtradas.forEach(c => {
+        const telWA = formatearTelefonoWhatsApp(c.whatsapp);
+
+        const msgEntrega =
+          `¡Hola *${c.cliente}*! ✨ Gracias por tu compra en *Tienda Digital Cedeño*.\n\n` +
+          `Aquí tienes los datos de tu servicio *${c.servicio}*:\n` +
+          `📧 *Correo/Usuario:* ${c.correo || "—"}\n` +
+          `🔑 *Contraseña/Perfil:* ${c.clavePerfil || "—"}\n` +
+          `📅 *Inicio:* ${c.inicio || "—"}\n` +
+          `🏁 *Vencimiento:* ${c.fin || "—"}\n\n` +
+          `_Recuerda no modificar los datos de seguridad para mantener tu garantía activa._`;
+
+        const msgCobro =
+          `¡Hola *${c.cliente}*! 👋 Te saludamos de *Tienda Digital Cedeño*.\n\n` +
+          `Te recordamos que tu suscripción de *${c.servicio}* (${c.correo || ""}) tiene fecha de vencimiento el *${c.fin}*.\n` +
+          `¿Deseas renovarla para mantener tu perfil activo sin interrupciones?`;
+
+        const linkEntregaWA = telWA ? `https://wa.me/${telWA}?text=${encodeURIComponent(msgEntrega)}` : "";
+        const linkCobroWA = telWA ? `https://wa.me/${telWA}?text=${encodeURIComponent(msgCobro)}` : "";
+
+        const div = document.createElement("div");
+        div.className = "item-cuenta";
+        div.innerHTML = `
+          <div class="info-principal">
+            <h4>
+              <span>👤 ${c.cliente}</span>
+              <span class="tag-servicio">${c.servicio}</span>
+              ${c.numPrecio > 0 ? `<span class="tag-precio">\$\${c.numPrecio.toFixed(2)}</span>` : ""}
+              <span class="badge-estado ${c.infoEst.clase}">${c.infoEst.texto}</span>
+            </h4>
+            <div class="datos-acceso">
+              📧 <strong>Cuenta:</strong> ${c.correo || "No especificada"} &nbsp;|&nbsp; 🔑 <strong>Acceso:</strong> ${c.clavePerfil || "—"}
+              ${c.whatsapp ? `&nbsp;|&nbsp; 📱 \${c.whatsapp}` : ""}
+              ${c.notas ? `&nbsp;|&nbsp; 📝 \${c.notas}` : ""}
+            </div>
+            <div class="fechas-bloque">
+              <span>📅 <strong>Inicio:</strong> ${c.inicio || "—"}</span>
+              <span>🏁 <strong>Finaliza:</strong> ${c.fin || "—"}</span>
+            </div>
+          </div>
+
+          <div class="acciones-cuenta">
+            ${linkEntregaWA ? `<a href="\${linkEntregaWA}" target="_blank" class="btn-accion btn-wa-datos" title="Enviar datos de acceso al cliente">🔑 Enviar Acceso</a>` : ""}
+            ${linkCobroWA ? `<a href="\${linkCobroWA}" target="_blank" class="btn-accion btn-wa-cobro" title="Enviar recordatorio de renovación">🔔 Recordar Pago</a>` : ""}
+            <button type="button" class="btn-accion btn-renovar" onclick="renovarMasUnMes('${c.id}', '${c.fin}')">⚡ +1 Mes</button>
+            <button type="button" class="btn-accion" onclick="cargarEnFormulario('${c.id}')">✏️ Editar</button>
+            <button type="button" class="btn-accion btn-borrar" onclick="borrarCuenta('${c.id}', '${c.cliente}')">🗑️</button>
+          </div>
+        `;
+        contenedorListaCuentas.appendChild(div);
+      });
+    }
+
+    async function iniciarSesionYCargar(clave) {
+      btnEntrar.disabled = true;
+      btnEntrar.textContent = "⏳ Verificando...";
+      errorLogin.classList.add("oculto");
+
+      try {
+        const resp = await consultarServidor({ accion: "obtenerCuentas", clave: clave });
+        if (resp && resp.ok) {
+          claveAdminActual = clave;
+          sessionStorage.setItem(SESSION_KEY, clave);
+          cuentasLista = resp.cuentas || [];
+          pantallaLogin.classList.add("oculto");
+          panelAdmin.classList.remove("oculto");
+          renderizarCuentas();
+        } else {
+          sessionStorage.removeItem(SESSION_KEY);
+          errorLogin.textContent = (resp && resp.mensaje) ? resp.mensaje : "❌ Clave incorrecta o falta actualizar tu Apps Script.";
+          errorLogin.classList.remove("oculto");
+        }
+      } catch (err) {
+        errorLogin.textContent = "⚠️ Error de conexión con tu Google Apps Script.";
+        errorLogin.classList.remove("oculto");
+      } finally {
+        btnEntrar.disabled = false;
+        btnEntrar.textContent = "🔓 Entrar al Gestor";
+      }
+    }
+
+    formLogin.addEventListener("submit", (e) => {
+      e.preventDefault();
+      iniciarSesionYCargar(inputClaveAdmin.value.trim());
+    });
+
+    formCuenta.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      btnGuardarCuenta.disabled = true;
+      btnGuardarCuenta.textContent = "⏳ Guardando...";
+
+      const datosEnviar = {
+        accion: "guardarCuenta",
+        clave: claveAdminActual,
+        id: cuentaIdInput.value.trim(),
+        cliente: cuentaClienteInput.value.trim(),
+        whatsapp: cuentaWhatsappInput.value.trim(),
+        precio: cuentaPrecioInput.value.trim() || "0.00",
+        servicio: cuentaServicioInput.value.trim(),
+        correo: cuentaCorreoInput.value.trim(),
+        clavePerfil: cuentaClaveInput.value.trim(),
+        inicio: cuentaInicioInput.value,
+        fin: cuentaFinInput.value,
+        notas: cuentaNotasInput.value.trim()
+      };
+
+      try {
+        const res = await consultarServidor(datosEnviar);
+        if (res && res.ok) {
+          limpiarFormulario();
+          await iniciarSesionYCargar(claveAdminActual);
+        } else {
+          alert("⚠️ No se pudo guardar: " + (res.mensaje || "Verifica tu conexión"));
+        }
+      } catch (err) {
+        alert("⚠️ Error al guardar en Google Sheets.");
+      } finally {
+        btnGuardarCuenta.disabled = false;
+        btnGuardarCuenta.textContent = "💾 Guardar Cambios";
+      }
+    });
+
+    function limpiarFormulario() {
+      formCuenta.reset();
+      cuentaIdInput.value = "";
+      cuentaPrecioInput.value = "0.00";
+      cuentaInicioInput.value = obtenerHoyISO();
+      selectDuracionRapida.value = "1";
+      actualizarFechaFinAutomatica();
+      tituloForm.textContent = "➕ Registrar Servicio a Cliente";
+      btnCancelarEdicion.classList.add("oculto");
+    }
+
+    btnCancelarEdicion.addEventListener("click", limpiarFormulario);
+
+    window.cargarEnFormulario = function(id) {
+      const c = cuentasLista.find(item => item.id === id);
+      if (!c) return;
+      cuentaIdInput.value = c.id;
+      cuentaClienteInput.value = c.cliente;
+      cuentaWhatsappInput.value = c.whatsapp;
+      cuentaPrecioInput.value = c.precio || "0.00";
+      cuentaServicioInput.value = c.servicio;
+      cuentaCorreoInput.value = c.correo;
+      cuentaClaveInput.value = c.clavePerfil;
+      cuentaInicioInput.value = c.inicio;
+      selectDuracionRapida.value = "custom";
+      cuentaFinInput.value = c.fin;
+      cuentaNotasInput.value = c.notas;
+      tituloForm.textContent = `✏️ Editando a: ${c.cliente}`;
+      btnCancelarEdicion.classList.remove("oculto");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    window.renovarMasUnMes = async function(id, fechaFinActual) {
+      const baseFecha = fechaFinActual || obtenerHoyISO();
+      const nuevaFin = sumarMesesAFecha(baseFecha, 1);
+      if (!confirm(`¿Renovar suscripción por +1 mes hasta el ${nuevaFin}?`)) return;
+
+      try {
+        const res = await consultarServidor({
+          accion: "renovarCuenta",
+          clave: claveAdminActual,
+          id: id,
+          fin: nuevaFin
+        });
+        if (res && res.ok) {
+          await iniciarSesionYCargar(claveAdminActual);
+        }
+      } catch (e) {
+        alert("Error al renovar la cuenta.");
+      }
+    };
+
+    window.borrarCuenta = async function(id, nombre) {
+      if (!confirm(`¿Eliminar definitivamente el registro de "${nombre}"?`)) return;
+      try {
+        const res = await consultarServidor({
+          accion: "eliminarCuenta",
+          clave: claveAdminActual,
+          id: id
+        });
+        if (res && res.ok) {
+          await iniciarSesionYCargar(claveAdminActual);
+        }
+      } catch (e) {
+        alert("Error al eliminar.");
+      }
+    };
+
+    buscadorCuentas.addEventListener("input", renderizarCuentas);
+    btnsFiltroEstado.forEach(btn => {
+      btn.addEventListener("click", () => {
+        btnsFiltroEstado.forEach(b => b.classList.remove("activo"));
+        btn.classList.add("activo");
+        filtroEstadoActual = btn.getAttribute("data-estado");
+        renderizarCuentas();
+      });
+    });
+
+    document.getElementById("btn-recargar").addEventListener("click", () => iniciarSesionYCargar(claveAdminActual));
+    document.getElementById("btn-salir").addEventListener("click", () => {
+      sessionStorage.removeItem(SESSION_KEY);
+      claveAdminActual = "";
+      panelAdmin.classList.add("oculto");
+      pantallaLogin.classList.remove("oculto");
+    });
+
+    if (claveAdminActual) {
+      iniciarSesionYCargar(claveAdminActual);
+    }
+  </script>
+</body>
+</html>

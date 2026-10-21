@@ -12,9 +12,10 @@ const SHEET_RESENAS_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID
 const SHEET_TICKETS_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=1115065148`;
 const SHEET_TICKETS_ALT_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Tickets`;
 
-// URL completa de tu Google Apps Script
+// URL completa de tu Google Apps Script (Versión 15 actualizada)
 const URL_VERIFICADOR_PICHINCHA = "https://script.google.com/macros/s/AKfycbwmO7jW90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMAUdpx1ttutlRY/exec";
 
+// Cupones de respaldo inmediato
 const CUPONES_LOCALES = {
   "CEDENO10": { porcentaje: 10, categoriaRequerida: "todos", minimoProductos: 1, activo: true },
   "STREAM5":  { porcentaje: 5,  categoriaRequerida: "streaming", minimoProductos: 1, activo: true }
@@ -155,7 +156,7 @@ document.getElementById("btn-copiar-cuenta").addEventListener("click", (e) => {
 });
 
 // ==========================================
-// 2. LOGOS OFICIALES
+// 2. LOGOS OFICIALES (INCLUYE TODOS LOS NUEVOS PRODUCTOS)
 // ==========================================
 function obtenerDisenoVisualProducto(prod) {
   const n = (prod.nombre || "").toLowerCase();
@@ -202,6 +203,8 @@ function obtenerDisenoVisualProducto(prod) {
   if (n.includes("roblox") || n.includes("robux")) {
     return { fondo: "radial-gradient(circle at center, #374151 0%, #111827 70%, #030712 100%)", colorMarca: "#ef4444", htmlLogo: `<div class="logo-texto-icono"><svg width="38" height="38" viewBox="0 0 50 50"><g transform="translate(25,25) rotate(14)"><rect x="-18" y="-18" width="36" height="36" rx="4" fill="#ffffff"/><rect x="-6" y="-6" width="12" height="12" fill="#111827"/></g></svg><span style="letter-spacing:1px;">ROBLOX</span></div>` };
   }
+
+  // LOGOS NUEVOS PARA LOS PRODUCTOS AGREGADOS:
   if (n.includes("viki")) {
     return { fondo: "radial-gradient(circle at center, #0284c7 0%, #0369a1 65%, #0c4a6e 100%)", colorMarca: "#38bdf8", htmlLogo: `<div class="logo-texto-icono"><span style="color:#38bdf8; font-family:'Cinzel',serif; font-weight:900;">VIKI</span></div>` };
   }
@@ -234,11 +237,15 @@ function obtenerDisenoVisualProducto(prod) {
   }
 
   const tituloCorto = (prod.nombre || "PREMIUM").split(" ")[0].toUpperCase();
-  return { fondo: "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4f46e5 100%)", colorMarca: "#818cf8", htmlLogo: `<div class="logo-texto-icono"><span>${tituloCorto}</span></div>` };
+  return {
+    fondo: "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4f46e5 100%)",
+    colorMarca: "#818cf8",
+    htmlLogo: `<div class="logo-texto-icono"><span>${tituloCorto}</span></div>`
+  };
 }
 
 // ==========================================
-// 3. MOSTRAR PRODUCTOS
+// 3. MOSTRAR PRODUCTOS, STOCK, DESCUENTO Y MÍNIMO DE MESES
 // ==========================================
 function obtenerPrecioNumerico(precioTexto) {
   const limpio = String(precioTexto).replace(/[^0-9.,]/g, "").replace(",", ".");
@@ -248,13 +255,19 @@ function obtenerPrecioNumerico(precioTexto) {
 function permiteElegirMeses(prod) {
   const per = (prod.periodo || "").toLowerCase().trim();
   const nom = (prod.nombre || "").toLowerCase();
-  if (/\d/.test(per) || per.includes("año") || per.includes("anual")) return false;
-  if (/\d+\s*mes/.test(nom)) return false;
+
+  if (/\d/.test(per) || per.includes("año") || per.includes("anual")) {
+    return false;
+  }
+  if (/\d+\s*mes/.test(nom)) {
+    return false;
+  }
   return per === "/ mes" || per === "mes" || per === "mensual";
 }
 
 function actualizarBotonesFiltro() {
   if (!contenedorFiltros) return;
+
   const categoriasUnicas = [...new Set(productos.map(p => (p.categoria || "otros").toLowerCase()))];
   contenedorFiltros.innerHTML = `<button class="btn-filtro ${categoriaActual === 'todos' ? 'activo' : ''}" data-categoria="todos">Todos</button>`;
 
@@ -268,9 +281,10 @@ function actualizarBotonesFiltro() {
     contenedorFiltros.appendChild(btn);
   });
 
-  contenedorFiltros.querySelectorAll(".btn-filtro").forEach((boton) => {
+  const botonesFiltro = contenedorFiltros.querySelectorAll(".btn-filtro");
+  botonesFiltro.forEach((boton) => {
     boton.addEventListener("click", () => {
-      contenedorFiltros.querySelectorAll(".btn-filtro").forEach((b) => b.classList.remove("activo"));
+      botonesFiltro.forEach((b) => b.classList.remove("activo"));
       boton.classList.add("activo");
       categoriaActual = boton.getAttribute("data-categoria");
       filtrarCatalogo();
@@ -280,6 +294,7 @@ function actualizarBotonesFiltro() {
 
 function mostrarProductos(lista) {
   contenedor.innerHTML = "";
+
   if (lista.length === 0) {
     contenedor.innerHTML = `<p style="color: #94a3b8; grid-column: 1/-1; text-align: center; padding: 30px;">No se encontraron productos con esa búsqueda.</p>`;
     return;
@@ -289,13 +304,20 @@ function mostrarProductos(lista) {
     const precioOriginalBase = obtenerPrecioNumerico(prod.precio);
     const descPorcentaje = parseFloat(prod.descuento) || 0;
     const tieneDescuento = descPorcentaje > 0;
-    const precioConDescuentoBase = tieneDescuento ? precioOriginalBase * (1 - descPorcentaje / 100) : precioOriginalBase;
+    const precioConDescuentoBase = tieneDescuento
+      ? precioOriginalBase * (1 - descPorcentaje / 100)
+      : precioOriginalBase;
 
-    const stockDisponible = (prod.stock === null || prod.stock === undefined || prod.stock === "" || isNaN(prod.stock)) ? null : parseInt(prod.stock, 10);
+    const stockDisponible = (prod.stock === null || prod.stock === undefined || prod.stock === "" || isNaN(prod.stock))
+      ? null
+      : parseInt(prod.stock, 10);
     const estaAgotado = stockDisponible !== null && stockDisponible <= 0;
 
     const tieneSelectorMeses = permiteElegirMeses(prod);
-    const minMeses = (tieneSelectorMeses && prod.minimoMeses && prod.minimoMeses > 1) ? parseInt(prod.minimoMeses, 10) : 1;
+    const minMeses = (tieneSelectorMeses && prod.minimoMeses && prod.minimoMeses > 1)
+      ? parseInt(prod.minimoMeses, 10)
+      : 1;
+
     const visual = obtenerDisenoVisualProducto(prod);
 
     const tarjeta = document.createElement("div");
@@ -303,27 +325,56 @@ function mostrarProductos(lista) {
     tarjeta.style.setProperty("--color-marca", visual.colorMarca || "#6366f1");
 
     let htmlBadgeDerecha = `<span class="badge-derecha oficial">✔ Oficial</span>`;
-    if (estaAgotado) htmlBadgeDerecha = `<span class="badge-derecha agotado">🚫 Agotado</span>`;
-    else if (stockDisponible !== null) htmlBadgeDerecha = `<span class="badge-derecha stock-limitado">📦 Stock: ${stockDisponible}</span>`;
+    if (estaAgotado) {
+      htmlBadgeDerecha = `<span class="badge-derecha agotado">🚫 Agotado</span>`;
+    } else if (stockDisponible !== null) {
+      htmlBadgeDerecha = `<span class="badge-derecha stock-limitado">📦 Stock: ${stockDisponible}</span>`;
+    }
 
-    const htmlBadgeDescuento = tieneDescuento ? `<span class="badge-descuento-card">🔥 -${descPorcentaje}% OFF</span>` : "";
+    const htmlBadgeDescuento = tieneDescuento
+      ? `<span class="badge-descuento-card">🔥 -${descPorcentaje}% OFF</span>`
+      : "";
 
     const opcionesBase = [1, 2, 3, 6, 12];
-    if (!opcionesBase.includes(minMeses)) { opcionesBase.push(minMeses); opcionesBase.sort((a, b) => a - b); }
+    if (!opcionesBase.includes(minMeses)) {
+      opcionesBase.push(minMeses);
+      opcionesBase.sort((a, b) => a - b);
+    }
     const opcionesFiltradas = opcionesBase.filter(m => m >= minMeses);
-    const htmlOpcionesMeses = opcionesFiltradas.map(m => m === 1 ? `<option value="1">1 mes</option>` : (m === 12 ? `<option value="12">12 meses (1 año)</option>` : `<option value="${m}">${m} meses</option>`)).join("");
+
+    const htmlOpcionesMeses = opcionesFiltradas.map(m => {
+      if (m === 1) return `<option value="1">1 mes</option>`;
+      if (m === 12) return `<option value="12">12 meses (1 año)</option>`;
+      return `<option value="${m}">${m} meses</option>`;
+    }).join("");
 
     const textoLabelDuracion = minMeses > 1 ? `📅 Duración (Mín. ${minMeses}m):` : `📅 Duración:`;
-    const htmlSelectorMeses = (tieneSelectorMeses && !estaAgotado) ? `<div class="caja-selector-meses"><label>${textoLabelDuracion}</label><select class="select-meses">${htmlOpcionesMeses}</select></div>` : "";
+
+    const htmlSelectorMeses = (tieneSelectorMeses && !estaAgotado) ? `
+      <div class="caja-selector-meses">
+        <label>${textoLabelDuracion}</label>
+        <select class="select-meses">
+          ${htmlOpcionesMeses}
+        </select>
+      </div>
+    ` : "";
 
     const precioMostradoInicial = (precioConDescuentoBase * minMeses).toFixed(2);
     const precioOriginalInicial = (precioOriginalBase * minMeses).toFixed(2);
     const precioMostradoTexto = `$${precioMostradoInicial}`;
-    const htmlPrecioOriginalTachado = tieneDescuento ? `<span class="precio-original">$${precioOriginalInicial}</span>` : "";
-    const textoPeriodoInicial = (tieneSelectorMeses && minMeses > 1) ? `por ${minMeses} meses` : prod.periodo;
+
+    const htmlPrecioOriginalTachado = tieneDescuento
+      ? `<span class="precio-original">$${precioOriginalInicial}</span>`
+      : "";
+
+    const textoPeriodoInicial = (tieneSelectorMeses && minMeses > 1)
+      ? `por ${minMeses} meses`
+      : prod.periodo;
 
     const etiquetaMesesInicial = minMeses === 1 ? "1 mes" : `${minMeses} meses`;
-    const mensajeInicial = tieneSelectorMeses ? `¡Hola! Me interesa comprar: *${prod.nombre} (${etiquetaMesesInicial})* - Total: ${precioMostradoTexto}` : `¡Hola! Me interesa comprar: *${prod.nombre}* (${precioMostradoTexto} ${prod.periodo})`;
+    const mensajeInicial = tieneSelectorMeses
+      ? `¡Hola! Me interesa comprar: *${prod.nombre} (${etiquetaMesesInicial})* - Total: ${precioMostradoTexto}`
+      : `¡Hola! Me interesa comprar: *${prod.nombre}* (${precioMostradoTexto} ${prod.periodo})`;
     const urlWhatsappInicial = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeInicial)}`;
 
     tarjeta.innerHTML = `
@@ -334,12 +385,21 @@ function mostrarProductos(lista) {
         <div class="contenedor-logo-oficial">${visual.htmlLogo}</div>
       </div>
       <div class="tarjeta-cuerpo">
-        <div><h3>${prod.nombre}</h3><p>${prod.descripcion}</p></div>
+        <div>
+          <h3>${prod.nombre}</h3>
+          <p>${prod.descripcion}</p>
+        </div>
         <div>
           ${htmlSelectorMeses}
-          <div class="precio">${htmlPrecioOriginalTachado}<strong class="valor-precio ${tieneDescuento ? 'en-oferta' : ''}">${precioMostradoTexto}</strong><span class="texto-periodo">${textoPeriodoInicial}</span></div>
+          <div class="precio">
+            ${htmlPrecioOriginalTachado}
+            <strong class="valor-precio ${tieneDescuento ? 'en-oferta' : ''}">${precioMostradoTexto}</strong> 
+            <span class="texto-periodo">${textoPeriodoInicial}</span>
+          </div>
           <div class="botones-tarjeta">
-            <button class="btn-agregar-carrito" ${estaAgotado ? "disabled" : ""}>${estaAgotado ? "🚫 Sin Stock" : "🛒 Añadir al carrito"}</button>
+            <button class="btn-agregar-carrito" ${estaAgotado ? "disabled" : ""}>
+              ${estaAgotado ? "🚫 Sin Stock" : "🛒 Añadir al carrito"}
+            </button>
             <a href="${urlWhatsappInicial}" target="_blank" class="btn-comprar-directo">⚡ Comprar directo</a>
           </div>
         </div>
@@ -356,37 +416,51 @@ function mostrarProductos(lista) {
       selectMeses.addEventListener("change", () => {
         const meses = parseInt(selectMeses.value, 10) || minMeses;
         const nuevoTotal = (precioConDescuentoBase * meses).toFixed(2);
+        const etiquetaMeses = meses === 1 ? "1 mes" : `${meses} meses`;
+
         valorPrecioEl.textContent = `$${nuevoTotal}`;
-        if (precioOrigEl) precioOrigEl.textContent = `$${(precioOriginalBase * meses).toFixed(2)}`;
+        if (precioOrigEl) {
+          precioOrigEl.textContent = `$${(precioOriginalBase * meses).toFixed(2)}`;
+        }
         textoPeriodoEl.textContent = meses === 1 ? prod.periodo : `por ${meses} meses`;
-        btnComprarDirecto.href = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(`¡Hola! Me interesa comprar: *${prod.nombre} (${meses === 1 ? "1 mes" : `${meses} meses`})* - Total: \$\${nuevoTotal}`)}`;
+
+        const nuevoMensaje = `¡Hola! Me interesa comprar: *${prod.nombre} (${etiquetaMeses})* - Total: $${nuevoTotal}`;
+        btnComprarDirecto.href = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(nuevoMensaje)}`;
       });
     }
 
     const btnAgregar = tarjeta.querySelector(".btn-agregar-carrito");
     if (btnAgregar && !estaAgotado) {
-      btnAgregar.addEventListener("click", () => {
+      btnAgregar.addEventListener("click", (e) => {
         const mesesElegidos = selectMeses ? (parseInt(selectMeses.value, 10) || minMeses) : minMeses;
-        if (agregarAlCarrito(prod, mesesElegidos, tieneSelectorMeses)) {
-          btnAgregar.textContent = "✔ ¡Añadido!";
-          setTimeout(() => (btnAgregar.textContent = "🛒 Añadir al carrito"), 1000);
+        const exito = agregarAlCarrito(prod, mesesElegidos, tieneSelectorMeses);
+        if (exito) {
+          const btn = e.target;
+          btn.textContent = "✔ ¡Añadido!";
+          setTimeout(() => (btn.textContent = "🛒 Añadir al carrito"), 1000);
         }
       });
     }
+
     contenedor.appendChild(tarjeta);
   });
 }
 
 // ==========================================
-// 4. CARRITO
+// 4. CARRITO, REGLA DE NO ACUMULAR DESCUENTOS Y STOCK
 // ==========================================
 function carritoTieneProductoConDescuento() {
   return carrito.some(item => (parseFloat(item.descuentoProducto) || 0) > 0);
 }
 
 function agregarAlCarrito(prod, meses = 1, mostrarMeses = false) {
-  const stockMax = (prod.stock === null || prod.stock === undefined || prod.stock === "" || isNaN(prod.stock)) ? null : parseInt(prod.stock, 10);
-  const unidadesEnCarrito = carrito.filter(item => item.nombreBase === prod.nombre).reduce((acc, item) => acc + item.cantidad, 0);
+  const stockMax = (prod.stock === null || prod.stock === undefined || prod.stock === "" || isNaN(prod.stock))
+    ? null
+    : parseInt(prod.stock, 10);
+
+  const unidadesEnCarrito = carrito
+    .filter(item => item.nombreBase === prod.nombre)
+    .reduce((acc, item) => acc + item.cantidad, 0);
 
   if (stockMax !== null && unidadesEnCarrito + 1 > stockMax) {
     alert(`⚠️ Solo quedan ${stockMax} unidad(es) disponibles en stock de "${prod.nombre}".`);
@@ -395,80 +469,172 @@ function agregarAlCarrito(prod, meses = 1, mostrarMeses = false) {
 
   const precioOriginalBase = obtenerPrecioNumerico(prod.precio);
   const descPorcentaje = parseFloat(prod.descuento) || 0;
+
   const yaHayDescuentoEnCarrito = carritoTieneProductoConDescuento();
   const aplicaDescuentoProducto = descPorcentaje > 0 && (!yaHayDescuentoEnCarrito || carrito.some(i => i.nombreBase === prod.nombre && i.descuentoProducto > 0));
 
-  const precioUnitarioBase = aplicaDescuentoProducto ? precioOriginalBase * (1 - descPorcentaje / 100) : precioOriginalBase;
+  const precioUnitarioBase = aplicaDescuentoProducto
+    ? precioOriginalBase * (1 - descPorcentaje / 100)
+    : precioOriginalBase;
+
   const precioFinalNum = precioUnitarioBase * meses;
+  const precioFinalTexto = `$${precioFinalNum.toFixed(2)}`;
+
   const etiquetaMeses = meses === 1 ? "1 mes" : `${meses} meses`;
   const nombreConMeses = mostrarMeses ? `${prod.nombre} (${etiquetaMeses})` : prod.nombre;
 
   const existente = carrito.find(item => item.nombre === nombreConMeses);
-  if (existente) existente.cantidad += 1;
-  else {
+  if (existente) {
+    existente.cantidad += 1;
+  } else {
     carrito.push({
       nombre: nombreConMeses,
       nombreBase: prod.nombre,
       categoria: (prod.categoria || "otros").toLowerCase(),
-      precioTexto: `$${precioFinalNum.toFixed(2)}`,
+      precioTexto: precioFinalTexto,
       precioNum: precioFinalNum,
       periodo: mostrarMeses ? etiquetaMeses : prod.periodo,
       cantidad: 1,
       stockMax: stockMax,
-      descuentoProducto: aplicaDescuentoProducto ? descPorcentaje : 0
+      descuentoProducto: aplicaDescuentoProducto ? descPorcentaje : 0,
+      intentoSegundoDescuento: (descPorcentaje > 0 && !aplicaDescuentoProducto)
     });
   }
+
   actualizarVistaCarrito();
   return true;
 }
 
 window.cambiarCantidad = function(index, cambio) {
   const item = carrito[index];
-  if (cambio > 0 && item.stockMax !== null) {
-    const totalMismo = carrito.filter(i => i.nombreBase === item.nombreBase).reduce((acc, i) => acc + i.cantidad, 0);
-    if (totalMismo + cambio > item.stockMax) { alert(`⚠️ Solo hay ${item.stockMax} en stock.`); return; }
+  if (cambio > 0 && item.stockMax !== null && item.stockMax !== undefined) {
+    const totalMismoProducto = carrito
+      .filter(i => i.nombreBase === item.nombreBase)
+      .reduce((acc, i) => acc + i.cantidad, 0);
+
+    if (totalMismoProducto + cambio > item.stockMax) {
+      alert(`⚠️ No puedes agregar más: solo hay ${item.stockMax} en stock.`);
+      return;
+    }
   }
+
   item.cantidad += cambio;
-  if (item.cantidad <= 0) carrito.splice(index, 1);
+  if (item.cantidad <= 0) {
+    carrito.splice(index, 1);
+  }
   actualizarVistaCarrito();
 };
 
 function verificarRequisitosCarritoParaCupon(cupon) {
   if (!cupon) return { cumple: false, motivo: "" };
-  if (carritoTieneProductoConDescuento()) return { cumple: false, motivo: "⚠️ Ya tienes un producto con descuento en el carrito." };
+
+  if (carritoTieneProductoConDescuento()) {
+    return {
+      cumple: false,
+      motivo: "⚠️ Ya tienes un producto con descuento en el carrito, así que ya no aplica otro descuento adicional."
+    };
+  }
+
+  const catReq = (cupon.categoriaRequerida || "todos").toLowerCase().trim();
+  const minProd = parseInt(cupon.minimoProductos, 10) || 1;
+
+  let cantidadValida = 0;
+  carrito.forEach((item) => {
+    const catItem = (item.categoria || "otros").toLowerCase().trim();
+    if (catReq === "todos" || catReq === "" || catItem === catReq) {
+      cantidadValida += item.cantidad;
+    }
+  });
+
+  if (cantidadValida < minProd) {
+    const textoCat = (catReq === "todos" || catReq === "") ? "en total" : `de la categoría "${catReq}"`;
+    return {
+      cumple: false,
+      motivo: `⚠️ El cupón ${cupon.codigo} requiere al menos ${minProd} producto(s) ${textoCat} en tu carrito (tienes ${cantidadValida}).`
+    };
+  }
+
   return { cumple: true, motivo: "" };
 }
 
 function obtenerResumenTotales() {
   const subtotal = carrito.reduce((acc, item) => acc + (item.precioNum * item.cantidad), 0);
+  const tieneProdConDescuento = carritoTieneProductoConDescuento();
+  const tieneIntentoSegundoDesc = carrito.some(item => item.intentoSegundoDescuento);
+
+  let aplicaCupon = false;
   let montoDescCupon = 0;
-  if (cuponActivo && verificarRequisitosCarritoParaCupon(cuponActivo).cumple) {
-    montoDescCupon = subtotal * (cuponActivo.porcentaje / 100);
+  let motivoNoCumple = "";
+
+  if (tieneIntentoSegundoDesc) {
+    motivoNoCumple = "⚠️ Ya tienes un producto con descuento en el carrito, por lo que no se acumula otro descuento adicional.";
   }
-  return { subtotal, montoDescCupon, totalFinal: Math.max(0, subtotal - montoDescCupon) };
+
+  if (cuponActivo) {
+    const validacion = verificarRequisitosCarritoParaCupon(cuponActivo);
+    if (validacion.cumple) {
+      aplicaCupon = true;
+      const catReq = (cuponActivo.categoriaRequerida || "todos").toLowerCase().trim();
+      const baseDescuento = carrito.reduce((acc, item) => {
+        const catItem = (item.categoria || "otros").toLowerCase().trim();
+        if (catReq === "todos" || catReq === "" || catItem === catReq) {
+          return acc + (item.precioNum * item.cantidad);
+        }
+        return acc;
+      }, 0);
+
+      montoDescCupon = baseDescuento * (cuponActivo.porcentaje / 100);
+    } else {
+      motivoNoCumple = validacion.motivo;
+    }
+  }
+
+  const totalFinal = Math.max(0, subtotal - montoDescCupon);
+
+  return {
+    subtotal,
+    tieneProdConDescuento,
+    aplicaCupon,
+    montoDescCupon,
+    motivoNoCumple,
+    totalFinal
+  };
 }
 
 function actualizarVistaCarrito() {
   localStorage.setItem(CARRITO_KEY, JSON.stringify(carrito));
-  contadorCarrito.textContent = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+
+  const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+  contadorCarrito.textContent = totalItems;
+
   listaCarrito.innerHTML = "";
 
   if (carrito.length === 0) {
-    listaCarrito.innerHTML = `<p class="carrito-vacio">Tu carrito está vacío.</p>`;
+    listaCarrito.innerHTML = `<p class="carrito-vacio">Tu carrito está vacío. Añade productos del catálogo.</p>`;
     seccionPago.classList.add("oculto");
     return;
   }
+
   seccionPago.classList.remove("oculto");
 
   carrito.forEach((item, index) => {
-    const sub = item.precioNum * item.cantidad;
+    const subtotalItem = item.precioNum * item.cantidad;
+    const tagDescuento = item.descuentoProducto > 0
+      ? `<span class="tag-oferta-carrito">-${item.descuentoProducto}% OFF</span>`
+      : "";
+
     const div = document.createElement("div");
     div.className = "item-carrito";
     div.innerHTML = `
-      <div class="item-info"><h4>${item.nombre}</h4><span>${item.precioTexto} c/u</span></div>
+      <div class="item-info">
+        <h4>${item.nombre} ${tagDescuento}</h4>
+        <span>Categoría: ${item.categoria} | ${item.precioTexto} c/u</span>
+      </div>
       <div class="item-controles">
-        <button onclick="cambiarCantidad(${index}, -1)">-</button><span>${item.cantidad}</span><button onclick="cambiarCantidad(${index}, 1)">+</button>
-        <strong class="item-subtotal">$${sub.toFixed(2)}</strong>
+        <button onclick="cambiarCantidad(${index}, -1)">-</button>
+        <span>${item.cantidad}</span>
+        <button onclick="cambiarCantidad(${index}, 1)">+</button>
+        <strong class="item-subtotal">$${subtotalItem.toFixed(2)}</strong>
       </div>
     `;
     listaCarrito.appendChild(div);
@@ -476,62 +642,334 @@ function actualizarVistaCarrito() {
 
   const resumen = obtenerResumenTotales();
   if (subtotalCarritoEl) subtotalCarritoEl.textContent = `$${resumen.subtotal.toFixed(2)}`;
-  if (totalCarrito) totalCarrito.textContent = `$${resumen.totalFinal.toFixed(2)}`;
+  if (filaDescAuto) filaDescAuto.classList.add("oculto");
+
+  if (filaDescCupon) {
+    if (resumen.aplicaCupon && resumen.montoDescCupon > 0) {
+      filaDescCupon.classList.remove("oculto");
+      textoDescCuponEl.textContent = `🎟️ Cupón ${cuponActivo.codigo} (-${cuponActivo.porcentaje}%):`;
+      montoDescCuponEl.textContent = `-$${resumen.montoDescCupon.toFixed(2)}`;
+      if (mensajeCupon) {
+        mensajeCupon.classList.remove("oculto", "error");
+        mensajeCupon.classList.add("exito");
+        mensajeCupon.textContent = `🎉 ¡Cupón ${cuponActivo.codigo} (-${cuponActivo.porcentaje}%) aplicado!`;
+      }
+    } else {
+      filaDescCupon.classList.add("oculto");
+      if (resumen.motivoNoCumple && mensajeCupon) {
+        mensajeCupon.classList.remove("oculto", "exito");
+        mensajeCupon.classList.add("error");
+        mensajeCupon.textContent = resumen.motivoNoCumple;
+      } else if (resumen.tieneProdConDescuento && mensajeCupon) {
+        mensajeCupon.classList.remove("oculto", "exito");
+        mensajeCupon.classList.add("error");
+        mensajeCupon.textContent = "ℹ️ Ya tienes un producto con descuento en el carrito (no aplica descuento adicional).";
+      } else if (!cuponActivo && mensajeCupon) {
+        mensajeCupon.classList.add("oculto");
+      }
+    }
+  }
+
+  totalCarrito.textContent = `$${resumen.totalFinal.toFixed(2)}`;
 }
 
 async function consultarAppsScript(url) {
   try {
-    const res = await fetch(url, { method: "GET", redirect: "follow", credentials: "omit" });
-    return await res.json();
-  } catch (e) {}
-  return new Promise((resolve) => {
-    const cb = "cb_" + Math.floor(Math.random() * 1000000);
-    window[cb] = (d) => { delete window[cb]; resolve(d); };
-    const s = document.createElement("script");
-    s.src = `${url}&callback=${cb}`;
-    document.body.appendChild(s);
+    const respuesta = await fetch(url, { method: "GET", redirect: "follow", credentials: "omit" });
+    const texto = await respuesta.text();
+    return JSON.parse(texto);
+  } catch (e) {
+    console.warn("Intentando respaldo JSONP...");
+  }
+
+  return new Promise((resolve, reject) => {
+    const nombreCallback = "cb_" + Math.floor(Math.random() * 1000000);
+    const script = document.createElement("script");
+    const separador = url.includes("?") ? "&" : "?";
+
+    window[nombreCallback] = (datos) => {
+      delete window[nombreCallback];
+      script.remove();
+      resolve(datos);
+    };
+
+    script.onerror = () => {
+      delete window[nombreCallback];
+      script.remove();
+      reject(new Error("Fallo de red"));
+    };
+
+    script.src = `${url}${separador}callback=${nombreCallback}`;
+    document.body.appendChild(script);
   });
 }
 
+async function buscarCuponEnSheetCSV(codigoBuscado) {
+  try {
+    const res = await fetch(`${SHEET_CUPONES_CSV_URL}&t=${Date.now()}`, { cache: "no-store" });
+    if (!res.ok) return null;
+    const csv = await res.text();
+    const filas = csv.split(/\r?\n/);
+
+    const cabecera = (filas[0] || "").toLowerCase();
+    if (cabecera.includes("descripcion") || cabecera.includes("periodo")) return null;
+
+    for (let i = 0; i < filas.length; i++) {
+      const col = dividirFilaCSV(filas[i]);
+      const codigoFila = (col[0] || "").replace(/"/g, "").trim().toUpperCase();
+      if (codigoFila === codigoBuscado) {
+        const porcentaje = parseFloat((col[1] || "0").replace("%", "").trim()) || 0;
+        const estado = (col[2] || "activo").toLowerCase().trim();
+        const categoriaReq = (col[3] || "todos").toLowerCase().trim();
+        const minProd = parseInt(col[4] || "1", 10) || 1;
+
+        if (estado === "inactivo" || estado === "usado" || estado === "no" || estado === "0") {
+          return { valido: false, mensaje: "⚠️ Este cupón ya expiró o fue utilizado." };
+        }
+        if (porcentaje > 0) {
+          return {
+            valido: true,
+            codigo: codigoFila,
+            porcentaje: porcentaje,
+            categoriaRequerida: categoriaReq,
+            minimoProductos: minProd,
+            mensaje: `🎉 ¡Cupón ${codigoFila} (-${porcentaje}%) aplicado!`
+          };
+        }
+      }
+    }
+  } catch (e) {}
+  return null;
+}
+
+if (btnAplicarCupon) {
+  btnAplicarCupon.addEventListener("click", async () => {
+    const codigo = inputCupon.value.trim().toUpperCase();
+    mensajeCupon.classList.remove("oculto", "exito", "error");
+
+    if (carritoTieneProductoConDescuento()) {
+      cuponActivo = null;
+      mensajeCupon.textContent = "⚠️ Ya tienes un producto con descuento en el carrito, así que ya no aplica el descuento.";
+      mensajeCupon.classList.add("error");
+      actualizarVistaCarrito();
+      return;
+    }
+
+    if (!codigo) {
+      mensajeCupon.textContent = "⚠️ Escribe un código de cupón.";
+      mensajeCupon.classList.add("error");
+      return;
+    }
+
+    btnAplicarCupon.disabled = true;
+    btnAplicarCupon.textContent = "Validando...";
+    mensajeCupon.textContent = "🔄 Verificando cupón en el sistema...";
+
+    let data = null;
+
+    try {
+      const url = `${URL_VERIFICADOR_PICHINCHA}?accion=validarCupon&cupon=${encodeURIComponent(codigo)}&t=${Date.now()}`;
+      data = await consultarAppsScript(url);
+    } catch (err) {}
+
+    if (!data) {
+      data = await buscarCuponEnSheetCSV(codigo);
+    }
+
+    if (!data && CUPONES_LOCALES[codigo]) {
+      const cLocal = CUPONES_LOCALES[codigo];
+      if (cLocal.activo) {
+        data = {
+          valido: true,
+          codigo: codigo,
+          porcentaje: cLocal.porcentaje,
+          categoriaRequerida: cLocal.categoriaRequerida,
+          minimoProductos: cLocal.minimoProductos,
+          mensaje: `🎉 ¡Cupón ${codigo} (-${cLocal.porcentaje}%) aplicado!`
+        };
+      } else {
+        data = { valido: false, mensaje: "⚠️ Este cupón ya no está activo." };
+      }
+    }
+
+    if (data && data.valido) {
+      const candidatoCupon = {
+        codigo: data.codigo,
+        porcentaje: data.porcentaje,
+        categoriaRequerida: data.categoriaRequerida || "todos",
+        minimoProductos: data.minimoProductos || 1
+      };
+
+      const checkCarrito = verificarRequisitosCarritoParaCupon(candidatoCupon);
+      cuponActivo = candidatoCupon;
+
+      if (checkCarrito.cumple) {
+        mensajeCupon.textContent = data.mensaje;
+        mensajeCupon.classList.add("exito");
+      } else {
+        mensajeCupon.textContent = checkCarrito.motivo;
+        mensajeCupon.classList.add("error");
+      }
+    } else {
+      cuponActivo = null;
+      mensajeCupon.textContent = (data && data.mensaje) ? data.mensaje : "❌ El cupón ingresado no existe o no es válido.";
+      mensajeCupon.classList.add("error");
+    }
+
+    actualizarVistaCarrito();
+    btnAplicarCupon.disabled = false;
+    btnAplicarCupon.textContent = "Aplicar";
+  });
+}
+
+inputComprobante.addEventListener("input", () => {
+  pagoVerificadoAutomaticamente = false;
+  estadoVerificacion.classList.add("oculto");
+});
+
+btnVerificarPago.addEventListener("click", async () => {
+  const comprobante = inputComprobante.value.trim();
+  const resumen = obtenerResumenTotales();
+  const monto = resumen.totalFinal.toFixed(2);
+  const codigoCupon = (cuponActivo && resumen.aplicaCupon) ? cuponActivo.codigo : "";
+
+  const itemsParaStock = carrito.map(i => ({
+    nombreBase: i.nombreBase || i.nombre,
+    cantidad: i.cantidad
+  }));
+
+  estadoVerificacion.classList.remove("oculto", "exito", "error");
+
+  if (!comprobante) {
+    estadoVerificacion.textContent = "⚠️ Escribe el número de comprobante de tu transferencia.";
+    estadoVerificacion.classList.add("error");
+    return;
+  }
+
+  btnVerificarPago.disabled = true;
+  btnVerificarPago.textContent = "Buscando...";
+  estadoVerificacion.textContent = "🔄 Verificando transferencia y actualizando stock...";
+
+  try {
+    const url = `${URL_VERIFICADOR_PICHINCHA}?comprobante=${encodeURIComponent(comprobante)}&monto=${encodeURIComponent(monto)}&cupon=${encodeURIComponent(codigoCupon)}&items=${encodeURIComponent(JSON.stringify(itemsParaStock))}&t=${Date.now()}`;
+    const data = await consultarAppsScript(url);
+
+    estadoVerificacion.textContent = data.mensaje;
+    if (data.verificado) {
+      pagoVerificadoAutomaticamente = true;
+      estadoVerificacion.classList.add("exito");
+
+      itemsParaStock.forEach((comprado) => {
+        const prodEnCatalogo = productos.find(p => p.nombre.toLowerCase() === String(comprado.nombreBase).toLowerCase());
+        if (prodEnCatalogo && prodEnCatalogo.stock !== null && prodEnCatalogo.stock !== undefined && !isNaN(prodEnCatalogo.stock)) {
+          prodEnCatalogo.stock = Math.max(0, parseInt(prodEnCatalogo.stock, 10) - comprado.cantidad);
+        }
+      });
+      localStorage.setItem(CACHE_KEY, JSON.stringify(productos));
+      filtrarCatalogo();
+    } else {
+      pagoVerificadoAutomaticamente = false;
+      estadoVerificacion.classList.add("error");
+    }
+  } catch (err) {
+    estadoVerificacion.textContent = "⚠️ No se pudo conectar con el verificador.";
+    estadoVerificacion.classList.add("error");
+  } finally {
+    btnVerificarPago.disabled = false;
+    btnVerificarPago.textContent = "🔍 Verificar";
+  }
+});
+
 // ==========================================
-// 5. RESEÑAS Y TICKETS
+// 5. SISTEMA DE RESEÑAS EN TIEMPO REAL
 // ==========================================
 function calcularTiempoRelativo(fechaInput) {
   if (!fechaInput) return "Recién";
   const texto = String(fechaInput).trim();
-  if (texto.toLowerCase().startsWith("hace") || texto.toLowerCase() === "recién") return texto;
-  const f = new Date(texto);
-  if (isNaN(f.getTime())) return texto;
-  const s = Math.max(1, Math.floor((Date.now() - f.getTime()) / 1000));
-  if (s < 90) return "Recién";
-  const m = Math.floor(s / 60);
-  if (m < 60) return `Hace ${m} min`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `Hace ${h} h`;
-  const d = Math.floor(h / 24);
-  return `Hace ${d} días`;
+
+  if (texto.toLowerCase().startsWith("hace") || texto.toLowerCase() === "recién" || texto.toLowerCase() === "recien") {
+    return texto;
+  }
+
+  const fechaObj = new Date(texto);
+  if (isNaN(fechaObj.getTime())) return texto;
+
+  const segundos = Math.max(1, Math.floor((Date.now() - fechaObj.getTime()) / 1000));
+  if (segundos < 90) return "Recién";
+  const minutos = Math.floor(segundos / 60);
+  if (minutos < 60) return `Hace ${minutos} ${minutos === 1 ? "minuto" : "minutos"}`;
+  const horas = Math.floor(minutos / 60);
+  if (horas < 24) return `Hace ${horas} ${horas === 1 ? "hora" : "horas"}`;
+  const dias = Math.floor(horas / 24);
+  if (dias < 7) return `Hace ${dias} ${dias === 1 ? "día" : "días"}`;
+  const semanas = Math.floor(dias / 7);
+  if (semanas < 5) return `Hace ${semanas} ${semanas === 1 ? "semana" : "semanas"}`;
+  const meses = Math.floor(dias / 30);
+  if (meses < 12) return `Hace ${meses} ${meses === 1 ? "mes" : "meses"}`;
+  const anos = Math.floor(dias / 365);
+  return `Hace ${anos} ${anos === 1 ? "año" : "años"}`;
 }
 
 function renderizarResenas() {
   if (!listaResenasContenedor) return;
   listaResenasContenedor.innerHTML = "";
-  if (promedioResenasEl) promedioResenasEl.textContent = "5.0";
-  if (totalResenasCountEl) totalResenasCountEl.textContent = resenasLista.length;
+
+  const total = resenasLista.length;
+  const suma = resenasLista.reduce((acc, r) => acc + (parseFloat(r.estrellas) || 5), 0);
+  const promedio = total > 0 ? (suma / total).toFixed(1) : "5.0";
+
+  const totalGoogle = resenasLista.filter(r => normalizarOrigenResena(r) === "google").length;
+  const totalWeb = total - totalGoogle;
+
+  if (promedioResenasEl) promedioResenasEl.textContent = promedio;
+  if (totalResenasCountEl) totalResenasCountEl.textContent = total;
+  if (textoOpinionPluralEl) {
+    textoOpinionPluralEl.textContent = total === 1 ? "opinión" : "opiniones";
+  }
+  if (conteoGoogleTxtEl) conteoGoogleTxtEl.textContent = `${totalGoogle} en Google`;
+  if (conteoWebTxtEl) conteoWebTxtEl.textContent = `${totalWeb} en Web`;
 
   resenasLista.forEach((rev) => {
-    const div = document.createElement("div");
-    div.className = "tarjeta-resena-item";
-    div.innerHTML = `
-      <div class="resena-cabecera">
+    const numEstrellas = Math.min(5, Math.max(1, parseInt(rev.estrellas, 10) || 5));
+    const estrellasTxt = "★".repeat(numEstrellas) + "☆".repeat(5 - numEstrellas);
+    const nombreLimpio = (rev.nombre || "Cliente").trim();
+    const esTDC = nombreLimpio.toLowerCase().includes("tienda digital cede");
+    const inicial = esTDC ? "TDC" : nombreLimpio.charAt(0).toUpperCase();
+    const tiempoTexto = calcularTiempoRelativo(rev.fecha);
+    const textoComentario = (rev.comentario || "").trim();
+
+    const origenTipo = normalizarOrigenResena(rev);
+    const htmlBadgeOrigen = origenTipo === "google"
+      ? `<span class="badge-verificado-google" title="Reseña publicada en Google Maps">✔ Google</span>`
+      : `<span style="font-size:0.68rem; background:rgba(168,85,247,0.18); color:#d8b4fe; border:1px solid rgba(168,85,247,0.45); padding:1px 7px; border-radius:99px; font-weight:800;" title="Reseña publicada en la página web">🌐 Web</span>`;
+
+    const badgeNueva = (tiempoTexto === "Recién" || tiempoTexto.includes("minuto") || tiempoTexto.includes("hora"))
+      ? `<span style="background:rgba(255,255,255,0.1); color:#e2e8f0; font-size:0.65rem; padding:2px 6px; border-radius:4px; margin-left:6px; font-weight:700;">NUEVA</span>`
+      : "";
+
+    const htmlComentario = textoComentario
+      ? `<p class="comentario-resena">"${textoComentario}"</p>`
+      : "";
+
+    const card = document.createElement("div");
+    card.className = "tarjeta-resena-item";
+    card.innerHTML = `
+      <div class="resena-cabecera" style="${!textoComentario ? 'margin-bottom:0;' : ''}">
         <div class="resena-usuario">
-          <div class="avatar-resena">${(rev.nombre || "C").charAt(0).toUpperCase()}</div>
-          <div><h4>${rev.nombre} <span class="badge-verificado-google">✔ Google</span></h4><span class="tiempo-resena">${calcularTiempoRelativo(rev.fecha)}</span></div>
+          <div class="avatar-resena" style="${esTDC ? 'font-size:0.75rem; background:#0f172a; border:1px solid #38bdf8;' : ''}">${inicial}</div>
+          <div>
+            <h4>${nombreLimpio} ${htmlBadgeOrigen}</h4>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:2px;">
+              <span class="estrellas-item" style="font-size:0.88rem;">${estrellasTxt}</span>
+              <span class="tiempo-resena">${tiempoTexto}</span>
+              ${badgeNueva}
+            </div>
+          </div>
         </div>
-        <div class="estrellas-item">★★★★★</div>
       </div>
-      ${rev.comentario ? `<p class="comentario-resena">"\${rev.comentario}"</p>` : ""}
+      ${htmlComentario}
     `;
-    listaResenasContenedor.appendChild(div);
+    listaResenasContenedor.appendChild(card);
   });
 }
 
@@ -540,103 +978,457 @@ async function sincronizarResenasEnTiempoReal() {
     const res = await fetch(`${SHEET_RESENAS_CSV_URL}&t=${Date.now()}`, { cache: "no-store" });
     if (res.ok) {
       const csv = await res.text();
-      if (!csv.includes("<!DOCTYPE")) {
+      if (!csv.includes("<!DOCTYPE") && !csv.includes("<html")) {
         const filas = csv.split(/\r?\n/).filter(f => f.trim() !== "");
-        if (filas.length > 1) {
-          const nuevas = [];
-          for (let i = filas.length - 1; i >= 1; i--) {
-            const col = dividirFilaCSV(filas[i]);
-            if (col[0]) nuevas.push({ nombre: col[0].replace(/"/g, "").trim(), estrellas: 5, comentario: (col[2] || "").replace(/"/g, "").trim(), fecha: col[3] || "Recién" });
+        if (filas.length > 0) {
+          const filaCabecera = dividirFilaCSV(filas[0]).map(c => c.toLowerCase().replace(/"/g, "").trim());
+          const esHojaDeProductos = filaCabecera.includes("categoria") || filaCabecera.includes("categoría") || filaCabecera.includes("precio") || filaCabecera.includes("periodo") || filaCabecera.includes("stock");
+          const esHojaDeResenas = filaCabecera.includes("estrellas") || filaCabecera.includes("comentario") || filaCabecera.includes("resena") || filaCabecera.includes("reseña") || filaCabecera.includes("calificacion");
+
+          if (!esHojaDeProductos && esHojaDeResenas) {
+            const nuevasResenas = [];
+            for (let i = (filas.length - 1); i >= 1; i--) {
+              const col = dividirFilaCSV(filas[i]);
+              const nombre = (col[0] || "").replace(/"/g, "").trim();
+              if (!nombre) continue;
+
+              const estrellas = parseInt((col[1] || "5").replace(/[^0-9]/g, ""), 10) || 5;
+              const comentario = (col[2] || "").replace(/"/g, "").trim();
+              const fecha = (col[3] || "").replace(/"/g, "").trim() || "Recién";
+              const origenRaw = (col[4] || "").replace(/"/g, "").trim();
+
+              nuevasResenas.push({
+                nombre,
+                estrellas,
+                comentario,
+                fecha,
+                origen: normalizarOrigenResena({ nombre, origen: origenRaw })
+              });
+            }
+
+            if (nuevasResenas.length > 0) {
+              resenasLista = nuevasResenas;
+              localStorage.setItem(RESENAS_CACHE_KEY, JSON.stringify(resenasLista));
+              renderizarResenas();
+              return;
+            }
           }
-          if (nuevas.length > 0) { resenasLista = nuevas; renderizarResenas(); }
         }
       }
     }
   } catch (e) {}
 }
 
+estrellasPublicarBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    estrellasSeleccionadasParaPublicar = parseInt(btn.getAttribute("data-star"), 10) || 5;
+    estrellasPublicarBtns.forEach((b) => {
+      const valorB = parseInt(b.getAttribute("data-star"), 10);
+      b.style.opacity = valorB <= estrellasSeleccionadasParaPublicar ? "1" : "0.3";
+    });
+  });
+});
+
 if (formPublicarResena) {
-  formPublicarResena.addEventListener("submit", (e) => {
+  formPublicarResena.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const nombre = inputNombreResena.value.trim() || "Cliente";
-    const comentario = inputTextoResena.value.trim();
-    resenasLista.unshift({ nombre, estrellas: 5, comentario, fecha: new Date().toISOString() });
+    const nombre = (inputNombreResena.value || "").trim() || "Cliente";
+    const comentario = (inputTextoResena.value || "").trim();
+
+    const nuevaResena = {
+      nombre: nombre,
+      estrellas: estrellasSeleccionadasParaPublicar,
+      comentario: comentario,
+      fecha: new Date().toISOString(),
+      origen: "web"
+    };
+
+    resenasLista.unshift(nuevaResena);
+    localStorage.setItem(RESENAS_CACHE_KEY, JSON.stringify(resenasLista));
     renderizarResenas();
+
+    if (mensajeResenaPublicada) {
+      mensajeResenaPublicada.classList.remove("oculto");
+      mensajeResenaPublicada.innerHTML = `✅ ¡Gracias <strong>${nombre}</strong>! Tu reseña se publicó en la <strong>Web</strong>.`;
+      setTimeout(() => mensajeResenaPublicada.classList.add("oculto"), 6000);
+    }
+
+    const urlGuardar = `${URL_VERIFICADOR_PICHINCHA}?accion=agregarResena&nombre=${encodeURIComponent(nombre)}&estrellas=${encodeURIComponent(estrellasSeleccionadasParaPublicar)}&comentario=${encodeURIComponent(comentario)}&fecha=${encodeURIComponent(nuevaResena.fecha)}&origen=Web&t=${Date.now()}`;
+    consultarAppsScript(urlGuardar).catch(() => {});
+
     formPublicarResena.reset();
-    window.open(URL_GOOGLE_REVIEW, "_blank", "noopener,noreferrer");
   });
 }
 
+// ==========================================
+// 6. SISTEMA DE TICKETS
+// ==========================================
 function obtenerEstiloBadgeEstado(estadoRaw) {
-  const est = String(estadoRaw || "Pendiente").trim().toLowerCase();
-  if (est.includes("resuelto") || est.includes("solucionado") || est.includes("listo")) return { texto: "✅ Resuelto", estilo: "background: rgba(34,197,94,0.18); color: #4ade80;" };
-  return { texto: "⏳ Pendiente", estilo: "background: rgba(250,204,21,0.14); color: #fde047;" };
+  const est = String(estadoRaw || "Pendiente").trim();
+  const estLower = est.toLowerCase();
+
+  if (estLower.includes("resuelto") || estLower.includes("solucionado") || estLower.includes("completado") || estLower.includes("listo") || estLower.includes("atendido")) {
+    return { texto: `✅ ${est.charAt(0).toUpperCase() + est.slice(1)}`, estilo: "background: rgba(34, 197, 94, 0.18); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.45);" };
+  }
+  if (estLower.includes("proceso") || estLower.includes("revis") || estLower.includes("verificando")) {
+    return { texto: `🔄 ${est.charAt(0).toUpperCase() + est.slice(1)}`, estilo: "background: rgba(56, 189, 248, 0.16); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4);" };
+  }
+  if (estLower.includes("rechazado") || estLower.includes("cancelado") || estLower.includes("incorrecto") || estLower.includes("no válido")) {
+    return { texto: `❌ ${est.charAt(0).toUpperCase() + est.slice(1)}`, estilo: "background: rgba(239, 68, 68, 0.18); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4);" };
+  }
+  return { texto: "⏳ Pendiente de revisión", estilo: "background: rgba(250, 204, 21, 0.14); color: #fde047; border: 1px solid rgba(250, 204, 21, 0.35);" };
 }
+
+async function sincronizarTicketsDesdeSheet() {
+  let textoCSV = "";
+  try {
+    const res = await fetch(`${SHEET_TICKETS_CSV_URL}&t=${Date.now()}`, { cache: "no-store" });
+    if (res.ok) textoCSV = await res.text();
+  } catch (e) {}
+
+  if (!textoCSV || textoCSV.includes("<!DOCTYPE")) {
+    try {
+      const resAlt = await fetch(`${SHEET_TICKETS_ALT_URL}&t=${Date.now()}`, { cache: "no-store" });
+      if (resAlt.ok) textoCSV = await resAlt.text();
+    } catch (e2) {}
+  }
+
+  if (!textoCSV || textoCSV.includes("<!DOCTYPE") || textoCSV.includes("<html")) return;
+
+  const filas = textoCSV.split(/\r?\n/).filter(f => f.trim() !== "");
+  if (filas.length === 0) return;
+
+  const mapaTicketsSheet = {};
+  for (let i = 1; i < filas.length; i++) {
+    const col = dividirFilaCSV(filas[i]);
+    const idTicket = (col[0] || "").replace(/"/g, "").trim().toUpperCase();
+    if (!idTicket) continue;
+
+    mapaTicketsSheet[idTicket] = {
+      id: idTicket,
+      contacto: (col[3] || "").replace(/"/g, "").trim(),
+      asunto: (col[4] || "").replace(/"/g, "").trim(),
+      referencia: (col[5] || "").replace(/"/g, "").trim(),
+      mensaje: (col[6] || "").replace(/"/g, "").trim(),
+      estado: (col[7] || "Pendiente").replace(/"/g, "").trim(),
+      respuesta: (col[8] || "").replace(/"/g, "").trim()
+    };
+  }
+
+  let huboCambios = false;
+  misTickets = misTickets.map((tkLocal) => {
+    const idLimpio = String(tkLocal.id || "").trim().toUpperCase();
+    const datosEnSheet = mapaTicketsSheet[idLimpio];
+    if (datosEnSheet) {
+      huboCambios = true;
+      return {
+        ...tkLocal,
+        asunto: datosEnSheet.asunto || tkLocal.asunto,
+        referencia: datosEnSheet.referencia || tkLocal.referencia || "",
+        mensaje: datosEnSheet.mensaje || tkLocal.mensaje,
+        contacto: datosEnSheet.contacto || tkLocal.contacto,
+        estado: datosEnSheet.estado || "Pendiente",
+        respuesta: datosEnSheet.respuesta || ""
+      };
+    }
+    return tkLocal;
+  });
+
+  if (huboCambios) {
+    localStorage.setItem(TICKETS_KEY, JSON.stringify(misTickets));
+    renderizarMisTickets();
+  }
+}
+
+function cambiarVistaSoporte(vista) {
+  tabsSoporte.forEach((t) => {
+    t.classList.toggle("activo", t.getAttribute("data-vista") === vista);
+  });
+  if (vista === "crear") {
+    vistaCrearTicket.classList.remove("oculto");
+    vistaHistorialTickets.classList.add("oculto");
+  } else {
+    vistaCrearTicket.classList.add("oculto");
+    vistaHistorialTickets.classList.remove("oculto");
+    renderizarMisTickets();
+    sincronizarTicketsDesdeSheet();
+  }
+}
+
+tabsSoporte.forEach((tab) => {
+  tab.addEventListener("click", () => cambiarVistaSoporte(tab.getAttribute("data-vista")));
+});
 
 function renderizarMisTickets() {
   if (contadorMisTicketsEl) contadorMisTicketsEl.textContent = misTickets.length;
   if (!listaMisTicketsEl) return;
+
   listaMisTicketsEl.innerHTML = "";
-  if (misTickets.length === 0) { listaMisTicketsEl.innerHTML = `<p class="carrito-vacio">No hay tickets creados.</p>`; return; }
+  if (misTickets.length === 0) {
+    listaMisTicketsEl.innerHTML = `<p class="carrito-vacio">Aún no has creado ningún ticket de soporte.</p>`;
+    return;
+  }
 
   misTickets.slice().reverse().forEach((tk) => {
-    const est = obtenerEstiloBadgeEstado(tk.estado);
+    const infoEstado = obtenerEstiloBadgeEstado(tk.estado);
+    const refLimpia = (tk.referencia && !String(tk.referencia).includes("tk.referencia")) ? String(tk.referencia).trim() : "";
+    const htmlReferencia = refLimpia ? `<span style="color: #93c5fd; font-weight: 700;"> (Ref: ${refLimpia})</span>` : "";
+    const htmlRespuestaAdmin = tk.respuesta ? `<div style="margin-top:8px; padding:8px 10px; background:rgba(34,197,94,0.1); border-left:3px solid #4ade80; border-radius:6px; font-size:0.82rem; color:#e2e8f0;"><strong>💬 Respuesta Soporte:</strong> ${tk.respuesta}</div>` : "";
+
     const div = document.createElement("div");
     div.className = "item-ticket-historial";
     div.innerHTML = `
-      <div class="ticket-top"><span class="codigo-ticket">#${tk.id}</span><span class="estado-ticket-badge" style="${est.estilo}">${est.texto}</span></div>
-      <p class="ticket-asunto-txt"><strong>${tk.asunto}</strong> ${tk.referencia ? `(Ref: \${tk.referencia})` : ""}</p>
+      <div class="ticket-top">
+        <span class="codigo-ticket">🎫 Ticket #${tk.id}</span>
+        <span class="estado-ticket-badge" style="${infoEstado.estilo}">${infoEstado.texto}</span>
+      </div>
+      <p class="ticket-asunto-txt"><strong>${tk.asunto}</strong>${htmlReferencia}</p>
       <p class="ticket-mensaje-txt">${tk.mensaje}</p>
+      ${htmlRespuestaAdmin}
+      <div class="ticket-footer-info">
+        <span>📱 Contacto: ${tk.contacto}</span>
+        <span>🕒 ${calcularTiempoRelativo(tk.fecha)}</span>
+      </div>
     `;
     listaMisTicketsEl.appendChild(div);
   });
 }
 
 if (formTicketSoporte) {
-  formTicketSoporte.addEventListener("submit", (e) => {
+  formTicketSoporte.addEventListener("submit", async (e) => {
     e.preventDefault();
     const nombre = document.getElementById("ticket-nombre").value.trim();
     const contacto = document.getElementById("ticket-contacto").value.trim();
     const asunto = document.getElementById("ticket-asunto").value;
     const referencia = document.getElementById("ticket-referencia").value.trim();
     const mensaje = document.getElementById("ticket-mensaje").value.trim();
+
     if (!nombre || !contacto || !mensaje) return;
 
-    const id = "TDC-" + Math.floor(10000 + Math.random() * 90000);
-    misTickets.push({ id, nombre, contacto, asunto, referencia, mensaje, fecha: new Date().toISOString(), estado: "Pendiente" });
+    const codigoTicket = "TDC-" + Math.floor(10000 + Math.random() * 90000);
+    const fechaISO = new Date().toISOString();
+
+    btnEnviarTicket.disabled = true;
+    btnEnviarTicket.textContent = "⏳ Registrando Ticket...";
+    estadoEnvioTicket.classList.remove("oculto", "exito", "error");
+
+    const nuevoTicket = { id: codigoTicket, nombre, contacto, asunto, referencia, mensaje, fecha: fechaISO, estado: "Pendiente" };
+
+    try {
+      const urlTicket = `${URL_VERIFICADOR_PICHINCHA}?accion=crearTicket&id=${encodeURIComponent(codigoTicket)}&nombre=${encodeURIComponent(nombre)}&contacto=${encodeURIComponent(contacto)}&asunto=${encodeURIComponent(asunto)}&referencia=${encodeURIComponent(referencia)}&mensaje=${encodeURIComponent(mensaje)}&t=${Date.now()}`;
+      await consultarAppsScript(urlTicket);
+    } catch (err) {}
+
+    misTickets.push(nuevoTicket);
     localStorage.setItem(TICKETS_KEY, JSON.stringify(misTickets));
+    if (contadorMisTicketsEl) contadorMisTicketsEl.textContent = misTickets.length;
+
+    estadoEnvioTicket.classList.add("exito");
+    estadoEnvioTicket.innerHTML = `✅ <strong>¡Ticket #${codigoTicket} creado!</strong> Te responderemos pronto.`;
+
     formTicketSoporte.reset();
-    cambiarVistaSoporte("historial");
+    btnEnviarTicket.disabled = false;
+    btnEnviarTicket.textContent = "📩 Generar Ticket de Soporte";
+
+    setTimeout(() => cambiarVistaSoporte("historial"), 1500);
   });
 }
 
-function cambiarVistaSoporte(v) {
-  tabsSoporte.forEach(t => t.classList.toggle("activo", t.getAttribute("data-vista") === v));
-  vistaCrearTicket.classList.toggle("oculto", v !== "crear");
-  vistaHistorialTickets.classList.toggle("oculto", v !== "historial");
-  if (v === "historial") renderizarMisTickets();
+// ==========================================
+// 7. RUTAS DINÁMICAS Y NAVEGACIÓN
+// ==========================================
+function cerrarTodosLosModales() {
+  if (modalCarrito) modalCarrito.classList.add("oculto");
+  if (modalResenas) modalResenas.classList.add("oculto");
+  if (modalSoporte) modalSoporte.classList.add("oculto");
+  if (modalLegal) modalLegal.classList.add("oculto");
 }
-tabsSoporte.forEach(t => t.addEventListener("click", () => cambiarVistaSoporte(t.getAttribute("data-vista"))));
 
-// Modales y rutas
-function cerrarModales() { modalCarrito.classList.add("oculto"); modalResenas.classList.add("oculto"); modalSoporte.classList.add("oculto"); modalLegal.classList.add("oculto"); }
-btnAbrirCarrito.addEventListener("click", () => { cerrarModales(); modalCarrito.classList.remove("oculto"); });
-btnCerrarCarrito.addEventListener("click", () => modalCarrito.classList.add("oculto"));
-if (btnAbrirResenas) btnAbrirResenas.addEventListener("click", () => { cerrarModales(); renderizarResenas(); modalResenas.classList.remove("oculto"); });
-if (btnCerrarResenas) btnCerrarResenas.addEventListener("click", () => modalResenas.classList.add("oculto"));
-if (btnAbrirSoporte) btnAbrirSoporte.addEventListener("click", () => { cerrarModales(); renderizarMisTickets(); modalSoporte.classList.remove("oculto"); });
-if (btnCerrarSoporte) btnCerrarSoporte.addEventListener("click", () => modalSoporte.classList.add("oculto"));
+function limpiarHashUrl() {
+  history.pushState("", document.title, window.location.pathname + window.location.search);
+}
+
+btnAbrirCarrito.addEventListener("click", () => { cerrarTodosLosModales(); modalCarrito.classList.remove("oculto"); window.location.hash = "carrito"; });
+btnCerrarCarrito.addEventListener("click", () => { modalCarrito.classList.add("oculto"); if (window.location.hash === "#carrito") limpiarHashUrl(); });
+modalCarrito.addEventListener("click", (e) => { if (e.target === modalCarrito) { modalCarrito.classList.add("oculto"); if (window.location.hash === "#carrito") limpiarHashUrl(); } });
+
+if (btnAbrirResenas) {
+  btnAbrirResenas.addEventListener("click", () => { cerrarTodosLosModales(); renderizarResenas(); sincronizarResenasEnTiempoReal(); modalResenas.classList.remove("oculto"); window.location.hash = "resenas"; });
+}
+if (btnCerrarResenas) {
+  btnCerrarResenas.addEventListener("click", () => { modalResenas.classList.add("oculto"); if (window.location.hash === "#resenas") limpiarHashUrl(); });
+}
+if (modalResenas) {
+  modalResenas.addEventListener("click", (e) => { if (e.target === modalResenas) { modalResenas.classList.add("oculto"); if (window.location.hash === "#resenas") limpiarHashUrl(); } });
+}
+
+if (btnAbrirSoporte) {
+  btnAbrirSoporte.addEventListener("click", () => { cerrarTodosLosModales(); renderizarMisTickets(); sincronizarTicketsDesdeSheet(); modalSoporte.classList.remove("oculto"); window.location.hash = "soporte"; });
+}
+if (btnCerrarSoporte) {
+  btnCerrarSoporte.addEventListener("click", () => { modalSoporte.classList.add("oculto"); if (window.location.hash === "#soporte") limpiarHashUrl(); });
+}
+if (modalSoporte) {
+  modalSoporte.addEventListener("click", (e) => { if (e.target === modalSoporte) { modalSoporte.classList.add("oculto"); if (window.location.hash === "#soporte") limpiarHashUrl(); } });
+}
+
+function abrirPestanaLegal(nombreTab, actualizarHash = true) {
+  if (!modalLegal) return;
+  cerrarTodosLosModales();
+  modalLegal.classList.remove("oculto");
+  tabsLegales.forEach((btn) => btn.classList.toggle("activo", btn.getAttribute("data-tab") === nombreTab));
+  ["terminos", "garantia", "privacidad"].forEach((id) => {
+    const el = document.getElementById(`contenido-${id}`);
+    if (el) el.classList.toggle("oculto", id !== nombreTab);
+  });
+  if (actualizarHash) window.location.hash = nombreTab;
+}
+
+function cerrarModalLegal() {
+  if (!modalLegal) return;
+  modalLegal.classList.add("oculto");
+  if (["#terminos", "#garantia", "#privacidad", "#legal"].includes(window.location.hash)) limpiarHashUrl();
+}
+
+tabsLegales.forEach((btn) => btn.addEventListener("click", () => abrirPestanaLegal(btn.getAttribute("data-tab"), true)));
+if (btnCerrarLegal) btnCerrarLegal.addEventListener("click", cerrarModalLegal);
+if (btnEntendidoLegal) btnEntendidoLegal.addEventListener("click", () => { if (checkAceptoTerminos) checkAceptoTerminos.checked = true; cerrarModalLegal(); });
+if (modalLegal) modalLegal.addEventListener("click", (e) => { if (e.target === modalLegal) cerrarModalLegal(); });
+
+function sincronizarRutasHash() {
+  const hash = window.location.hash.replace("#", "").toLowerCase();
+  if (hash === "terminos" || hash === "legal") abrirPestanaLegal("terminos", false);
+  else if (hash === "garantia") abrirPestanaLegal("garantia", false);
+  else if (hash === "privacidad") abrirPestanaLegal("privacidad", false);
+  else if (hash === "carrito") { cerrarTodosLosModales(); modalCarrito.classList.remove("oculto"); }
+  else if (hash === "resenas") { cerrarTodosLosModales(); renderizarResenas(); sincronizarResenasEnTiempoReal(); modalResenas.classList.remove("oculto"); }
+  else if (hash === "soporte") { cerrarTodosLosModales(); renderizarMisTickets(); sincronizarTicketsDesdeSheet(); modalSoporte.classList.remove("oculto"); }
+}
+
+window.addEventListener("hashchange", sincronizarRutasHash);
+window.addEventListener("load", sincronizarRutasHash);
+
+setInterval(() => {
+  sincronizarTicketsDesdeSheet();
+  renderizarResenas();
+  sincronizarResenasEnTiempoReal();
+}, 8000);
 
 btnFinalizarPedido.addEventListener("click", () => {
   if (carrito.length === 0) return;
-  const texto = carrito.map(i => `• ${i.cantidad}x ${i.nombre} (${i.precioTexto})`).join("\n");
-  window.open(`https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(`¡Hola TDC! Pedido:\n\n\${texto}`)}`, "_blank");
+  if (checkAceptoTerminos && !checkAceptoTerminos.checked) {
+    alert("⚠️ Debes aceptar los Términos y Condiciones.");
+    return;
+  }
+  let detalleProductos = "";
+  carrito.forEach((item) => {
+    detalleProductos += `• ${item.cantidad}x *${item.nombre}* (${item.precioTexto})\n`;
+  });
+  const resumen = obtenerResumenTotales();
+  const mensaje = `¡Hola *Tienda Digital Cedeño*! 🛒 Pedido:\n\n${detalleProductos}\n💰 *Total:* $${resumen.totalFinal.toFixed(2)}`;
+  window.open(`https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`, "_blank");
 });
 
-// Carga inicial
+// ==========================================
+// 8. CARGA DESDE GOOGLE SHEETS
+// ==========================================
+function filtrarCatalogo() {
+  const texto = buscador.value.toLowerCase();
+  const filtrados = productos.filter((prod) => {
+    const coincideCategoria = categoriaActual === "todos" || (prod.categoria || "").toLowerCase() === categoriaActual;
+    const coincideTexto = (prod.nombre || "").toLowerCase().includes(texto) || (prod.descripcion || "").toLowerCase().includes(texto);
+    return coincideCategoria && coincideTexto;
+  });
+  mostrarProductos(filtrados);
+}
+
+buscador.addEventListener("input", filtrarCatalogo);
+
+function dividirFilaCSV(fila) {
+  const resultado = [];
+  let actual = "";
+  let dentroDeComillas = false;
+  for (let i = 0; i < fila.length; i++) {
+    const letra = fila[i];
+    if (letra === '"') dentroDeComillas = !dentroDeComillas;
+    else if (letra === "," && !dentroDeComillas) { resultado.push(actual.trim()); actual = ""; }
+    else actual += letra;
+  }
+  resultado.push(actual.trim());
+  return resultado;
+}
+
+function normalizarProductoFila(nombre, categoria, descripcion, precioRaw, periodoRaw, stockRaw, descuentoRaw, minMesesRaw) {
+  let precioBruto = String(precioRaw || "0.00").replace(/\\/g, "").trim();
+  if (!precioBruto.startsWith("$")) precioBruto = "$" + precioBruto.replace("$", "");
+
+  let descTexto = String(descripcion || "").trim();
+  if (descTexto.startsWith("$")) descTexto = descTexto.substring(1).trim();
+
+  const stockLimpio = (stockRaw === undefined || stockRaw === null || String(stockRaw).trim() === "") ? null : parseInt(String(stockRaw).trim(), 10);
+  const descuentoLimpio = (descuentoRaw === undefined || descuentoRaw === null || String(descuentoRaw).trim() === "") ? 0 : parseFloat(String(descuentoRaw).replace("%", "").trim()) || 0;
+  const minMesesLimpio = (minMesesRaw === undefined || minMesesRaw === null || String(minMesesRaw).trim() === "") ? 1 : Math.max(1, parseInt(String(minMesesRaw).replace(/[^0-9]/g, ""), 10) || 1);
+
+  return {
+    nombre: String(nombre).trim(),
+    categoria: String(categoria || "otros").trim().toLowerCase(),
+    descripcion: descTexto,
+    precio: precioBruto,
+    periodo: String(periodoRaw || "/ mes").trim(),
+    stock: isNaN(stockLimpio) ? null : stockLimpio,
+    descuento: descuentoLimpio,
+    minimoMeses: minMesesLimpio
+  };
+}
+
+function parsearTextoCSV(csv) {
+  const filas = csv.split(/\r?\n/);
+  const listaSheet = [];
+  filas.forEach((fila, index) => {
+    if (!fila.trim()) return;
+    const col = dividirFilaCSV(fila);
+    if (!col[0] || (index === 0 && col[0].toLowerCase().includes("nombre"))) return;
+
+    let col2Limpia = (col[2] || "").replace(/\\/g, "").trim();
+    let col3Limpia = (col[3] || "").replace(/\\/g, "").trim();
+    let esPrecioEnC = /\d/.test(col2Limpia) && col2Limpia.length <= 10;
+
+    let precioBruto = esPrecioEnC ? col2Limpia : col3Limpia;
+    let periodoTexto = esPrecioEnC ? (col[3] || "/ mes") : (col[4] || "/ mes");
+    let descripcionTexto = esPrecioEnC ? (col[4] || "") : (col[2] || "");
+
+    if (!precioBruto && !descripcionTexto) return;
+    listaSheet.push(normalizarProductoFila(col[0], col[1], descripcionTexto, precioBruto, periodoTexto, col[5], col[6], col[7]));
+  });
+  return listaSheet;
+}
+
+async function leerCSVDesdeUrl(urlBase) {
+  const separador = urlBase.includes("?") ? "&" : "?";
+  const res = await fetch(`${urlBase}${separador}t=${Date.now()}`, { cache: "no-store" });
+  if (!res.ok) throw new Error("Error HTTP");
+  const csv = await res.text();
+  return parsearTextoCSV(csv);
+}
+
+async function cargarDesdeGoogleSheets() {
+  try {
+    let listaCSV = await leerCSVDesdeUrl(GOOGLE_SHEET_CSV_URL);
+    if (listaCSV.length === 0) listaCSV = await leerCSVDesdeUrl(SHEET_GVIZ_URL);
+    if (listaCSV.length > 0) {
+      productos = listaCSV;
+      localStorage.setItem(CACHE_KEY, JSON.stringify(productos));
+      actualizarBotonesFiltro();
+      filtrarCatalogo();
+    }
+  } catch (err) {}
+}
+
 actualizarBotonesFiltro();
 filtrarCatalogo();
 actualizarVistaCarrito();
 renderizarResenas();
 renderizarMisTickets();
 cargarDesdeGoogleSheets();
+sincronizarResenasEnTiempoReal();
+sincronizarTicketsDesdeSheet();

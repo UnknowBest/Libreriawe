@@ -363,7 +363,37 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-
+if (n.includes("viki")) {
+    return { fondo: "radial-gradient(circle at center, #0284c7 0%, #0369a1 65%, #0c4a6e 100%)", colorMarca: "#38bdf8", htmlLogo: `<div class="logo-texto-icono"><span style="color:#38bdf8; font-family:'Cinzel',serif; font-weight:900;">VIKI</span></div>` };
+  }
+  if (n.includes("steam") || n.includes("juegos")) {
+    return { fondo: "radial-gradient(circle at center, #1e293b 0%, #0f172a 70%, #020617 100%)", colorMarca: "#38bdf8", htmlLogo: `<div class="logo-texto-icono"><svg width="40" height="40" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="#171a21"/><path d="M25 10 C16.7 10 10 16.7 10 25 C10 29.5 12 33.5 15.2 36.3 L21.7 30.2 C20.6 29.3 20 27.8 20 26.2 C20 23.3 22.3 21 25.2 21 C28.1 21 30.4 23.3 30.4 26.2 C30.4 27.8 29.8 29.3 28.7 30.2 L35.2 36.3 C38.4 33.5 40.4 29.5 40.4 25 C40.4 16.7 33.3 10 25 10 Z" fill="#66c0f4"/></svg><span>STEAM</span></div>` };
+  }
+  if (n.includes("adobe") || n.includes("express") || n.includes("filmora")) {
+    const esAdobe = n.includes("adobe");
+    return { 
+      fondo: esAdobe ? "linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%)" : "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)", 
+      colorMarca: esAdobe ? "#f87171" : "#60a5fa", 
+      htmlLogo: `<div class="logo-texto-icono"><div style="background:${esAdobe ? '#ff0000' : '#2563eb'}; color:white; font-weight:900; padding:6px 12px; border-radius:8px; font-size:1.2rem;">${esAdobe ? 'Ad' : 'Fi'}</div><span>${esAdobe ? 'Adobe' : 'Filmora'}</span></div>` 
+    };
+  }
+  if (n.includes("duolingo")) {
+    return { fondo: "radial-gradient(circle at center, #65a30d 0%, #3f6212 75%, #1a2e05 100%)", colorMarca: "#84cc16", htmlLogo: `<div class="logo-texto-icono"><div style="background:#58cc02; color:white; font-weight:900; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.3rem;">🦉</div><span>Duolingo</span></div>` };
+  }
+  if (n.includes("discord")) {
+    return { fondo: "radial-gradient(circle at center, #5865f2 0%, #3c4286 70%, #111318 100%)", colorMarca: "#5865f2", htmlLogo: `<div class="logo-texto-icono"><svg width="42" height="34" viewBox="0 0 127.14 96.36"><path fill="#ffffff" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.68,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.19-16.15c2.65-27.29-4.51-51.13-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5.18-12.72,11.45-12.72S53.9,46,53.88,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5.18-12.72,11.45-12.72S96.14,46,96.12,53,91,65.69,84.69,65.69Z"/></svg><span>Discord</span></div>` };
+  }
+  if (n.includes("moises") || n.includes("lovable") || n.includes("ai") || n.includes("inteligencia")) {
+    return { fondo: "linear-gradient(135deg, #7c3aed 0%, #db2777 100%)", colorMarca: "#f472b6", htmlLogo: `<div class="logo-texto-icono"><span>✨ IA Pro</span></div>` };
+  }
+  if (n.includes("nordvpn") || n.includes("vpn")) {
+    return { fondo: "radial-gradient(circle at center, #0284c7 0%, #0369a1 70%, #0f172a 100%)", colorMarca: "#38bdf8", htmlLogo: `<div class="logo-texto-icono"><span style="color:#38bdf8; font-weight:900;">NordVPN</span></div>` };
+  }
+  if (n.includes("capcut") || n.includes("office") || n.includes("microsoft")) {
+    const esCapcut = n.includes("capcut");
+    return { fondo: "linear-gradient(135deg, #0f172a 0%, #334155 100%)", colorMarca: esCapcut ? "#ffffff" : "#f25022", htmlLogo: `<div class="logo-texto-icono"><span>${esCapcut ? 'CapCut' : 'Microsoft'}</span></div>` };
+  }
+  
   const tituloCorto = (prod.nombre || "PREMIUM").split(" ")[0].toUpperCase();
   return {
     fondo: "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4f46e5 100%)",

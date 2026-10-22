@@ -393,7 +393,7 @@ if (n.includes("viki")) {
     const esCapcut = n.includes("capcut");
     return { fondo: "linear-gradient(135deg, #0f172a 0%, #334155 100%)", colorMarca: esCapcut ? "#ffffff" : "#f25022", htmlLogo: `<div class="logo-texto-icono"><span>${esCapcut ? 'CapCut' : 'Microsoft'}</span></div>` };
   }
-  
+
   const tituloCorto = (prod.nombre || "PREMIUM").split(" ")[0].toUpperCase();
   return {
     fondo: "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4f46e5 100%)",

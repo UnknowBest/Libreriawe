@@ -1930,19 +1930,20 @@ const frasesBurbujaWA = [
 let indiceFraseWA = 0;
 
 function actualizarEnlaceFlotanteWA() {
-    const mano = "\uD83D\uDC4B"; // Emoji 👋 protegido para que nunca salga 
-    let msg = `¡Hola *Tienda Digital Cedeño*! ${mano} Tengo una consulta sobre el catálogo.`;
+  if (!btnWaFlotante) return;
 
-    if (typeof carrito !== "undefined" && carrito.length > 0) {
-      const nombresProds = carrito.map(i => `${i.cantidad}x ${i.nombre}`).join(", ");
-      msg = `¡Hola *Tienda Digital Cedeño*! ${mano} Estoy viendo en mi carrito: *${nombresProds}* y tengo una consulta.`;
-    } else if (typeof categoriaActual !== "undefined" && categoriaActual !== "todos") {
-      msg = `¡Hola *Tienda Digital Cedeño*! ${mano} Quiero información sobre las cuentas de *${categoriaActual.toUpperCase()}*.`;
-    }
+  let msg = "¡Hola *Tienda Digital Cedeño*! 👋 Tengo una consulta sobre el catálogo.";
 
-    const num = typeof NUMERO_WHATSAPP !== "undefined" ? NUMERO_WHATSAPP : "593963259492";
-    btnWa.href = `https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msg)}`;
+  // Si tiene productos en el carrito, personaliza el mensaje automáticamente
+  if (typeof carrito !== "undefined" && carrito.length > 0) {
+    const nombresProds = carrito.map(i => `${i.cantidad}x ${i.nombre}`).join(", ");
+    msg = `¡Hola *Tienda Digital Cedeño*! 👋 Estoy viendo en mi carrito: *${nombresProds}* y tengo una consulta.`;
+  } else if (typeof categoriaActual !== "undefined" && categoriaActual !== "todos") {
+    msg = `¡Hola *Tienda Digital Cedeño*! 👋 Quiero información sobre las cuentas de *${categoriaActual.toUpperCase()}*.`;
   }
+
+  btnWaFlotante.href = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+}
 
 // Cambia el texto de la burbuja suavemente cada 4 segundos
 setInterval(() => {

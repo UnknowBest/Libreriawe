@@ -305,41 +305,69 @@
         return;
       }
 
-     // Diccionario de emojis en código universal (nunca salen como )
+// Diccionario de emojis en código universal (nunca salen como )
       const EMOJI = {
-        mano: "\uD83D\uDC4B",      // 👋
-        brillo: "\u2728",          // ✨
-        correo: "\uD83D\uDCE7",    // 📧
-        llave: "\uD83D\uDD11",     // 🔑
-        calendario: "\uD83D\uDCC5",// 📅
-        meta: "\uD83C\uDFC1",      // 🏁
-        campana: "\uD83D\uDD14",   // 🔔
-        usuario: "\uD83D\uDC64",   // 👤
-        telefono: "\uD83D\uDCF1",  // 📱
-        nota: "\uD83D\uDCDD",      // 📝
-        rayo: "\u26A1",            // ⚡
-        lapiz: "\u270F\uFE0F",     // ✏️
+        mano: "\uD83D\uDC4B",       // 👋
+        brillo: "\u2728",           // ✨
+        correo: "\uD83D\uDCE7",     // 📧
+        llave: "\uD83D\uDD11",      // 🔑
+        calendario: "\uD83D\uDCC5", // 📅
+        meta: "\uD83C\uDFC1",       // 🏁
+        campana: "\uD83D\uDD14",    // 🔔
+        usuario: "\uD83D\uDC64",    // 👤
+        telefono: "\uD83D\uDCF1",   // 📱
+        nota: "\uD83D\uDCDD",       // 📝
+        rayo: "\u26A1",             // ⚡
+        lapiz: "\u270F\uFE0F",      // ✏️
         basura: "\uD83D\uDDD1\uFE0F",// 🗑️
-        ojo: "\uD83D\uDC41\uFE0F", // 👁️
-        ocultar: "\uD83D\uDE48"    // 🙈
+        ojo: "\uD83D\uDC41\uFE0F",  // 👁️
+        ocultar: "\uD83D\uDE48"     // 🙈
       };
 
-      // Función para revelar u ocultar el número en la lista
-      window.alternarTelefono = function(id, numeroReal, btn) {
-        const span = document.getElementById("tel-" + id);
-        if (!span) return;
-        const estaOculto = span.getAttribute("data-oculto") !== "false";
+      // 1. Función para revelar u ocultar el Login (Correo y Contraseña/Perfil)
+      window.alternarLogin = function(id, btn) {
+        const cuenta = cuentasLista.find(item => item.id === id);
+        const spanCorreo = document.getElementById("correo-" + id);
+        const spanClave = document.getElementById("clave-" + id);
+        if (!cuenta || !spanCorreo || !spanClave) return;
+
+        const estaOculto = spanCorreo.getAttribute("data-oculto") !== "false";
 
         if (estaOculto) {
-          span.textContent = numeroReal;
-          span.style.color = "#4ade80";
-          span.setAttribute("data-oculto", "false");
-          btn.innerHTML = `${EMOJI.ocultar} Ocultar`;
+          spanCorreo.textContent = cuenta.correo || "—";
+          spanClave.textContent = cuenta.clavePerfil || "—";
+          spanCorreo.style.color = "#38bdf8";
+          spanClave.style.color = "#facc15";
+          spanCorreo.setAttribute("data-oculto", "false");
+          btn.innerHTML = `${EMOJI.ocultar} Ocultar Login`;
         } else {
-          span.textContent = "••••••••••";
-          span.style.color = "var(--texto-sec)";
-          span.setAttribute("data-oculto", "true");
-          btn.innerHTML = `${EMOJI.ojo} Ver`;
+          spanCorreo.textContent = "••••••••";
+          spanClave.textContent = "••••••••";
+          spanCorreo.style.color = "var(--texto-sec)";
+          spanClave.style.color = "var(--texto-sec)";
+          spanCorreo.setAttribute("data-oculto", "true");
+          btn.innerHTML = `${EMOJI.ojo} Ver Login`;
+        }
+      };
+
+      // 2. Función para revelar u ocultar el Teléfono de WhatsApp
+      window.alternarTelefono = function(id, btn) {
+        const cuenta = cuentasLista.find(item => item.id === id);
+        const spanTel = document.getElementById("tel-" + id);
+        if (!cuenta || !spanTel) return;
+
+        const estaOculto = spanTel.getAttribute("data-oculto") !== "false";
+
+        if (estaOculto) {
+          spanTel.textContent = cuenta.whatsapp;
+          spanTel.style.color = "#4ade80";
+          spanTel.setAttribute("data-oculto", "false");
+          btn.innerHTML = `${EMOJI.ocultar} Ocultar Tel`;
+        } else {
+          spanTel.textContent = "••••••••••";
+          spanTel.style.color = "var(--texto-sec)";
+          spanTel.setAttribute("data-oculto", "true");
+          btn.innerHTML = `${EMOJI.ojo} Ver Tel`;
         }
       };
 
@@ -364,10 +392,18 @@
         const linkEntrega = numWA ? `https://api.whatsapp.com/send?phone=${numWA}&text=${encodeURIComponent(msgEntrega)}` : "";
         const linkCobro = numWA ? `https://api.whatsapp.com/send?phone=${numWA}&text=${encodeURIComponent(msgCobro)}` : "";
 
-        // Bloque del teléfono oculto con botón para revelar
+        const estiloBotonOjo = "background:rgba(99,102,241,0.18); color:#a5b4fc; border:1px solid rgba(99,102,241,0.4); padding:2px 8px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer; margin-left:4px;";
+
+        // Bloque de Correo y Contraseña ocultos con su botón
+        const htmlLoginOculto =
+          `${EMOJI.correo} <span id="correo-${c.id}" data-oculto="true" style="font-family:monospace;">••••••••</span> &nbsp;|&nbsp; ` +
+          `${EMOJI.llave} <span id="clave-${c.id}" style="font-family:monospace;">••••••••</span> ` +
+          `<button type="button" onclick="alternarLogin('${c.id}', this)" style="${estiloBotonOjo}">${EMOJI.ojo} Ver Login</button>`;
+
+        // Bloque de Teléfono oculto con su botón
         const htmlTelefonoOculto = c.whatsapp
-          ? `&nbsp;|&nbsp; ${EMOJI.telefono} <span id="tel-${c.id}" data-oculto="true" style="font-family:monospace; letter-spacing:1px;">••••••••••</span> ` +
-            `<button type="button" onclick="alternarTelefono('${c.id}', '${c.whatsapp}', this)" style="background:rgba(99,102,241,0.18); color:#a5b4fc; border:1px solid rgba(99,102,241,0.4); padding:1px 7px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer; margin-left:4px;">${EMOJI.ojo} Ver</button>`
+          ? `&nbsp;|&nbsp; ${EMOJI.telefono} <span id="tel-${c.id}" data-oculto="true" style="font-family:monospace;">••••••••••</span> ` +
+            `<button type="button" onclick="alternarTelefono('${c.id}', this)" style="${estiloBotonOjo}">${EMOJI.ojo} Ver Tel</button>`
           : "";
 
         const div = document.createElement("div");
@@ -381,7 +417,7 @@
               <span class="badge-estado ${c.infoEst.clase}">${c.infoEst.texto}</span>
             </h4>
             <div class="datos-acceso">
-              ${EMOJI.correo} ${c.correo || "—"} &nbsp;|&nbsp; ${EMOJI.llave} ${c.clavePerfil || "—"}
+              ${htmlLoginOculto}
               ${htmlTelefonoOculto}
               ${c.notas ? `&nbsp;|&nbsp; ${EMOJI.nota} ${c.notas}` : ""}
             </div>

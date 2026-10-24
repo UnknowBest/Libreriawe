@@ -438,28 +438,87 @@
       });
     }
 
+  const CACHE_CUENTAS_ADMIN = "tdc_cuentas_admin_cache";
+
+    // 1. Conexión directa en 1 solo paso (sin doble espera)
+    function consultarServidor(paramsObj) {
+      const query = new URLSearchParams({ ...paramsObj, t: Date.now() }).toString();
+      return new Promise((resolve, reject) => {
+        const cbName = "cb_" + Math.floor(Math.random() * 1000000);
+        const script = document.createElement("script");
+
+        const timeout = setTimeout(() => {
+          delete window[cbName];
+          script.remove();
+          reject(new Error("Tiempo de espera agotado"));
+        }, 10000);
+
+        window[cbName] = (data) => {
+          clearTimeout(timeout);
+          delete window[cbName];
+          script.remove();
+          resolve(data);
+        };
+
+        script.onerror = () => {
+          clearTimeout(timeout);
+          delete window[cbName];
+          script.remove();
+          reject(new Error("Error de red"));
+        };
+
+        script.src = `${URL_APPS_SCRIPT}?${query}&callback=${cbName}`;
+        document.body.appendChild(script);
+      });
+    }
+
+    // 2. Carga instantánea (0.01s) con sincronización en segundo plano
     async function iniciarSesionYCargar(clave) {
-      btnEntrar.disabled = true; btnEntrar.textContent = "⏳ Verificando...";
       errorLogin.classList.add("oculto");
+
+      // Si ya tenías sesión e historial en caché, abre el panel AL INSTANTE sin esperar a Google
+      const cacheGuardado = localStorage.getItem(CACHE_CUENTAS_ADMIN);
+      if (clave === sessionStorage.getItem(SESSION_KEY) && cacheGuardado) {
+        cuentasLista = JSON.parse(cacheGuardado) || [];
+        pantallaLogin.classList.add("oculto");
+        panelAdmin.classList.remove("oculto");
+        renderizarCuentas();
+      } else {
+        btnEntrar.disabled = true;
+        btnEntrar.textContent = "⚡ Entrando...";
+      }
+
+      const btnRecargar = document.getElementById("btn-recargar");
+      if (btnRecargar) btnRecargar.textContent = "⏳ Sincronizando...";
+
       try {
         const resp = await consultarServidor({ accion: "obtenerCuentas", clave: clave });
         if (resp && resp.ok) {
           claveAdminActual = clave;
           sessionStorage.setItem(SESSION_KEY, clave);
           cuentasLista = resp.cuentas || [];
+          localStorage.setItem(CACHE_CUENTAS_ADMIN, JSON.stringify(cuentasLista));
+
           pantallaLogin.classList.add("oculto");
           panelAdmin.classList.remove("oculto");
           renderizarCuentas();
         } else {
           sessionStorage.removeItem(SESSION_KEY);
+          localStorage.removeItem(CACHE_CUENTAS_ADMIN);
+          panelAdmin.classList.add("oculto");
+          pantallaLogin.classList.remove("oculto");
           errorLogin.textContent = resp.mensaje || "❌ Clave incorrecta.";
           errorLogin.classList.remove("oculto");
         }
       } catch (err) {
-        errorLogin.textContent = "⚠️ Error de conexión.";
-        errorLogin.classList.remove("oculto");
+        if (pantallaLogin && !pantallaLogin.classList.contains("oculto")) {
+          errorLogin.textContent = "⚠️ Error de conexión.";
+          errorLogin.classList.remove("oculto");
+        }
       } finally {
-        btnEntrar.disabled = false; btnEntrar.textContent = "🔓 Entrar al Gestor";
+        btnEntrar.disabled = false;
+        btnEntrar.textContent = "🔓 Entrar al Gestor";
+        if (btnRecargar) btnRecargar.textContent = "🔄 Sincronizar";
       }
     }
 

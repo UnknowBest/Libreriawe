@@ -521,3 +521,78 @@ input, textarea, select {
   -webkit-user-select: text !important;
   user-select: text !important;
 }
+/* Botón Flotante Dinámico de WhatsApp */
+.wa-flotante {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 180;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  cursor: pointer;
+  animation: flotarWA 3s ease-in-out infinite;
+}
+
+.wa-burbuja {
+  background-color: #ffffff;
+  color: #22c55e;
+  font-weight: 800;
+  font-size: 1.05rem;
+  padding: 12px 22px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.wa-circulo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #25d366;
+  border: 3.5px solid #1d7dfa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.45);
+  position: relative;
+  transition: transform 0.25s ease;
+}
+
+/* Onda expansiva dinámica alrededor del ícono */
+.wa-circulo::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid #25d366;
+  animation: ondaWA 2s infinite;
+  pointer-events: none;
+}
+
+.wa-flotante:hover .wa-circulo {
+  transform: scale(1.1) rotate(6deg);
+}
+
+.wa-flotante:hover .wa-burbuja {
+  transform: translateX(-4px);
+}
+
+@keyframes flotarWA {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes ondaWA {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  100% { transform: scale(1.28); opacity: 0; }
+}
+
+@media (max-width: 600px) {
+  .wa-flotante { bottom: 16px; right: 14px; gap: 8px; }
+  .wa-burbuja { font-size: 0.88rem; padding: 9px 15px; border-radius: 13px; }
+  .wa-circulo { width: 54px; height: 54px; }
+  .wa-circulo svg { width: 28px; height: 28px; }
+}

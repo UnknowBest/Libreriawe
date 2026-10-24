@@ -93,7 +93,7 @@
       <div class="nav-inner">
         <h2 style="font-size: 1.2rem; font-weight: 900;">📊 Gestor de Cuentas · <span style="color:#818cf8;">Tienda Digital Cedeño</span></h2>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <a href="https://docs.google.com/spreadsheets/d/1zN4bHeBl8iZ4NETcDN7kKfv7z3GSHZ8kf-EX0UqJHtg/edit" target="_blank" class="btn-secundario btn-excel">📗 Google Sheets</a>
+          <a href="https://docs.google.com/spreadsheets/d/1zN4bHeBl8iZ4NETcDN7kKfv7z3GSHZ8kf-EX0UqJHtg/edit" target="_blank" class="btn-secundario btn-excel">📗 ChatBot</a>
           <button type="button" id="btn-recargar" class="btn-secundario">🔄 Sincronizar</button>
           <a href="index.html" class="btn-secundario">🏠 Tienda</a>
           <button type="button" id="btn-salir" class="btn-secundario" style="color:#f87171;">🔒 Salir</button>
@@ -305,27 +305,97 @@
         return;
       }
 
+     // Diccionario de emojis en código universal (nunca salen como )
+      const EMOJI = {
+        mano: "\uD83D\uDC4B",      // 👋
+        brillo: "\u2728",          // ✨
+        correo: "\uD83D\uDCE7",    // 📧
+        llave: "\uD83D\uDD11",     // 🔑
+        calendario: "\uD83D\uDCC5",// 📅
+        meta: "\uD83C\uDFC1",      // 🏁
+        campana: "\uD83D\uDD14",   // 🔔
+        usuario: "\uD83D\uDC64",   // 👤
+        telefono: "\uD83D\uDCF1",  // 📱
+        nota: "\uD83D\uDCDD",      // 📝
+        rayo: "\u26A1",            // ⚡
+        lapiz: "\u270F\uFE0F",     // ✏️
+        basura: "\uD83D\uDDD1\uFE0F",// 🗑️
+        ojo: "\uD83D\uDC41\uFE0F", // 👁️
+        ocultar: "\uD83D\uDE48"    // 🙈
+      };
+
+      // Función para revelar u ocultar el número en la lista
+      window.alternarTelefono = function(id, numeroReal, btn) {
+        const span = document.getElementById("tel-" + id);
+        if (!span) return;
+        const estaOculto = span.getAttribute("data-oculto") !== "false";
+
+        if (estaOculto) {
+          span.textContent = numeroReal;
+          span.style.color = "#4ade80";
+          span.setAttribute("data-oculto", "false");
+          btn.innerHTML = `${EMOJI.ocultar} Ocultar`;
+        } else {
+          span.textContent = "••••••••••";
+          span.style.color = "var(--texto-sec)";
+          span.setAttribute("data-oculto", "true");
+          btn.innerHTML = `${EMOJI.ojo} Ver`;
+        }
+      };
+
       filtradas.forEach(c => {
         const telWA = String(c.whatsapp || "").replace(/[^0-9]/g, "");
         const numWA = telWA.length === 10 ? "593" + telWA.substring(1) : (telWA.length === 9 ? "593" + telWA : telWA);
 
-        const msgEntrega = `¡Hola *${c.cliente}*! ✨ Gracias por tu compra en *Tienda Digital Cedeño*.\n\nAquí tienes los datos de tu servicio *${c.servicio}*:\n📧 *Cuenta:* ${c.correo || "—"}\n🔑 *Clave/Perfil:* ${c.clavePerfil || "—"}\n📅 *Inicio:* ${c.inicio || "—"}\n🏁 *Vence:* ${c.fin || "—"}`;
-        const msgCobro = `¡Hola *${c.cliente}*! 👋 Te recordamos que tu servicio *${c.servicio}* vence el *${c.fin}*. ¿Deseas renovarlo?`;
+        const msgEntrega =
+          `¡Hola *${c.cliente}*! ${EMOJI.brillo} Gracias por tu compra en *Tienda Digital Cedeño*.\n\n` +
+          `Aquí tienes los datos de tu servicio *${c.servicio}*:\n` +
+          `${EMOJI.correo} *Cuenta:* ${c.correo || "—"}\n` +
+          `${EMOJI.llave} *Clave/Perfil:* ${c.clavePerfil || "—"}\n` +
+          `${EMOJI.calendario} *Inicio:* ${c.inicio || "—"}\n` +
+          `${EMOJI.meta} *Vence:* ${c.fin || "—"}\n\n` +
+          `_Recuerda no modificar los datos de seguridad para mantener tu garantía activa._`;
+
+        const msgCobro =
+          `¡Hola *${c.cliente}*! ${EMOJI.mano} Te saludamos de *Tienda Digital Cedeño*.\n\n` +
+          `${EMOJI.campana} Te recordamos que tu servicio *${c.servicio}* (${c.correo || ""}) tiene fecha de vencimiento el *${c.fin}*.\n` +
+          `¿Deseas renovarlo para mantener tu cuenta activa sin interrupciones?`;
+
+        const linkEntrega = numWA ? `https://api.whatsapp.com/send?phone=${numWA}&text=${encodeURIComponent(msgEntrega)}` : "";
+        const linkCobro = numWA ? `https://api.whatsapp.com/send?phone=${numWA}&text=${encodeURIComponent(msgCobro)}` : "";
+
+        // Bloque del teléfono oculto con botón para revelar
+        const htmlTelefonoOculto = c.whatsapp
+          ? `&nbsp;|&nbsp; ${EMOJI.telefono} <span id="tel-${c.id}" data-oculto="true" style="font-family:monospace; letter-spacing:1px;">••••••••••</span> ` +
+            `<button type="button" onclick="alternarTelefono('${c.id}', '${c.whatsapp}', this)" style="background:rgba(99,102,241,0.18); color:#a5b4fc; border:1px solid rgba(99,102,241,0.4); padding:1px 7px; border-radius:6px; font-size:0.72rem; font-weight:700; cursor:pointer; margin-left:4px;">${EMOJI.ojo} Ver</button>`
+          : "";
 
         const div = document.createElement("div");
         div.className = "item-cuenta";
         div.innerHTML = `
           <div class="info-principal">
-            <h4><span>👤 ${c.cliente}</span> <span class="tag-servicio">${c.servicio}</span> ${parseFloat(c.precio) > 0 ? `<span class="tag-precio">$${parseFloat(c.precio).toFixed(2)}</span>` : ""} <span class="badge-estado ${c.infoEst.clase}">${c.infoEst.texto}</span></h4>
-            <div class="datos-acceso">📧 ${c.correo || "—"} &nbsp;|&nbsp; 🔑 ${c.clavePerfil || "—"} ${c.whatsapp ? `&nbsp;|&nbsp; 📱 ${c.whatsapp}` : ""} ${c.notas ? `&nbsp;|&nbsp; 📝 ${c.notas}` : ""}</div>
-            <div class="fechas-bloque"><span>📅 Inicio: ${c.inicio || "—"}</span><span>🏁 Fin: ${c.fin || "—"}</span></div>
+            <h4>
+              <span>${EMOJI.usuario} ${c.cliente}</span>
+              <span class="tag-servicio">${c.servicio}</span>
+              ${parseFloat(c.precio) > 0 ? `<span class="tag-precio">$${parseFloat(c.precio).toFixed(2)}</span>` : ""}
+              <span class="badge-estado ${c.infoEst.clase}">${c.infoEst.texto}</span>
+            </h4>
+            <div class="datos-acceso">
+              ${EMOJI.correo} ${c.correo || "—"} &nbsp;|&nbsp; ${EMOJI.llave} ${c.clavePerfil || "—"}
+              ${htmlTelefonoOculto}
+              ${c.notas ? `&nbsp;|&nbsp; ${EMOJI.nota} ${c.notas}` : ""}
+            </div>
+            <div class="fechas-bloque">
+              <span>${EMOJI.calendario} Inicio: ${c.inicio || "—"}</span>
+              <span>${EMOJI.meta} Fin: ${c.fin || "—"}</span>
+            </div>
           </div>
           <div class="acciones-cuenta">
-            ${numWA ? `<a href="https://wa.me/${numWA}?text=${encodeURIComponent(msgEntrega)}" target="_blank" class="btn-accion btn-wa-datos">🔑 Enviar Acceso</a>` : ""}
-            ${numWA ? `<a href="https://wa.me/${numWA}?text=${encodeURIComponent(msgCobro)}" target="_blank" class="btn-accion btn-wa-cobro">🔔 Recordar Pago</a>` : ""}
-            <button type="button" class="btn-accion btn-renovar" onclick="renovarMasUnMes('${c.id}', '${c.fin}')">⚡ +1 Mes</button>
-            <button type="button" class="btn-accion" onclick="cargarEnFormulario('${c.id}')">✏️ Editar</button>
-            <button type="button" class="btn-accion btn-borrar" onclick="borrarCuenta('${c.id}', '${c.cliente}')">🗑️</button>
+            ${numWA ? `<a href="${linkEntrega}" target="_blank" rel="noopener noreferrer" class="btn-accion btn-wa-datos">${EMOJI.llave} Enviar Acceso</a>` : ""}
+            ${numWA ? `<a href="${linkCobro}" target="_blank" rel="noopener noreferrer" class="btn-accion btn-wa-cobro">${EMOJI.campana} Recordar Pago</a>` : ""}
+            <button type="button" class="btn-accion btn-renovar" onclick="renovarMasUnMes('${c.id}', '${c.fin}')">${EMOJI.rayo} +1 Mes</button>
+            <button type="button" class="btn-accion" onclick="cargarEnFormulario('${c.id}')">${EMOJI.lapiz} Editar</button>
+            <button type="button" class="btn-accion btn-borrar" onclick="borrarCuenta('${c.id}', '${c.cliente}')">${EMOJI.basura}</button>
           </div>
         `;
         contenedorListaCuentas.appendChild(div);

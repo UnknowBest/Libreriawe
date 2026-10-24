@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Configuración de App Móvil (PWA Android / iOS) -->
+  <link rel="manifest" href="/manifest-admin.json">
+  <meta name="theme-color" content="#060911">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gestor TDC">
   <title>Gestor de Cuentas | Tienda Digital Cedeño</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%236366f1'/><text x='50%' y='64%' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-weight='900' font-size='38'>TDC</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -187,7 +194,7 @@
   <script>
     const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwmO7jW90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMAUdpx1ttutlRY/exec";
     const SESSION_KEY = "tdc_admin_clave";
-    let claveAdminActual = sessionStorage.getItem(SESSION_KEY) || "";
+    let claveAdminActual = localStorage.getItem(SESSION_KEY) || "";
     let cuentasLista = [];
     let filtroEstadoActual = "todos";
 
@@ -478,7 +485,7 @@
 
       // Si ya tenías sesión e historial en caché, abre el panel AL INSTANTE sin esperar a Google
       const cacheGuardado = localStorage.getItem(CACHE_CUENTAS_ADMIN);
-      if (clave === sessionStorage.getItem(SESSION_KEY) && cacheGuardado) {
+      if (clave === localStorage.getItem(SESSION_KEY) && cacheGuardado) {
         cuentasLista = JSON.parse(cacheGuardado) || [];
         pantallaLogin.classList.add("oculto");
         panelAdmin.classList.remove("oculto");
@@ -495,7 +502,7 @@
         const resp = await consultarServidor({ accion: "obtenerCuentas", clave: clave });
         if (resp && resp.ok) {
           claveAdminActual = clave;
-          sessionStorage.setItem(SESSION_KEY, clave);
+          localStorage.setItem(SESSION_KEY, clave);
           cuentasLista = resp.cuentas || [];
           localStorage.setItem(CACHE_CUENTAS_ADMIN, JSON.stringify(cuentasLista));
 
@@ -503,7 +510,7 @@
           panelAdmin.classList.remove("oculto");
           renderizarCuentas();
         } else {
-          sessionStorage.removeItem(SESSION_KEY);
+          localStorage.removeItem(SESSION_KEY);
           localStorage.removeItem(CACHE_CUENTAS_ADMIN);
           panelAdmin.classList.add("oculto");
           pantallaLogin.classList.remove("oculto");
@@ -619,7 +626,7 @@
     });
 
     document.getElementById("btn-recargar").addEventListener("click", () => iniciarSesionYCargar(claveAdminActual));
-    document.getElementById("btn-salir").addEventListener("click", () => { sessionStorage.removeItem(SESSION_KEY); claveAdminActual = ""; panelAdmin.classList.add("oculto"); pantallaLogin.classList.remove("oculto"); });
+    document.getElementById("btn-salir").addEventListener("click", () => { localStorage.removeItem(SESSION_KEY); claveAdminActual = ""; panelAdmin.classList.add("oculto"); pantallaLogin.classList.remove("oculto"); });
 
     if (claveAdminActual) iniciarSesionYCargar(claveAdminActual);
   </script>

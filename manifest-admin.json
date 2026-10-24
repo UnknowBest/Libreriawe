@@ -1,0 +1,19 @@
+{
+  "name": "Gestor TDC - Tienda Digital Cedeño",
+  "short_name": "Gestor TDC",
+  "description": "Gestor de cuentas y suscripciones de Tienda Digital Cedeño",
+  "start_url": "/admin",
+  "scope": "/admin",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#060911",
+  "theme_color": "#060911",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='115' fill='%236366f1'/><text x='50%' y='62%' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-weight='900' font-size='200'>TDC</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

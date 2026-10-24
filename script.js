@@ -1905,6 +1905,7 @@ document.addEventListener("keydown", (e) => {
     e.preventDefault();
   }
 });
+
 // Inicialización general
 actualizarBotonesFiltro();
 filtrarCatalogo();
@@ -1914,3 +1915,49 @@ renderizarMisTickets();
 cargarDesdeGoogleSheets();
 sincronizarResenasEnTiempoReal();
 sincronizarTicketsDesdeSheet();
+// ==========================================
+// BOTÓN FLOTANTE DINÁMICO DE WHATSAPP
+// ==========================================
+const btnWaFlotante = document.getElementById("btn-wa-flotante");
+const waTextoDinamico = document.getElementById("wa-texto-dinamico");
+
+const frasesBurbujaWA = [
+  "Contáctanos",
+  "⚡ Entrega inmediata",
+  "¿Dudas? Escríbenos",
+  "🔥 Ofertas activas"
+];
+let indiceFraseWA = 0;
+
+function actualizarEnlaceFlotanteWA() {
+  if (!btnWaFlotante) return;
+
+  let msg = "¡Hola *Tienda Digital Cedeño*! 👋 Tengo una consulta sobre el catálogo.";
+
+  // Si tiene productos en el carrito, personaliza el mensaje automáticamente
+  if (typeof carrito !== "undefined" && carrito.length > 0) {
+    const nombresProds = carrito.map(i => `${i.cantidad}x ${i.nombre}`).join(", ");
+    msg = `¡Hola *Tienda Digital Cedeño*! 👋 Estoy viendo en mi carrito: *${nombresProds}* y tengo una consulta.`;
+  } else if (typeof categoriaActual !== "undefined" && categoriaActual !== "todos") {
+    msg = `¡Hola *Tienda Digital Cedeño*! 👋 Quiero información sobre las cuentas de *${categoriaActual.toUpperCase()}*.`;
+  }
+
+  btnWaFlotante.href = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+}
+
+// Cambia el texto de la burbuja suavemente cada 4 segundos
+setInterval(() => {
+  if (!waTextoDinamico) return;
+  indiceFraseWA = (indiceFraseWA + 1) % frasesBurbujaWA.length;
+  waTextoDinamico.style.opacity = "0";
+  setTimeout(() => {
+    waTextoDinamico.textContent = frasesBurbujaWA[indiceFraseWA];
+    waTextoDinamico.style.opacity = "1";
+  }, 250);
+}, 4000);
+
+if (btnWaFlotante) {
+  btnWaFlotante.addEventListener("mouseenter", actualizarEnlaceFlotanteWA);
+  btnWaFlotante.addEventListener("click", actualizarEnlaceFlotanteWA);
+  actualizarEnlaceFlotanteWA();
+}

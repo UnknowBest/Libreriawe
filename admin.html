@@ -249,6 +249,12 @@
             <label class="label-form">📝 Notas:</label>
             <input type="text" id="cuenta-notas" class="input-admin" placeholder="Pagó por Deuna!">
 
+            <label class="label-form">💳 Estado del Pago:</label>
+            <select id="cuenta-pagado" class="input-admin" style="margin-bottom:12px;">
+              <option value="1">✅ Pagó (Suma al Total Neto)</option>
+              <option value="0">❌ No ha pagado (No suma al Total)</option>
+            </select>
+
             <button type="submit" id="btn-guardar-cuenta" class="btn-primario">💾 Guardar Cambios</button>
             <button type="button" id="btn-cancelar-edicion" class="btn-secundario oculto" style="width:100%; margin-top:8px; justify-content:center;">✖ Cancelar</button>
           </form>
@@ -579,6 +585,20 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       return sumaGastos;
     }
 
+// Función para cambiar entre "✅ Pagó" y "❌ No ha pagado" con 1 clic
+    window.cambiarEstadoPago = async function(id, nuevoEstado, btn) {
+      if (btn) btn.textContent = "⏳...";
+      // Cambio instantáneo en pantalla
+      const item = cuentasLista.find(c => c.id === id);
+      if (item) {
+        item.pagado = nuevoEstado;
+        localStorage.setItem(CACHE_CUENTAS_ADMIN, JSON.stringify(cuentasLista));
+        renderizarCuentas();
+      }
+      // Sincroniza con Google Sheets
+      await consultarServidor({ accion: "togglePago", clave: claveAdminActual, id, pagado: nuevoEstado });
+    };
+
     // RENDERIZAR CUENTAS Y GANANCIA NETA MENSUAL
     function renderizarCuentas() {
       let activas = 0, porVencer = 0, vencidas = 0, sumaIngresosBrutos = 0;
@@ -588,11 +608,16 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
         else if (infoEst.codigo === "por-vencer") porVencer++;
         else if (infoEst.codigo === "vencido") vencidas++;
 
-        // Suma el ingreso solo si pertenece al mes seleccionado (o si está en "Todo el historial")
-        if (!mesFiltroActual || String(c.inicio || "").startsWith(mesFiltroActual)) {
+        // Verifica si está pagado (también detecta si antes pusiste "No ha pagado" en notas)
+        const notaTxt = String(c.notas || "").toLowerCase();
+        const diceNoPagoEnNota = notaTxt.includes("no ha pagado") || notaTxt.includes("no pago") || notaTxt.includes("pendiente");
+        const estaPagado = c.pagado !== undefined ? (String(c.pagado) !== "0" && !diceNoPagoEnNota) : !diceNoPagoEnNota;
+
+        // SOLO suma al Total Registrado si está PAGADO y corresponde al mes
+        if (estaPagado && (!mesFiltroActual || String(c.inicio || "").startsWith(mesFiltroActual))) {
           sumaIngresosBrutos += parseFloat(String(c.precio || "0").replace(",", ".")) || 0;
         }
-        return { ...c, infoEst };
+        return { ...c, infoEst, estaPagado };
       });
 
       const sumaGastos = renderizarGastos();
@@ -607,6 +632,7 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       elIngresos.textContent = `${totalNeto < 0 ? "-" : ""}$${Math.abs(totalNeto).toFixed(2)}`;
       elIngresos.style.color = totalNeto >= 0 ? "#38bdf8" : "#f87171";
       document.getElementById("sub-desglose-bruto").textContent = `Ventas: $${sumaIngresosBrutos.toFixed(2)} | Gastos: -$${sumaGastos.toFixed(2)}`;
+
       const busq = buscadorCuentas.value.toLowerCase().trim();
       const filtradas = cuentasConEstado.filter(c => {
         const coincideEstado = filtroEstadoActual === "todos" || c.infoEst.codigo === filtroEstadoActual;
@@ -654,6 +680,11 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
             `<button type="button" onclick="alternarTelefono('${c.id}', this)" style="${estiloBotonOjo}">${EMOJI.ojo} Ver Tel</button>`
           : "";
 
+        // Botón interactivo de Pago (Suma o resta del Total Neto con 1 clic)
+        const botonEstadoPago = c.estaPagado
+          ? `<button type="button" onclick="cambiarEstadoPago('${c.id}', '0', this)" style="background:rgba(34,197,94,0.18); color:#4ade80; border:1px solid rgba(34,197,94,0.45); padding:2px 9px; border-radius:99px; font-size:0.73rem; font-weight:800; cursor:pointer;" title="Clic para marcar como No Pagado">✅ Pagó</button>`
+          : `<button type="button" onclick="cambiarEstadoPago('${c.id}', '1', this)" style="background:rgba(239,68,68,0.18); color:#f87171; border:1px solid rgba(239,68,68,0.45); padding:2px 9px; border-radius:99px; font-size:0.73rem; font-weight:800; cursor:pointer;" title="Clic para marcar como Pagado">❌ No ha pagado</button>`;
+
         const div = document.createElement("div");
         div.className = "item-cuenta";
         div.innerHTML = `
@@ -663,6 +694,7 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
               <span class="tag-servicio">${c.servicio}</span>
               ${parseFloat(c.precio) > 0 ? `<span class="tag-precio">$${parseFloat(c.precio).toFixed(2)}</span>` : ""}
               <span class="badge-estado ${c.infoEst.clase}">${c.infoEst.texto}</span>
+              ${botonEstadoPago}
             </h4>
             <div class="datos-acceso">
               ${htmlLoginOculto}
@@ -811,12 +843,13 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       if (res && res.ok) await iniciarSesionYCargar(claveAdminActual);
     };
 
-    // Eventos de Cuentas
+ // Eventos de Cuentas
     formCuenta.addEventListener("submit", async (e) => {
       e.preventDefault();
       btnGuardarCuenta.disabled = true; btnGuardarCuenta.textContent = "⏳ Guardando...";
       const hIni = cuentaInicioHoraInput.value ? ` ${cuentaInicioHoraInput.value}` : "";
       const hFin = cuentaFinHoraInput.value ? ` ${cuentaFinHoraInput.value}` : "";
+      const selectPagado = document.getElementById("cuenta-pagado");
 
       const res = await consultarServidor({
         accion: "guardarCuenta",
@@ -830,7 +863,8 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
         clavePerfil: cuentaClaveInput.value.trim(),
         inicio: cuentaInicioFechaInput.value + hIni,
         fin: cuentaFinFechaInput.value + hFin,
-        notas: cuentaNotasInput.value.trim()
+        notas: cuentaNotasInput.value.trim(),
+        pagado: selectPagado ? selectPagado.value : "1"
       });
 
       if (res && res.ok) {
@@ -850,6 +884,8 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       cuentaInicioHoraInput.value = "00:00";
       cuentaFinHoraInput.value = "23:59";
       selectDuracionRapida.value = "1";
+      const selectPagado = document.getElementById("cuenta-pagado");
+      if (selectPagado) selectPagado.value = "1";
       actualizarFechaFinAutomatica();
       tituloForm.textContent = "➕ Registrar Servicio a Cliente";
       btnCancelarEdicion.classList.add("oculto");
@@ -877,10 +913,14 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       cuentaFinHoraInput.value = fin[1] || "23:59";
 
       cuentaNotasInput.value = c.notas;
+      const selectPagado = document.getElementById("cuenta-pagado");
+      if (selectPagado) selectPagado.value = c.pagado !== "0" ? "1" : "0";
+
       tituloForm.textContent = `✏️ Editando a: ${c.cliente}`;
       btnCancelarEdicion.classList.remove("oculto");
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
+
 
     window.renovarMasUnMes = async function(id, fechaFinActual) {
       const soloFecha = String(fechaFinActual || obtenerHoyISO()).substring(0, 10);

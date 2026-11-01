@@ -87,7 +87,7 @@
     .btn-wa-datos { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); }
     .btn-wa-cobro { background: rgba(34, 197, 94, 0.15); color: #4ade80; border-color: rgba(34, 197, 94, 0.4); }
     .btn-renovar { background: rgba(99, 102, 241, 0.18); color: #a5b4fc; border-color: rgba(99, 102, 241, 0.4); }
-    .btn-borrar { background: rgba(239, 68, 68, 0.14); color: #f87171; border-color: rgba(239, 68, 68, 0.35); }
+    .btn-borrar { background: rgba(239, 68, 68, 0.14); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); }
     .alerta-msg { font-size: 0.82rem; padding: 9px 12px; border-radius: 8px; margin-bottom: 12px; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
 
     /* MODAL Y TABLA DE COSTO DE INVENTARIO / GASTOS */
@@ -127,13 +127,16 @@
       <div class="nav-inner">
         <h2 style="font-size: 1.2rem; font-weight: 900;">📊 Gestor de Cuentas · <span style="color:#818cf8;">Tienda Digital Cedeño</span></h2>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" id="btn-abrir-gastos-nav" class="btn-secundario btn-gastos-nav">📉 Gastos</button>
           <button type="button" id="btn-recargar" class="btn-secundario">🔄 Sincronizar</button>
           <a href="index.html" class="btn-secundario">🏠 Tienda</a>
           <button type="button" id="btn-salir" class="btn-secundario" style="color:#f87171;">🔒 Salir</button>
         </div>
       </div>
     </header>
-<!-- Filtro de Ganancia Neta por Mes -->
+
+    <main class="container">
+      <!-- Filtro de Ganancia Neta por Mes -->
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; background:var(--tarjeta); border:1px solid var(--borde); padding:12px 16px; border-radius:14px; margin-bottom:14px;">
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
           <span style="font-size:0.88rem; font-weight:700; color:#cbd5e1;">📅 Filtrar Ganancia y Gastos por Mes:</span>
@@ -143,8 +146,7 @@
         <span id="etiqueta-periodo-actual" style="font-size:0.82rem; color:#a5b4fc; font-weight:700;">Mostrando: Todo el historial</span>
       </div>
 
-    <main class="container">
-      <!-- TARJETAS SUPERIORES (CON RESTA DE GASTOS E INVENTARIO) -->
+      <!-- TARJETAS SUPERIORES -->
       <div class="grid-metricas">
         <div class="card-metrica">
           <div>
@@ -185,7 +187,7 @@
           <span style="font-size:1.6rem;">📉</span>
         </div>
 
-        <!-- TOTAL ACTIVO REGISTRADO (YA RESTANDO EL COSTO DE INVENTARIO) -->
+        <!-- TOTAL NETO REGISTRADO -->
         <div class="card-metrica">
           <div>
             <h4>Total Neto Registrado</h4>
@@ -278,9 +280,7 @@
     </main>
   </div>
 
-  <!-- ========================================================= -->
-  <!-- 3. MODAL DE TABLA DE COSTO DE INVENTARIO Y GASTOS         -->
-  <!-- ========================================================= -->
+  <!-- 3. MODAL DE TABLA DE COSTO DE INVENTARIO Y GASTOS -->
   <div id="modal-gastos" class="modal-fondo oculto">
     <div class="modal-caja">
       <div class="modal-header">
@@ -291,7 +291,6 @@
         <button type="button" id="btn-cerrar-gastos" class="btn-cerrar-modal">&times;</button>
       </div>
 
-      <!-- Formulario para Añadir o Editar Gasto -->
       <form id="form-gasto" class="form-gasto-grid">
         <input type="hidden" id="gasto-id">
         <div>
@@ -316,7 +315,6 @@
         </div>
       </form>
 
-      <!-- Resumen rápido dentro del modal -->
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
         <input type="text" id="buscador-gastos" class="input-admin" placeholder="🔍 Filtrar gasto por nombre, fecha o proveedor..." style="max-width: 320px; margin-bottom:0;">
         <div style="font-size: 0.92rem; background: rgba(244,63,94,0.12); border: 1px solid rgba(244,63,94,0.35); padding: 8px 14px; border-radius: 10px;">
@@ -324,7 +322,6 @@
         </div>
       </div>
 
-      <!-- Tabla de Gastos -->
       <div class="tabla-contenedor">
         <table class="tabla-gastos">
           <thead>
@@ -345,7 +342,6 @@
   </div>
 
   <script>
-    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwmO7jW90VB-rWiF_mSfe6zgQfO9aqxGss2njfcEQOYeprd5plmgHMAUdpx1ttutlRY/exec";
     const SESSION_KEY = "tdc_admin_clave";
     const CLAVE_GUARDADA_PERMANENTE = "tdc_admin_clave_fija";
     const CACHE_CUENTAS_ADMIN = "tdc_cuentas_admin_cache";
@@ -355,6 +351,7 @@
     let cuentasLista = [];
     let gastosLista = [];
     let filtroEstadoActual = "todos";
+    let mesFiltroActual = "";
 
     const pantallaLogin = document.getElementById("pantalla-login");
     const panelAdmin = document.getElementById("panel-admin");
@@ -384,7 +381,6 @@
     const contenedorListaCuentas = document.getElementById("contenedor-lista-cuentas");
     const btnsFiltroEstado = document.querySelectorAll(".btn-filtro-est");
 
-    // Referencias del Modal de Gastos
     const modalGastos = document.getElementById("modal-gastos");
     const cardAbrirGastos = document.getElementById("card-abrir-gastos");
     const btnAbrirGastosNav = document.getElementById("btn-abrir-gastos-nav");
@@ -401,7 +397,7 @@
     const tbodyGastos = document.getElementById("tbody-gastos");
     const totalModalGastos = document.getElementById("total-modal-gastos");
 
-async function consultarServidor(paramsObj) {
+    async function consultarServidor(paramsObj) {
       const clave = paramsObj.clave || claveAdminActual || document.getElementById("input-clave-admin")?.value.trim() || "";
 
       const peticion = await fetch("/api/clientes", {
@@ -438,8 +434,8 @@ async function consultarServidor(paramsObj) {
     cuentaInicioFechaInput.value = obtenerHoyISO();
     gastoFechaInput.value = obtenerHoyISO();
     actualizarFechaFinAutomatica();
-    cuentaInicioFechaInput.addEventListener("change", actualizarFechaFinAutomatica);
-    selectDuracionRapida.addEventListener("change", actualizarFechaFinAutomatica);
+    cuentaInicioFechaInput?.addEventListener("change", actualizarFechaFinAutomatica);
+    selectDuracionRapida?.addEventListener("change", actualizarFechaFinAutomatica);
 
     function calcularEstadoCuenta(fechaFinStr) {
       if (!fechaFinStr) return { codigo: "activo", clase: "estado-activo", texto: "🟢 Activo", dias: 99 };
@@ -456,7 +452,6 @@ async function consultarServidor(paramsObj) {
       return { codigo: "activo", clase: "estado-activo", texto: `🟢 Activo (${diffDias}d)`, dias: diffDias };
     }
 
-    // Diccionario de emojis en código universal
     const EMOJI = {
       mano: "\uD83D\uDC4B",
       brillo: "\u2728",
@@ -518,11 +513,6 @@ async function consultarServidor(paramsObj) {
       }
     };
 
-    // RENDERIZAR TABLA DE GASTOS E INVENTARIO
-   
-let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
-
-    // RENDERIZAR TABLA DE GASTOS (FILTRADA POR MES)
     function renderizarGastos() {
       const gastosDelPeriodo = gastosLista.filter(g => {
         if (!mesFiltroActual) return true;
@@ -567,21 +557,17 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       return sumaGastos;
     }
 
-// Función para cambiar entre "✅ Pagó" y "❌ No ha pagado" con 1 clic
     window.cambiarEstadoPago = async function(id, nuevoEstado, btn) {
       if (btn) btn.textContent = "⏳...";
-      // Cambio instantáneo en pantalla
       const item = cuentasLista.find(c => c.id === id);
       if (item) {
         item.pagado = nuevoEstado;
         localStorage.setItem(CACHE_CUENTAS_ADMIN, JSON.stringify(cuentasLista));
         renderizarCuentas();
       }
-      // Sincroniza con Google Sheets
       await consultarServidor({ accion: "togglePago", clave: claveAdminActual, id, pagado: nuevoEstado });
     };
 
-    // RENDERIZAR CUENTAS Y GANANCIA NETA MENSUAL
     function renderizarCuentas() {
       let activas = 0, porVencer = 0, vencidas = 0, sumaIngresosBrutos = 0;
       const cuentasConEstado = cuentasLista.map(c => {
@@ -590,12 +576,10 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
         else if (infoEst.codigo === "por-vencer") porVencer++;
         else if (infoEst.codigo === "vencido") vencidas++;
 
-        // Verifica si está pagado (también detecta si antes pusiste "No ha pagado" en notas)
         const notaTxt = String(c.notas || "").toLowerCase();
         const diceNoPagoEnNota = notaTxt.includes("no ha pagado") || notaTxt.includes("no pago") || notaTxt.includes("pendiente");
         const estaPagado = c.pagado !== undefined ? (String(c.pagado) !== "0" && !diceNoPagoEnNota) : !diceNoPagoEnNota;
 
-        // SOLO suma al Total Registrado si está PAGADO y corresponde al mes
         if (estaPagado && (!mesFiltroActual || String(c.inicio || "").startsWith(mesFiltroActual))) {
           sumaIngresosBrutos += parseFloat(String(c.precio || "0").replace(",", ".")) || 0;
         }
@@ -662,7 +646,6 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
             `<button type="button" onclick="alternarTelefono('${c.id}', this)" style="${estiloBotonOjo}">${EMOJI.ojo} Ver Tel</button>`
           : "";
 
-        // Botón interactivo de Pago (Suma o resta del Total Neto con 1 clic)
         const botonEstadoPago = c.estaPagado
           ? `<button type="button" onclick="cambiarEstadoPago('${c.id}', '0', this)" style="background:rgba(34,197,94,0.18); color:#4ade80; border:1px solid rgba(34,197,94,0.45); padding:2px 9px; border-radius:99px; font-size:0.73rem; font-weight:800; cursor:pointer;" title="Clic para marcar como No Pagado">✅ Pagó</button>`
           : `<button type="button" onclick="cambiarEstadoPago('${c.id}', '1', this)" style="background:rgba(239,68,68,0.18); color:#f87171; border:1px solid rgba(239,68,68,0.45); padding:2px 9px; border-radius:99px; font-size:0.73rem; font-weight:800; cursor:pointer;" title="Clic para marcar como Pagado">❌ No ha pagado</button>`;
@@ -755,19 +738,17 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       }
     }
 
-    // Abrir y cerrar modal de Gastos de Inventario
     function abrirModalGastos() {
       renderizarGastos();
       modalGastos.classList.remove("oculto");
     }
-    cardAbrirGastos.addEventListener("click", abrirModalGastos);
-    btnAbrirGastosNav.addEventListener("click", abrirModalGastos);
-    btnCerrarGastos.addEventListener("click", () => modalGastos.classList.add("oculto"));
-    modalGastos.addEventListener("click", (e) => { if (e.target === modalGastos) modalGastos.classList.add("oculto"); });
-    buscadorGastos.addEventListener("input", renderizarGastos);
+    cardAbrirGastos?.addEventListener("click", abrirModalGastos);
+    btnAbrirGastosNav?.addEventListener("click", abrirModalGastos);
+    btnCerrarGastos?.addEventListener("click", () => modalGastos.classList.add("oculto"));
+    modalGastos?.addEventListener("click", (e) => { if (e.target === modalGastos) modalGastos.classList.add("oculto"); });
+    buscadorGastos?.addEventListener("input", renderizarGastos);
 
-    // Guardar o Editar Gasto de Inventario
-    formGasto.addEventListener("submit", async (e) => {
+    formGasto?.addEventListener("submit", async (e) => {
       e.preventDefault();
       btnGuardarGasto.disabled = true;
       btnGuardarGasto.textContent = "⏳...";
@@ -805,7 +786,7 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       btnGuardarGasto.textContent = "➕ Añadir";
       btnCancelarGasto.classList.add("oculto");
     }
-    btnCancelarGasto.addEventListener("click", limpiarFormularioGasto);
+    btnCancelarGasto?.addEventListener("click", limpiarFormularioGasto);
 
     window.editarGasto = function(id) {
       const g = gastosLista.find(item => item.id === id);
@@ -825,8 +806,7 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       if (res && res.ok) await iniciarSesionYCargar(claveAdminActual);
     };
 
- // Eventos de Cuentas
-    formCuenta.addEventListener("submit", async (e) => {
+    formCuenta?.addEventListener("submit", async (e) => {
       e.preventDefault();
       btnGuardarCuenta.disabled = true; btnGuardarCuenta.textContent = "⏳ Guardando...";
       const hIni = cuentaInicioHoraInput.value ? ` ${cuentaInicioHoraInput.value}` : "";
@@ -873,7 +853,7 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       btnCancelarEdicion.classList.add("oculto");
     }
 
-    btnCancelarEdicion.addEventListener("click", limpiarFormulario);
+    btnCancelarEdicion?.addEventListener("click", limpiarFormulario);
 
     window.cargarEnFormulario = function(id) {
       const c = cuentasLista.find(item => item.id === id);
@@ -903,7 +883,6 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-
     window.renovarMasUnMes = async function(id, fechaFinActual) {
       const soloFecha = String(fechaFinActual || obtenerHoyISO()).substring(0, 10);
       const nuevaFin = sumarMesesAFecha(soloFecha, 1) + (String(fechaFinActual).includes(":") ? String(fechaFinActual).substring(10) : " 23:59");
@@ -918,7 +897,7 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       if (res && res.ok) await iniciarSesionYCargar(claveAdminActual);
     };
 
-    buscadorCuentas.addEventListener("input", renderizarCuentas);
+    buscadorCuentas?.addEventListener("input", renderizarCuentas);
     btnsFiltroEstado.forEach(btn => {
       btn.addEventListener("click", () => {
         btnsFiltroEstado.forEach(b => b.classList.remove("activo"));
@@ -928,18 +907,18 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       });
     });
 
-    formLogin.addEventListener("submit", (e) => {
+    formLogin?.addEventListener("submit", (e) => {
       e.preventDefault();
       const claveEscrita = inputClaveAdmin.value.trim();
       localStorage.setItem(CLAVE_GUARDADA_PERMANENTE, claveEscrita);
       iniciarSesionYCargar(claveEscrita);
     });
 
-    document.getElementById("btn-recargar").addEventListener("click", () => {
+    document.getElementById("btn-recargar")?.addEventListener("click", () => {
       iniciarSesionYCargar(localStorage.getItem(CLAVE_GUARDADA_PERMANENTE) || claveAdminActual);
     });
 
-    document.getElementById("btn-salir").addEventListener("click", () => {
+    document.getElementById("btn-salir")?.addEventListener("click", () => {
       localStorage.removeItem(CLAVE_GUARDADA_PERMANENTE);
       sessionStorage.removeItem(SESSION_KEY);
       localStorage.removeItem(CACHE_CUENTAS_ADMIN);
@@ -949,25 +928,26 @@ let mesFiltroActual = ""; // Vacío = Todo el historial, o formato "YYYY-MM"
       pantallaLogin.classList.remove("oculto");
     });
 
-    if (claveAdminActual) {
-      iniciarSesionYCargar(claveAdminActual);
-    }
     const inputFiltroMes = document.getElementById("filtro-mes");
     const btnVerTodoMes = document.getElementById("btn-ver-todo-mes");
     const etiquetaPeriodo = document.getElementById("etiqueta-periodo-actual");
 
-    inputFiltroMes.addEventListener("change", () => {
-      mesFiltroActual = inputFiltroMes.value; // Ej: "2026-10"
+    inputFiltroMes?.addEventListener("change", () => {
+      mesFiltroActual = inputFiltroMes.value;
       etiquetaPeriodo.textContent = mesFiltroActual ? `Mostrando mes: ${mesFiltroActual}` : "Mostrando: Todo el historial";
       renderizarCuentas();
     });
 
-    btnVerTodoMes.addEventListener("click", () => {
+    btnVerTodoMes?.addEventListener("click", () => {
       inputFiltroMes.value = "";
       mesFiltroActual = "";
       etiquetaPeriodo.textContent = "Mostrando: Todo el historial";
       renderizarCuentas();
     });
+
+    if (claveAdminActual) {
+      iniciarSesionYCargar(claveAdminActual);
+    }
   </script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 const NUMERO_WHATSAPP = "593963259492";
 const URL_GOOGLE_REVIEW = "https://g.page/r/CcVHRoL30LsdECE/review";
+const URL_VERIFICADOR_PICHINCHA = "/api/tienda";
 
 // 1. URL directa publicada en CSV (Carga ultrarrápida)
 const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQNz682jLUpz3P7eKqahpH2NiLqctI5V1B2utHZ2ZMS4rsmYSwd0huivG5Qt_sM4FyxHtvS7AliVNm9/pub?output=csv";
@@ -11,7 +12,6 @@ const SHEET_CUPONES_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID
 const SHEET_RESENAS_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Resenas`;
 const SHEET_TICKETS_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=1115065148`;
 const SHEET_TICKETS_ALT_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Tickets`;
-
 
 const CUPONES_LOCALES = {
   "CEDENO10": { porcentaje: 10, categoriaRequerida: "todos", minimoProductos: 1, activo: true },
@@ -44,7 +44,6 @@ function normalizarOrigenResena(rev) {
   const nombreLimpio = String(rev.nombre || "").trim().toLowerCase();
   const origenGuardado = String(rev.origen || "").trim().toLowerCase();
 
-  // Si en el Excel (Columna E) dice explícitamente "google", o es la reseña oficial de Tienda Digital Cedeño en Maps
   if (origenGuardado === "google" || (!origenGuardado && nombreLimpio.includes("tienda digital cede"))) {
     return "google";
   }
@@ -359,7 +358,7 @@ function obtenerDisenoVisualProducto(prod) {
         </div>`
     };
   }
-if (n.includes("viki")) {
+  if (n.includes("viki")) {
     return { fondo: "radial-gradient(circle at center, #0284c7 0%, #0369a1 65%, #0c4a6e 100%)", colorMarca: "#38bdf8", htmlLogo: `<div class="logo-texto-icono"><span style="color:#38bdf8; font-family:'Cinzel',serif; font-weight:900;">VIKI</span></div>` };
   }
   if (n.includes("steam") || n.includes("juegos")) {
@@ -829,33 +828,26 @@ function actualizarVistaCarrito() {
 
 async function consultarAppsScript(url) {
   try {
+    if (url.startsWith("/api/")) {
+      const urlObj = new URL(url, window.location.origin);
+      const params = Object.fromEntries(urlObj.searchParams.entries());
+      if (!params.accion && params.comprobante) {
+        params.accion = "verificarPago";
+      }
+      const resApi = await fetch(urlObj.pathname, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params)
+      });
+      return await resApi.json();
+    }
     const respuesta = await fetch(url, { method: "GET", redirect: "follow", credentials: "omit" });
     const texto = await respuesta.text();
     return JSON.parse(texto);
   } catch (e) {
-    console.warn("Intentando respaldo JSONP...");
+    console.warn("Error consultando servidor:", e);
+    return null;
   }
-
-  return new Promise((resolve, reject) => {
-    const nombreCallback = "cb_" + Math.floor(Math.random() * 1000000);
-    const script = document.createElement("script");
-    const separador = url.includes("?") ? "&" : "?";
-
-    window[nombreCallback] = (datos) => {
-      delete window[nombreCallback];
-      script.remove();
-      resolve(datos);
-    };
-
-    script.onerror = () => {
-      delete window[nombreCallback];
-      script.remove();
-      reject(new Error("Fallo de red"));
-    };
-
-    script.src = `${url}${separador}callback=${nombreCallback}`;
-    document.body.appendChild(script);
-  });
 }
 
 async function buscarCuponEnSheetCSV(codigoBuscado) {
@@ -926,11 +918,12 @@ if (btnAplicarCupon) {
       data = await consultarAppsScript(url);
     } catch (err) {}
 
-    if (!data) {
-      data = await buscarCuponEnSheetCSV(codigo);
+    if (!data || !data.valido) {
+      const dataCSV = await buscarCuponEnSheetCSV(codigo);
+      if (dataCSV) data = dataCSV;
     }
 
-    if (!data && CUPONES_LOCALES[codigo]) {
+    if ((!data || !data.valido) && CUPONES_LOCALES[codigo]) {
       const cLocal = CUPONES_LOCALES[codigo];
       if (cLocal.activo) {
         data = {
@@ -958,7 +951,7 @@ if (btnAplicarCupon) {
       cuponActivo = candidatoCupon;
 
       if (checkCarrito.cumple) {
-        mensajeCupon.textContent = data.mensaje;
+        mensajeCupon.textContent = data.mensaje || `🎉 ¡Cupón ${data.codigo} (-${data.porcentaje}%) aplicado!`;
         mensajeCupon.classList.add("exito");
       } else {
         mensajeCupon.textContent = checkCarrito.motivo;
@@ -1008,8 +1001,8 @@ btnVerificarPago.addEventListener("click", async () => {
     const url = `${URL_VERIFICADOR_PICHINCHA}?comprobante=${encodeURIComponent(comprobante)}&monto=${encodeURIComponent(monto)}&cupon=${encodeURIComponent(codigoCupon)}&items=${encodeURIComponent(JSON.stringify(itemsParaStock))}&t=${Date.now()}`;
     const data = await consultarAppsScript(url);
 
-    estadoVerificacion.textContent = data.mensaje;
-    if (data.verificado) {
+    estadoVerificacion.textContent = (data && data.mensaje) ? data.mensaje : "⚠️ No se pudo verificar automáticamente.";
+    if (data && data.verificado) {
       pagoVerificadoAutomaticamente = true;
       estadoVerificacion.classList.add("exito");
 
@@ -1128,7 +1121,6 @@ function renderizarResenas() {
 }
 
 async function sincronizarResenasEnTiempoReal() {
-  // 1. Lee la pestaña "Resenas" del CSV (verifica que NO sea la hoja de Productos)
   try {
     const res = await fetch(`${SHEET_RESENAS_CSV_URL}&t=${Date.now()}`, { cache: "no-store" });
     if (res.ok) {
@@ -1142,7 +1134,7 @@ async function sincronizarResenasEnTiempoReal() {
 
           if (!esHojaDeProductos && esHojaDeResenas) {
             const nuevasResenas = [];
-            for (let i = ( filas.length - 1 ); i >= 1; i--) {
+            for (let i = (filas.length - 1); i >= 1; i--) {
               const col = dividirFilaCSV(filas[i]);
               const nombre = (col[0] || "").replace(/"/g, "").trim();
               if (!nombre) continue;
@@ -1150,7 +1142,7 @@ async function sincronizarResenasEnTiempoReal() {
               const estrellas = parseInt((col[1] || "5").replace(/[^0-9]/g, ""), 10) || 5;
               const comentario = (col[2] || "").replace(/"/g, "").trim();
               const fecha = (col[3] || "").replace(/"/g, "").trim() || "Recién";
-              const origenRaw = (col[4] || "").replace(/"/g, "").trim(); // Columna E: "Web" o "Google"
+              const origenRaw = (col[4] || "").replace(/"/g, "").trim();
 
               nuevasResenas.push({
                 nombre,
@@ -1173,7 +1165,6 @@ async function sincronizarResenasEnTiempoReal() {
     }
   } catch (e) {}
 
-  // 2. Respaldo desde Apps Script si está activo
   try {
     const urlVivo = `${URL_VERIFICADOR_PICHINCHA}?accion=obtenerResenas&t=${Date.now()}`;
     const data = await consultarAppsScript(urlVivo);
@@ -1198,7 +1189,6 @@ estrellasPublicarBtns.forEach((btn) => {
   });
 });
 
-// Publicar reseña en la Web (Etiqueta 🌐 Web)
 if (formPublicarResena) {
   formPublicarResena.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -1223,7 +1213,7 @@ if (formPublicarResena) {
       setTimeout(() => mensajeResenaPublicada.classList.add("oculto"), 6000);
     }
 
-    const urlGuardar = `${URL_VERIFICADOR_PICHINCHA}?accion=agregarResena&nombre=${encodeURIComponent(nombre)}&estrellas=${encodeURIComponent(estrellasSeleccionadasParaPublicar)}&comentario=${encodeURIComponent(comentario)}&fecha=${encodeURIComponent(nuevaResena.fecha)}&origen=Web&t=${Date.now()}`;
+    const urlGuardar = `${URL_VERIFICADOR_PICHINCHA}?accion=guardarResena&nombre=${encodeURIComponent(nombre)}&estrellas=${encodeURIComponent(estrellasSeleccionadasParaPublicar)}&comentario=${encodeURIComponent(comentario)}&fecha=${encodeURIComponent(nuevaResena.fecha)}&origen=Web&t=${Date.now()}`;
     consultarAppsScript(urlGuardar).catch(() => {});
 
     formPublicarResena.reset();
@@ -1291,7 +1281,7 @@ async function sincronizarTicketsDesdeSheet() {
   if (filas.length === 0) return;
 
   const cabecera = dividirFilaCSV(filas[0]).map(c => c.toLowerCase().replace(/"/g, "").trim());
-  if (!cabecera.some(c => c.includes("ticket") || c.includes("asunto") || c.includes("estado"))) {
+  if (!cabecera.some(c => c.includes("ticket") || c.includes("asunto") || c.includes("estado") || c.includes("codigo"))) {
     return;
   }
 
@@ -1435,7 +1425,7 @@ if (formTicketSoporte) {
     };
 
     try {
-      const urlTicket = `${URL_VERIFICADOR_PICHINCHA}?accion=crearTicket&id=${encodeURIComponent(codigoTicket)}&nombre=${encodeURIComponent(nombre)}&contacto=${encodeURIComponent(contacto)}&asunto=${encodeURIComponent(asunto)}&referencia=${encodeURIComponent(referencia)}&mensaje=${encodeURIComponent(mensaje)}&t=${Date.now()}`;
+      const urlTicket = `${URL_VERIFICADOR_PICHINCHA}?accion=crearTicket&codigo=${encodeURIComponent(codigoTicket)}&cliente=${encodeURIComponent(nombre)}&whatsapp=${encodeURIComponent(contacto)}&servicio=${encodeURIComponent(asunto + (referencia ? " - " + referencia : ""))}&problema=${encodeURIComponent(mensaje)}&t=${Date.now()}`;
       await consultarAppsScript(urlTicket);
     } catch (err) {
       console.warn("Ticket guardado localmente.");
@@ -1719,12 +1709,12 @@ function dividirFilaCSV(fila) {
 
 function normalizarProductoFila(nombre, categoria, descripcion, precioRaw, periodoRaw, stockRaw, descuentoRaw, minMesesRaw) {
   let precioBruto = String(precioRaw || "0.00").replace(/\\/g, "").trim();
-  if (!precioBruto.startsWith("\$")) {
+  if (!precioBruto.startsWith("$")) {
     precioBruto = "$" + precioBruto.replace("$", "");
   }
 
   let descTexto = String(descripcion || "").trim();
-  if (descTexto.startsWith("\$")) {
+  if (descTexto.startsWith("$")) {
     descTexto = descTexto.substring(1).trim();
   }
 
@@ -1753,6 +1743,7 @@ function normalizarProductoFila(nombre, categoria, descripcion, precioRaw, perio
 }
 
 function parsearTextoCSV(csv) {
+  if (!csv || csv.includes("<!DOCTYPE") || csv.includes("<html")) return [];
   const filas = csv.split(/\r?\n/);
   const listaSheet = [];
 
@@ -1800,6 +1791,7 @@ async function cargarDesdeGoogleSheets() {
       localStorage.setItem(CACHE_KEY, JSON.stringify(productos));
       actualizarBotonesFiltro();
       filtrarCatalogo();
+      return;
     }
   } catch (err) {
     try {
@@ -1809,36 +1801,17 @@ async function cargarDesdeGoogleSheets() {
         localStorage.setItem(CACHE_KEY, JSON.stringify(productos));
         actualizarBotonesFiltro();
         filtrarCatalogo();
+        return;
       }
     } catch (e2) {
       console.error("Error cargando CSV:", e2);
     }
   }
-
-  try {
-    const mapaMinMesesCSV = {};
-    productos.forEach(prodCSV => {
-      mapaMinMesesCSV[(prodCSV.nombre || "").toLowerCase()] = prodCSV.minimoMeses || 1;
-    });
-
-    const urlVivo = `${URL_VERIFICADOR_PICHINCHA}?accion=obtenerProductos&t=${Date.now()}`;
-    const dataVivo = await consultarAppsScript(urlVivo);
-    if (dataVivo && dataVivo.ok && Array.isArray(dataVivo.productos) && dataVivo.productos.length > 0) {
-      productos = dataVivo.productos.map(p => {
-        const minMesesFinal = p.minimoMeses || mapaMinMesesCSV[(p.nombre || "").toLowerCase()] || 1;
-        return normalizarProductoFila(p.nombre, p.categoria, p.descripcion, p.precio, p.periodo, p.stock, p.descuento, minMesesFinal);
-      });
-      localStorage.setItem(CACHE_KEY, JSON.stringify(productos));
-      actualizarBotonesFiltro();
-      filtrarCatalogo();
-    }
-  } catch (e) {}
 }
+
 // ==========================================
 // 9. ESCUDO DE SEGURIDAD (ANTI-XSS, ANTI-SPAM Y PROTECCIÓN DE DATOS)
 // ==========================================
-
-// 1. Limpia cualquier etiqueta HTML maliciosa (<script>, <iframe>, onclick, etc.)
 function escaparHTML(texto) {
   return String(texto || "")
     .replace(/&/g, "&amp;")
@@ -1848,7 +1821,6 @@ function escaparHTML(texto) {
     .replace(/'/g, "&#039;");
 }
 
-// Sobrescribe la entrada de Reseñas y Tickets para filtrar código malicioso y bloquear Spam
 if (formPublicarResena) {
   formPublicarResena.addEventListener("submit", (e) => {
     const ultimaResenaTime = parseInt(localStorage.getItem("ultimo_envio_resena") || "0", 10);
@@ -1889,7 +1861,6 @@ if (formTicketSoporte) {
   }, true);
 }
 
-// 2. Bloquea clic derecho e inspección rápida (F12 / Ctrl+U / Ctrl+Shift+I) para curiosos
 document.addEventListener("contextmenu", (e) => e.preventDefault());
 
 document.addEventListener("keydown", (e) => {
@@ -1911,6 +1882,7 @@ renderizarMisTickets();
 cargarDesdeGoogleSheets();
 sincronizarResenasEnTiempoReal();
 sincronizarTicketsDesdeSheet();
+
 // ==========================================
 // BOTÓN FLOTANTE DINÁMICO DE WHATSAPP
 // ==========================================
@@ -1930,7 +1902,6 @@ function actualizarEnlaceFlotanteWA() {
 
   let msg = "¡Hola *Tienda Digital Cedeño*! Tengo una consulta sobre el catálogo.";
 
-  // Si tiene productos en el carrito, personaliza el mensaje automáticamente
   if (typeof carrito !== "undefined" && carrito.length > 0) {
     const nombresProds = carrito.map(i => `${i.cantidad}x ${i.nombre}`).join(", ");
     msg = `¡Hola *Tienda Digital Cedeño*! Estoy viendo en mi carrito: *${nombresProds}* y tengo una consulta.`;
@@ -1941,7 +1912,6 @@ function actualizarEnlaceFlotanteWA() {
   btnWaFlotante.href = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(msg)}`;
 }
 
-// Cambia el texto de la burbuja suavemente cada 4 segundos
 setInterval(() => {
   if (!waTextoDinamico) return;
   indiceFraseWA = (indiceFraseWA + 1) % frasesBurbujaWA.length;

@@ -15,7 +15,7 @@
       ]
     }
   ],
-  "rewrites": [
+"rewrites": [
     {
       "source": "/admin",
       "destination": "/admin.html"
@@ -23,6 +23,10 @@
     {
       "source": "/gestor",
       "destination": "/admin.html"
+    },
+    {
+      "source": "/gorras",
+      "destination": "/gorras.html"
     },
     {
       "source": "/((?!.*\\..*).*)",

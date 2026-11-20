@@ -1,0 +1,3118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemy Hats · Colección Premium G5 | Tienda Digital Cedeño</title>
+  <meta name="description" content="Catálogo oficial Chemy Hats Calidad G5 Premium con Chip NFC. Precios unitarios y al por mayor (6+ y 12+). Envíos por Servientrega a todo Ecuador y entregas personales en Guayaquil.">
+  <meta name="theme-color" content="#09090b">
+  <link rel="canonical" href="https://www.tiendadigitalcedeno.com/gorras">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2309090b' stroke='%23d4af37' stroke-width='4'/><text x='50%' y='66%' text-anchor='middle' fill='%23fafafa' font-family='Inter, Arial, sans-serif' font-weight='800' font-size='48'>CH</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS — EDITORIAL STREETWEAR LUXURY (STOCKX / KITH INSPIRED)
+       ========================================================================== */
+    :root {
+      --bg: #09090b;
+      --bg-elevated: #111114;
+      --bg-card: #121216;
+      --bg-hover: #1a1a20;
+      --studio-frame: #e2e2e4;
+      --border: rgba(255, 255, 255, 0.085);
+      --border-hover: rgba(255, 255, 255, 0.2);
+      --border-gold: rgba(212, 175, 55, 0.42);
+      --text: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-dim: #71717a;
+      --silver: #e4e4e7;
+      --gold: #d4af37;
+      --gold-soft: rgba(212, 175, 55, 0.14);
+      --green: #22c55e;
+      --red: #ef4444;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --transition: 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .oculto {
+      display: none !important;
+    }
+
+    button, input, select {
+      font-family: inherit;
+    }
+
+    /* ==========================================================================
+       2. HEADER EDITORIAL STICKY CON BUSCADOR Y CARRITO
+       ========================================================================== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9, 9, 11, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 68px;
+      padding: 10px 0;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .btn-back-store {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 500;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn-back-store:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .brand-monogram {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border-gold);
+      background: #141418;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.05;
+    }
+
+    .brand-name {
+      font-size: 0.98rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .brand-sub {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* Buscador integrado en Header */
+    .header-search {
+      flex: 1;
+      max-width: 480px;
+      position: relative;
+    }
+
+    .header-search svg {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+
+    .header-search input {
+      width: 100%;
+      height: 40px;
+      padding: 0 36px 0 38px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color var(--transition), background var(--transition);
+    }
+
+    .header-search input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .header-search input:focus {
+      border-color: var(--border-gold);
+      background: #141419;
+    }
+
+    .btn-clear-search {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-clear-search:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-cart-header {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      height: 40px;
+      padding: 0 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: var(--text);
+      color: var(--bg);
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-cart-header:hover {
+      background: #e4e4e7;
+      transform: translateY(-1px);
+    }
+
+    .cart-badge {
+      background: var(--bg);
+      color: var(--gold);
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      border-radius: 99px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ==========================================================================
+       3. COMPACT EDITORIAL HERO BANNER & WHOLESALE TIER PILLS
+       ========================================================================== */
+    .hero-editorial {
+      border-bottom: 1px solid var(--border);
+      background:
+        radial-gradient(800px 260px at 15% 0%, rgba(212, 175, 55, 0.06), transparent 65%),
+        linear-gradient(180deg, #0d0d10 0%, #09090b 100%);
+      padding: 28px 0 24px;
+    }
+
+    .hero-layout {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .hero-eyebrow::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .hero-heading {
+      font-size: clamp(1.75rem, 3.2vw, 2.55rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .hero-specs-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 16px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    .hero-spec-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-spec-dot {
+      color: var(--gold);
+      font-size: 0.65rem;
+    }
+
+    /* Selector interactivo de Tarifas (Unitario / 6+ / 12+) */
+    .tier-selector-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .tier-caption {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+
+    .tier-pills {
+      display: inline-grid;
+      grid-template-columns: repeat(3, auto);
+      gap: 4px;
+      padding: 4px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .tier-pill {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
+      line-height: 1.15;
+    }
+
+    .tier-pill small {
+      display: block;
+      font-size: 0.64rem;
+      color: var(--text-dim);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .tier-pill:hover {
+      color: var(--text);
+    }
+
+    .tier-pill.active {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+
+    .tier-pill.active small {
+      color: #3f3f46;
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       4. TOOLBAR DE FILTROS, ORDENAMIENTO Y CARGADOR DE FOTOS LOCALES
+       ========================================================================== */
+    .catalog-main {
+      padding: 24px 0 80px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .brand-pills-row {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .brand-pill {
+      padding: 7px 14px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+
+    .brand-pill:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+
+    .brand-pill.active {
+      background: var(--silver);
+      color: var(--bg);
+      border-color: var(--silver);
+    }
+
+    .toolbar-secondary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .results-count {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    .results-count strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .toolbar-controls {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Toggle Solo disponibles */
+    .toggle-available {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--silver);
+      cursor: pointer;
+      user-select: none;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .toggle-available input {
+      display: none;
+    }
+
+    .switch-track {
+      width: 32px;
+      height: 18px;
+      border-radius: 99px;
+      background: #27272a;
+      position: relative;
+      transition: background var(--transition);
+    }
+
+    .switch-track::after {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #a1a1aa;
+      top: 2px;
+      left: 2px;
+      transition: transform var(--transition), background var(--transition);
+    }
+
+    .toggle-available input:checked + .switch-track {
+      background: var(--gold);
+    }
+
+    .toggle-available input:checked + .switch-track::after {
+      transform: translateX(14px);
+      background: #09090b;
+    }
+
+    /* Selector de ordenamiento */
+    .sort-select {
+      height: 34px;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.8rem;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .sort-select:focus {
+      border-color: var(--border-gold);
+    }
+
+    /* Botón discreto para probar fotos locales del PDF */
+    .btn-local-photos {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 34px;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      border: 1px dashed rgba(212, 175, 55, 0.45);
+      background: rgba(212, 175, 55, 0.06);
+      color: var(--gold);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .btn-local-photos:hover {
+      background: rgba(212, 175, 55, 0.14);
+      border-style: solid;
+    }
+
+    /* ==========================================================================
+       5. GRID DE PRODUCTOS (4 DESKTOP / 3 TABLET / 2 MOBILE) & TACTILE CARD
+       ========================================================================== */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .cap-card-slot {
+      perspective: 1100px;
+    }
+
+    .cap-card {
+      position: relative;
+      height: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transform-style: preserve-3d;
+      transition: transform 0.16s ease-out, border-color var(--transition), box-shadow var(--transition);
+      will-change: transform;
+    }
+
+    .cap-card:hover {
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    .cap-card.is-soldout {
+      opacity: 0.78;
+    }
+
+    /* Brillo sutil metálico sobre la tarjeta al inclinar */
+    .card-sheen {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(
+        280px circle at var(--mx, 50%) var(--my, 50%),
+        rgba(255, 255, 255, 0.13),
+        transparent 68%
+      );
+      transition: opacity 0.25s ease;
+    }
+
+    .cap-card:hover .card-sheen {
+      opacity: 1;
+    }
+
+    /* MARCO DE ESTUDIO NEUTRO (#e2e2e4) PARA FOTOS REALES DEL PDF */
+    .cap-media {
+      position: relative;
+      aspect-ratio: 4 / 3.35;
+      width: 100%;
+      background-color: var(--studio-frame);
+      background-image: radial-gradient(circle at 50% 45%, #ebebed 0%, #e2e2e4 62%, #d5d5d8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: zoom-in;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .cap-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 10px;
+      display: block;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .cap-card:hover .cap-photo {
+      transform: scale(1.045);
+    }
+
+    /* Placeholder minimalista de estudio cuando la foto real aún no está en img/gorras/ */
+    .cap-placeholder {
+      width: 100%;
+      height: 100%;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #52525b;
+      gap: 6px;
+      position: relative;
+    }
+
+    .placeholder-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(9, 9, 11, 0.05);
+      border: 1px solid rgba(9, 9, 11, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #3f3f46;
+      margin-bottom: 2px;
+    }
+
+    .placeholder-label {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #3f3f46;
+    }
+
+    .placeholder-path {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.63rem;
+      color: #52525b;
+      background: rgba(9, 9, 11, 0.06);
+      padding: 3px 7px;
+      border-radius: 5px;
+      max-width: 94%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn-card-upload-local {
+      margin-top: 4px;
+      padding: 5px 10px;
+      border-radius: 7px;
+      border: 1px solid rgba(9, 9, 11, 0.22);
+      background: rgba(255, 255, 255, 0.85);
+      color: #18181b;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: all var(--transition);
+    }
+
+    .cap-card:hover .btn-card-upload-local,
+    .btn-card-upload-local:focus {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .btn-card-upload-local:hover {
+      background: #09090b;
+      color: #fafafa;
+      border-color: #09090b;
+    }
+
+    /* Badges limpios sobre el marco */
+    .media-badges {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+      z-index: 3;
+      gap: 6px;
+    }
+
+    .badge-chip {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 6px;
+      backdrop-filter: blur(8px);
+    }
+
+    .badge-g5 {
+      background: rgba(9, 9, 11, 0.82);
+      color: var(--silver);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .badge-soldout {
+      background: rgba(220, 38, 38, 0.92);
+      color: #ffffff;
+    }
+
+    .badge-zoom-hint {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      z-index: 3;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: rgba(9, 9, 11, 0.72);
+      color: #fafafa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--transition);
+      pointer-events: none;
+    }
+
+    .cap-card:hover .badge-zoom-hint {
+      opacity: 1;
+    }
+
+    /* Cuerpo de la Tarjeta */
+    .cap-info {
+      padding: 14px 15px 15px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cap-brand {
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 3px;
+    }
+
+    .cap-name {
+      font-size: 0.96rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      color: var(--text);
+    }
+
+    .cap-pricing {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .price-primary-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .price-main {
+      font-size: 1.28rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      transition: color var(--transition);
+    }
+
+    .price-main.is-consult {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .price-tier-tag {
+      font-size: 0.64rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      background: var(--gold-soft);
+      padding: 2px 7px;
+      border-radius: 5px;
+    }
+
+    .price-tiers-mini {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+      padding-top: 7px;
+      border-top: 1px solid var(--border);
+      font-size: 0.68rem;
+      color: var(--text-dim);
+    }
+
+    .price-tiers-mini span.active-tier {
+      color: var(--silver);
+      font-weight: 700;
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 7px;
+    }
+
+    .btn-quickview {
+      height: 38px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--silver);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .btn-quickview:hover {
+      border-color: var(--border-hover);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+    }
+
+    .btn-add-cart {
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 9px;
+      border: 1px solid transparent;
+      background: var(--text);
+      color: var(--bg);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-add-cart:hover:not(:disabled) {
+      background: var(--gold);
+      color: #09090b;
+    }
+
+    .btn-add-cart:disabled {
+      background: #1c1c21;
+      color: #52525b;
+      border-color: var(--border);
+      cursor: not-allowed;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 64px 20px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      color: var(--text-secondary);
+    }
+
+    /* ==========================================================================
+       6. QUICK VIEW & PHOTO ZOOM MODAL (PAN-ZOOM 1x A 2.2x)
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .qv-modal {
+      width: 100%;
+      max-width: 960px;
+      max-height: 92vh;
+      overflow-y: auto;
+      background: #111114;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 20px;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.78);
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      position: relative;
+    }
+
+    .qv-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 15;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(9, 9, 11, 0.85);
+      color: var(--text);
+      font-size: 1.35rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition);
+    }
+
+    .qv-close:hover {
+      border-color: var(--border-hover);
+      background: #27272a;
+    }
+
+    /* Columna izquierda: Visor Zoom interactivo */
+    .qv-stage-col {
+      background: var(--studio-frame);
+      background-image: radial-gradient(circle at 50% 45%, #efefef 0%, #e2e2e4 65%, #d4d4d8 100%);
+      position: relative;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .qv-zoom-viewport {
+      width: 100%;
+      height: 100%;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: zoom-in;
+      touch-action: none;
+    }
+
+    .qv-zoom-viewport.is-zoomed {
+      cursor: grab;
+    }
+
+    .qv-zoom-viewport.is-zoomed:active {
+      cursor: grabbing;
+    }
+
+    .qv-zoom-img {
+      max-width: 92%;
+      max-height: 440px;
+      object-fit: contain;
+      transform-origin: center center;
+      transition: transform 0.14s ease-out;
+      pointer-events: none;
+    }
+
+    .qv-zoom-controls {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .zoom-pill-group {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(9, 9, 11, 0.84);
+      backdrop-filter: blur(8px);
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--text);
+      font-size: 0.74rem;
+      font-weight: 600;
+    }
+
+    .zoom-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .zoom-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .zoom-range {
+      width: 82px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+
+    /* Columna derecha: Especificaciones y Compra */
+    .qv-details-col {
+      padding: 28px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      border-left: 1px solid var(--border);
+    }
+
+    .qv-brand-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .qv-brand {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .qv-status-pill {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 99px;
+      text-transform: uppercase;
+    }
+
+    .qv-status-pill.disp {
+      background: rgba(34, 197, 94, 0.14);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+
+    .qv-status-pill.out {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .qv-title {
+      font-size: 1.55rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+
+    .qv-tiers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .qv-tier-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+
+    .qv-tier-card.highlight {
+      border-color: var(--border-gold);
+      background: rgba(212, 175, 55, 0.08);
+    }
+
+    .qv-tier-card span {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 2px;
+    }
+
+    .qv-tier-card strong {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .qv-tier-card.highlight strong {
+      color: var(--gold);
+    }
+
+    .qv-specs-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .qv-specs-list li {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .qv-specs-list li strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .qv-qty-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .qty-stepper {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .qty-stepper button {
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .qty-stepper button:hover {
+      border-color: var(--border-hover);
+    }
+
+    .qty-stepper span {
+      min-width: 22px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .qv-cta-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-primary-full {
+      width: 100%;
+      height: 44px;
+      border-radius: 10px;
+      border: none;
+      background: var(--text);
+      color: var(--bg);
+      font-weight: 800;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .btn-primary-full:hover:not(:disabled) {
+      background: var(--gold);
+    }
+
+    .btn-primary-full:disabled {
+      background: #27272a;
+      color: #71717a;
+      cursor: not-allowed;
+    }
+
+    .btn-wa-outline {
+      width: 100%;
+      height: 42px;
+      border-radius: 10px;
+      border: 1px solid rgba(34, 197, 94, 0.45);
+      background: rgba(34, 197, 94, 0.08);
+      color: #4ade80;
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .btn-wa-outline:hover {
+      background: rgba(34, 197, 94, 0.18);
+    }
+
+    /* ==========================================================================
+       7. SMART WHOLESALE CART DRAWER
+       ========================================================================== */
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 250;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(6px);
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .cart-drawer {
+      width: 100%;
+      max-width: 440px;
+      height: 100%;
+      background: #0d0d10;
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -24px 0 60px rgba(0, 0, 0, 0.7);
+      animation: drawerSlide 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes drawerSlide {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+
+    .cart-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-header h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .btn-icon-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 1.35rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-icon-close:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+
+    .wholesale-meter {
+      padding: 14px 20px;
+      background: #131318;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .wm-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.76rem;
+      margin-bottom: 8px;
+    }
+
+    .wm-head span:first-child {
+      color: var(--silver);
+      font-weight: 500;
+    }
+
+    .wm-tier-badge {
+      color: var(--gold);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .wm-track {
+      height: 6px;
+      border-radius: 99px;
+      background: #27272a;
+      overflow: hidden;
+    }
+
+    .wm-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #d4af37, #f5e08e);
+      border-radius: 99px;
+      transition: width 0.35s ease;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+    }
+
+    .cart-thumb {
+      width: 58px;
+      height: 52px;
+      border-radius: 8px;
+      background: var(--studio-frame);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .cart-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 3px;
+    }
+
+    .cart-item-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cart-item-brand {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      font-weight: 700;
+    }
+
+    .cart-item-title {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cart-item-price {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .cart-item-price .strike {
+      text-decoration: line-through;
+      color: var(--text-dim);
+    }
+
+    .cart-item-price strong {
+      color: var(--gold);
+    }
+
+    .cart-mini-qty {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .cart-mini-qty button {
+      width: 24px;
+      height: 24px;
+      border-radius: 5px;
+      border: none;
+      background: #1f1f25;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .cart-mini-qty span {
+      min-width: 18px;
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .cart-footer {
+      padding: 16px 20px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .delivery-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .delivery-option {
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      border-radius: 10px;
+      padding: 9px 10px;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .delivery-option input {
+      display: none;
+    }
+
+    .delivery-option strong {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text);
+    }
+
+    .delivery-option span {
+      display: block;
+      font-size: 0.66rem;
+      color: var(--text-dim);
+    }
+
+    .delivery-option.selected {
+      border-color: var(--border-gold);
+      background: rgba(212, 175, 55, 0.08);
+    }
+
+    .cart-sector-input {
+      width: 100%;
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    .cart-sector-input:focus {
+      border-color: var(--border-gold);
+    }
+
+    .cart-totals-box {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 0.8rem;
+    }
+
+    .tot-line {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-secondary);
+    }
+
+    .tot-line.savings {
+      color: #4ade80;
+      font-weight: 600;
+    }
+
+    .tot-line.grand {
+      padding-top: 7px;
+      margin-top: 3px;
+      border-top: 1px solid var(--border);
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .tot-line.grand strong {
+      color: var(--gold);
+      font-size: 1.22rem;
+    }
+
+    .btn-wa-checkout {
+      width: 100%;
+      height: 46px;
+      border-radius: 11px;
+      border: none;
+      background: var(--green);
+      color: #052e16;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: filter var(--transition);
+    }
+
+    .btn-wa-checkout:hover {
+      filter: brightness(1.08);
+    }
+
+    /* ==========================================================================
+       8. FOOTER EDITORIAL & TOAST
+       ========================================================================== */
+    .footer {
+      border-top: 1px solid var(--border);
+      background: #070709;
+      padding: 40px 0 32px;
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .footer-brand p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      max-width: 380px;
+      margin-top: 8px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .social-chip {
+      text-decoration: none;
+      color: var(--silver);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      padding: 8px 13px;
+      border-radius: 99px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      transition: all var(--transition);
+    }
+
+    .social-chip:hover {
+      border-color: var(--border-gold);
+      color: var(--gold);
+    }
+
+    .footer-copy {
+      padding-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.76rem;
+      color: var(--text-dim);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      z-index: 400;
+      background: #18181b;
+      border: 1px solid var(--border-gold);
+      color: var(--text);
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.75);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      max-width: 92vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ==========================================================================
+       9. RESPONSIVE (TABLET 3 COLS · MOBILE <= 650px 2 COMPACT COLS)
+       ========================================================================== */
+    @media (max-width: 1080px) {
+      .catalog-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .qv-modal {
+        grid-template-columns: 1fr;
+      }
+      .qv-details-col {
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+      .qv-stage-col,
+      .qv-zoom-viewport {
+        min-height: 300px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .nav-inner {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .header-search {
+        order: 3;
+        max-width: 100%;
+        flex: 1 1 100%;
+      }
+      .tier-selector-block {
+        align-items: flex-start;
+        width: 100%;
+      }
+      .tier-pills {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .container {
+        padding: 0 12px;
+      }
+
+      .btn-back-store .back-txt {
+        display: none;
+      }
+
+      .brand-name {
+        font-size: 0.88rem;
+      }
+
+      .brand-sub {
+        font-size: 0.55rem;
+      }
+
+      .hero-editorial {
+        padding: 20px 0 18px;
+      }
+
+      .hero-specs-strip {
+        font-size: 0.74rem;
+        gap: 6px 10px;
+      }
+
+      .tier-pill {
+        padding: 7px 6px;
+        font-size: 0.72rem;
+      }
+
+      .toolbar-secondary {
+        padding: 10px;
+      }
+
+      /* 2 COLUMNAS COMPACTAS EN CELULAR */
+      .catalog-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .cap-card {
+        border-radius: 13px;
+      }
+
+      .cap-media {
+        aspect-ratio: 1 / 0.92;
+      }
+
+      .cap-photo {
+        padding: 6px;
+      }
+
+      .media-badges {
+        top: 6px;
+        left: 6px;
+        right: 6px;
+      }
+
+      .badge-chip {
+        font-size: 0.54rem;
+        padding: 2px 6px;
+      }
+
+      .btn-card-upload-local {
+        opacity: 1;
+        transform: none;
+        font-size: 0.6rem;
+        padding: 4px 7px;
+      }
+
+      .placeholder-icon {
+        width: 34px;
+        height: 34px;
+      }
+
+      .placeholder-path {
+        font-size: 0.55rem;
+      }
+
+      .cap-info {
+        padding: 10px;
+        gap: 8px;
+      }
+
+      .cap-brand {
+        font-size: 0.58rem;
+      }
+
+      .cap-name {
+        font-size: 0.82rem;
+        line-height: 1.2;
+      }
+
+      .price-main {
+        font-size: 1.06rem;
+      }
+
+      .price-tier-tag {
+        font-size: 0.55rem;
+        padding: 2px 5px;
+      }
+
+      .price-tiers-mini {
+        font-size: 0.58rem;
+        padding-top: 5px;
+      }
+
+      .card-actions {
+        grid-template-columns: 32px 1fr;
+        gap: 5px;
+      }
+
+      .btn-quickview,
+      .btn-add-cart {
+        height: 34px;
+        border-radius: 8px;
+        font-size: 0.72rem;
+      }
+
+      .qv-details-col {
+        padding: 18px 16px;
+      }
+
+      .qv-title {
+        font-size: 1.28rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       HEADER STICKY CON BUSCADOR Y CARRITO
+       ======================================================================== -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <div class="nav-left">
+        <a href="/" class="btn-back-store" title="Volver a Tienda Digital Cedeño">
+          <span>←</span>
+          <span class="back-txt">Tienda Principal</span>
+        </a>
+
+        <a href="#top" class="brand-mark">
+          <div class="brand-monogram">CH</div>
+          <div class="brand-title-wrap">
+            <span class="brand-name">CHEMY HATS</span>
+            <span class="brand-sub">COLECCIÓN G5 PREMIUM</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="header-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+        <input type="text" id="input-search" placeholder="Buscar modelo o marca (ej. Dandy, 77 Gold, Lucifer, NY, Sad Boyz)...">
+        <button type="button" id="btn-clear-search" class="btn-clear-search oculto" aria-label="Limpiar búsqueda">&times;</button>
+      </div>
+
+      <button type="button" id="btn-open-cart" class="btn-cart-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="21" r="1"></circle>
+          <circle cx="19" cy="21" r="1"></circle>
+          <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+        </svg>
+        <span id="header-cart-label">Carrito</span>
+        <span class="cart-badge" id="cart-count-badge">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       COMPACT EDITORIAL HERO BANNER
+       ======================================================================== -->
+  <section class="hero-editorial" id="top">
+    <div class="container hero-layout">
+      <div>
+        <div class="hero-eyebrow">Catálogo Oficial · Guayaquil, Ecuador</div>
+        <h1 class="hero-heading">Chemy Hats · Colección Premium G5</h1>
+        <div class="hero-specs-strip">
+          <span class="hero-spec-item"><span class="hero-spec-dot">◆</span> Calidad G5 Premium</span>
+          <span class="hero-spec-item"><span class="hero-spec-dot">◆</span> Chip NFC Verificable</span>
+          <span class="hero-spec-item"><span class="hero-spec-dot">◆</span> Envíos Servientrega a todo Ecuador</span>
+          <span class="hero-spec-item"><span class="hero-spec-dot">◆</span> Entregas personales en Guayaquil</span>
+        </div>
+      </div>
+
+      <div class="tier-selector-block">
+        <span class="tier-caption">Visualizar precios por volumen (combinables)</span>
+        <div class="tier-pills" id="tier-pills">
+          <button type="button" class="tier-pill active" data-tier="pvp">
+            Unitario
+            <small>1 – 5 uds</small>
+          </button>
+          <button type="button" class="tier-pill" data-tier="pm6">
+            6+ Mayorista
+            <small>Desde 6 uds</small>
+          </button>
+          <button type="button" class="tier-pill" data-tier="pm12">
+            12+ Distribuidor
+            <small>Desde 12 uds</small>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       CATÁLOGO DE 61 GORRAS + FILTROS + CARGADOR DE FOTOS REALES
+       ======================================================================== -->
+  <main class="catalog-main">
+    <div class="container">
+      <div class="toolbar">
+        <!-- Filtros por Marca -->
+        <div class="brand-pills-row" id="brand-pills">
+          <button type="button" class="brand-pill active" data-brand="Todas">Todas</button>
+          <button type="button" class="brand-pill" data-brand="Dandy Hats">Dandy Hats</button>
+          <button type="button" class="brand-pill" data-brand="Barbas Hats">Barbas Hats</button>
+          <button type="button" class="brand-pill" data-brand="Rico Hats">Rico Hats</button>
+          <button type="button" class="brand-pill" data-brand="31 Hats">31 Hats</button>
+          <button type="button" class="brand-pill" data-brand="Báez x Shifu">Báez x Shifu</button>
+          <button type="button" class="brand-pill" data-brand="JC Hats">JC Hats</button>
+          <button type="button" class="brand-pill" data-brand="AB Hats">AB Hats</button>
+          <button type="button" class="brand-pill" data-brand="Rude Hats">Rude Hats</button>
+          <button type="button" class="brand-pill" data-brand="Otras">Otras</button>
+        </div>
+
+        <!-- Barra de conteo, disponibilidad, orden y prueba de fotos locales -->
+        <div class="toolbar-secondary">
+          <div class="results-count" id="results-count">Mostrando <strong>61</strong> modelos</div>
+
+          <div class="toolbar-controls">
+            <label class="toggle-available">
+              <input type="checkbox" id="toggle-only-available">
+              <span class="switch-track"></span>
+              <span>Solo disponibles</span>
+            </label>
+
+            <select id="sort-select" class="sort-select" aria-label="Ordenar productos">
+              <option value="featured">Ordenar: Destacados</option>
+              <option value="price-asc">Precio: Menor a mayor</option>
+              <option value="price-desc">Precio: Mayor a menor</option>
+            </select>
+
+            <!-- Herramienta para previsualizar fotos reales del PDF desde la PC -->
+            <button type="button" id="btn-bulk-local-photos" class="btn-local-photos" title="Selecciona las fotos extraídas de tu PDF para previsualizarlas al instante">
+              📂 Probar fotos locales
+            </button>
+            <input type="file" id="input-bulk-photos" multiple accept="image/*" class="oculto">
+            <input type="file" id="input-single-photo" accept="image/*" class="oculto">
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid Editorial de Gorras -->
+      <div class="catalog-grid" id="catalog-grid"></div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       FOOTER CHEMY HATS · GUAYAQUIL, ECUADOR
+       ======================================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="brand-mark">
+            <div class="brand-monogram">CH</div>
+            <div class="brand-title-wrap">
+              <span class="brand-name">CHEMY HATS</span>
+              <span class="brand-sub">GUAYAQUIL · ECUADOR</span>
+            </div>
+          </div>
+          <p>
+            Gorras Calidad G5 Premium con Chip NFC integrado y acabados de colección. Ventas unitarias y al por mayor con envíos seguros por Servientrega a todo el Ecuador y entregas personales en Guayaquil.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <a href="https://wa.me/593939110651" target="_blank" rel="noopener noreferrer" class="social-chip">WhatsApp: +593 939 110 651</a>
+          <a href="https://instagram.com/Chemyhats.ec" target="_blank" rel="noopener noreferrer" class="social-chip">Instagram: @Chemyhats.ec</a>
+          <a href="https://facebook.com/Chemyhats.ec" target="_blank" rel="noopener noreferrer" class="social-chip">Facebook: Chemyhats.ec</a>
+          <a href="https://tiktok.com/@JoseCaps26" target="_blank" rel="noopener noreferrer" class="social-chip">TikTok: @JoseCaps26</a>
+        </div>
+      </div>
+
+      <div class="footer-copy">
+        <span>© 2026 Chemy Hats · Tienda Digital Cedeño. Todos los derechos reservados.</span>
+        <span>Precios en USD · Guayaquil, Guayas, Ecuador</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       MODAL QUICK VIEW + PHOTO ZOOM (1x A 2.2x CON PAN-DRAG)
+       ======================================================================== -->
+  <div class="modal-backdrop oculto" id="qv-backdrop">
+    <div class="qv-modal" role="dialog" aria-modal="true" aria-labelledby="qv-title">
+      <button type="button" class="qv-close" id="btn-close-qv" aria-label="Cerrar vista rápida">&times;</button>
+
+      <!-- Visor Fotográfico Real con Zoom 1x -> 2.2x -->
+      <div class="qv-stage-col">
+        <div class="qv-zoom-viewport" id="qv-zoom-viewport">
+          <img src="" alt="" id="qv-zoom-img" class="qv-zoom-img oculto">
+          <div id="qv-placeholder" class="cap-placeholder oculto" style="padding:28px;"></div>
+        </div>
+
+        <div class="qv-zoom-controls" id="qv-zoom-controls">
+          <div class="zoom-pill-group">
+            <button type="button" class="zoom-btn" id="btn-zoom-out" aria-label="Alejar">−</button>
+            <input type="range" id="zoom-slider" class="zoom-range" min="1" max="2.2" step="0.1" value="1">
+            <button type="button" class="zoom-btn" id="btn-zoom-in" aria-label="Acercar">+</button>
+            <span id="zoom-val-txt" style="min-width:34px; text-align:right;">1.0x</span>
+          </div>
+          <div class="zoom-pill-group" id="zoom-hint-txt">
+            Clic o arrastra para inspeccionar
+          </div>
+        </div>
+      </div>
+
+      <!-- Detalles, Especificaciones y Precios -->
+      <div class="qv-details-col">
+        <div>
+          <div class="qv-brand-row">
+            <span class="qv-brand" id="qv-brand">MARCA</span>
+            <span class="qv-status-pill disp" id="qv-status">Disponible</span>
+          </div>
+          <h2 class="qv-title" id="qv-title">Nombre del Modelo</h2>
+          <p style="font-size:0.74rem; color:var(--text-dim); font-family:monospace;" id="qv-img-path">img/gorras/01-slug.jpg</p>
+
+          <!-- Tabla de 3 tarifas -->
+          <div class="qv-tiers-grid">
+            <div class="qv-tier-card" id="qv-cell-pvp">
+              <span>Unitario PVP</span>
+              <strong id="qv-pvp">$40</strong>
+            </div>
+            <div class="qv-tier-card" id="qv-cell-pm6">
+              <span>Mayor 6+</span>
+              <strong id="qv-pm6">$35</strong>
+            </div>
+            <div class="qv-tier-card" id="qv-cell-pm12">
+              <span>Distrib. 12+</span>
+              <strong id="qv-pm12">$30</strong>
+            </div>
+          </div>
+
+          <ul class="qv-specs-list">
+            <li><span>◆</span><span><strong>Calidad G5 Premium</strong> — Estructura firme y bordado en alto relieve</span></li>
+            <li><span>◆</span><span><strong>Chip NFC verificable</strong> — Integrado en la gorra</span></li>
+            <li><span>◆</span><span><strong>Envío nacional por Servientrega</strong> — A todo el Ecuador</span></li>
+            <li><span>◆</span><span><strong>Entregas personales en Guayaquil</strong> — Coordinación directa</span></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="qv-qty-bar" id="qv-qty-bar">
+            <span style="font-size:0.82rem; font-weight:600; color:var(--silver);">Cantidad</span>
+            <div class="qty-stepper">
+              <button type="button" id="qv-qty-dec">−</button>
+              <span id="qv-qty-val">1</span>
+              <button type="button" id="qv-qty-inc">+</button>
+            </div>
+          </div>
+
+          <div class="qv-cta-stack">
+            <button type="button" class="btn-primary-full" id="btn-qv-add">Añadir al Carrito</button>
+            <button type="button" class="btn-wa-outline" id="btn-qv-wa">Consultar / Pedir por WhatsApp</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       SMART WHOLESALE SHOPPING CART DRAWER
+       ======================================================================== -->
+  <div class="cart-overlay oculto" id="cart-overlay">
+    <aside class="cart-drawer" role="dialog" aria-modal="true" aria-label="Carrito de compras">
+      <div class="cart-header">
+        <h3>Tu Pedido</h3>
+        <button type="button" class="btn-icon-close" id="btn-close-cart" aria-label="Cerrar carrito">&times;</button>
+      </div>
+
+      <div class="wholesale-meter">
+        <div class="wm-head">
+          <span id="wm-text">Agrega 6 gorras combinables para precio Mayorista</span>
+          <span class="wm-tier-badge" id="wm-badge">Unitario</span>
+        </div>
+        <div class="wm-track">
+          <div class="wm-fill" id="wm-fill"></div>
+        </div>
+      </div>
+
+      <div class="cart-items" id="cart-items-list"></div>
+
+      <div class="cart-footer oculto" id="cart-footer">
+        <div class="delivery-grid" id="delivery-grid">
+          <label class="delivery-option selected">
+            <input type="radio" name="deliveryMode" value="Envío Nacional por Servientrega" checked>
+            <strong>Servientrega</strong>
+            <span>Todo el Ecuador</span>
+          </label>
+          <label class="delivery-option">
+            <input type="radio" name="deliveryMode" value="Entrega Personal en Guayaquil">
+            <strong>Guayaquil</strong>
+            <span>Entrega personal</span>
+          </label>
+        </div>
+
+        <input type="text" id="cart-sector" class="cart-sector-input" placeholder="Ciudad o sector (ej. Guayaquil Norte, Quito, Cuenca...)">
+
+        <div class="cart-totals-box">
+          <div class="tot-line">
+            <span>Cantidad total</span>
+            <strong id="cart-sum-units" style="color:var(--text);">0 gorras</strong>
+          </div>
+          <div class="tot-line">
+            <span>Tarifa aplicada</span>
+            <strong id="cart-sum-tier" style="color:var(--gold);">Unitario (P.V.P)</strong>
+          </div>
+          <div class="tot-line savings oculto" id="cart-row-savings">
+            <span>Ahorro mayorista</span>
+            <span id="cart-sum-savings">-$0.00</span>
+          </div>
+          <div class="tot-line grand">
+            <span>Total a pagar</span>
+            <strong id="cart-sum-total">$0.00</strong>
+          </div>
+        </div>
+
+        <button type="button" class="btn-wa-checkout" id="btn-checkout-wa">
+          Enviar Pedido por WhatsApp
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Toast discreto (sin alert()) -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ========================================================================
+       JAVASCRIPT PURO: CATÁLOGO 61 MODELOS, FOTOS LOCALES, ZOOM Y CARRITO MAYORISTA
+       ======================================================================== -->
+  <script>
+    "use strict";
+
+    // =========================================================================
+    // 1. CONFIGURACIÓN PRINCIPAL (Cambia el número aquí si lo necesitas)
+    // =========================================================================
+    const NUMERO_WHATSAPP = "593939110651";
+    const CART_STORAGE_KEY = "chemy_hats_editorial_cart_v1";
+
+    // =========================================================================
+    // 2. CATÁLOGO OFICIAL — LOS 61 MODELOS EXACTOS DEL PDF CHEMY HATS
+    // =========================================================================
+    const CATALOGO_GORRAS = [
+      { id: 1,  brand: "Dandy Hats",             brandGroup: "Dandy Hats",   name: "I Miss The Old Dandy",       pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/01-i-miss-the-old-dandy.jpg" },
+      { id: 2,  brand: "Dandy Hats",             brandGroup: "Dandy Hats",   name: "Junior H Sad Boyz",          pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/02-junior-h-sad-boyz.jpg" },
+      { id: 3,  brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "Rockstar",                   pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/03-rockstar.jpg" },
+      { id: 4,  brand: "Dandy Hats",             brandGroup: "Dandy Hats",   name: "Make Money Not Amigos",      pvp: 40,   pm6: 35,   pm12: 30,   agotado: true,  img: "img/gorras/04-make-money-not-amigos.jpg" },
+      { id: 5,  brand: "Rico Hats",              brandGroup: "Rico Hats",    name: "LA Japan 2.0",               pvp: 40,   pm6: 35,   pm12: 30,   agotado: true,  img: "img/gorras/05-la-japan-2-0.jpg" },
+      { id: 6,  brand: "Rico Hats",              brandGroup: "Rico Hats",    name: "Rico o Muerto",              pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/06-rico-o-muerto.jpg" },
+      { id: 7,  brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "77 Total Black",             pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/07-77-total-black.jpg" },
+      { id: 8,  brand: "Rude Hats",              brandGroup: "Rude Hats",    name: "Última Cena Total Black",    pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/08-ultima-cena-total-black.jpg" },
+      { id: 9,  brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "Rich Forever",               pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/09-rich-forever.jpg" },
+      { id: 10, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "B Cross 24K",                pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/10-b-cross-24k.jpg" },
+      { id: 11, brand: "31 Hats",                brandGroup: "31 Hats",      name: "LA Mago Universe",           pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/11-la-mago-universe.jpg" },
+      { id: 12, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "B Star 24K",                 pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/12-b-star-24k.jpg" },
+      { id: 13, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "77 Gold",                    pvp: 43,   pm6: 36,   pm12: 31,   agotado: false, img: "img/gorras/13-77-gold.jpg" },
+      { id: 14, brand: "Chucky Hats",            brandGroup: "Otras",        name: "Lucifer",                    pvp: 43,   pm6: 36,   pm12: 31,   agotado: false, img: "img/gorras/14-lucifer.jpg" },
+      { id: 15, brand: "Báez x Maestro Shifu",   brandGroup: "Báez x Shifu", name: "Astrogengar",                pvp: 45,   pm6: 37,   pm12: 32,   agotado: false, img: "img/gorras/15-astrogengar.jpg" },
+      { id: 16, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "B Star Red Camo",            pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/16-b-star-red-camo.jpg" },
+      { id: 17, brand: "Rico Hats",              brandGroup: "Rico Hats",    name: "LA Japan Total Black",       pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/17-la-japan-total-black.jpg" },
+      { id: 18, brand: "AB Hats",                brandGroup: "AB Hats",      name: "NY Thorned Total Black",     pvp: 45,   pm6: 37,   pm12: 33,   agotado: false, img: "img/gorras/18-ny-thorned-total-black.jpg" },
+      { id: 19, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "BBB Hand Skull",             pvp: 45,   pm6: 37,   pm12: 33,   agotado: false, img: "img/gorras/19-bbb-hand-skull.jpg" },
+      { id: 20, brand: "AB Hats",                brandGroup: "AB Hats",      name: "NY Thorned 24K Rose Gold",   pvp: 45,   pm6: 37,   pm12: 33,   agotado: false, img: "img/gorras/20-ny-thorned-24k-rose-gold.jpg" },
+      { id: 21, brand: "Báez x Maestro Shifu",   brandGroup: "Báez x Shifu", name: "Total Black",                pvp: 43,   pm6: 36,   pm12: 31,   agotado: false, img: "img/gorras/21-baez-shifu-total-black.jpg" },
+      { id: 22, brand: "JC Hats",                brandGroup: "JC Hats",      name: "Éxodo Azul",                 pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/22-exodo-azul.jpg" },
+      { id: 23, brand: "JC Hats",                brandGroup: "JC Hats",      name: "Éxodo Blanca",               pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/23-exodo-blanca.jpg" },
+      { id: 24, brand: "Dandy Hats",             brandGroup: "Dandy Hats",   name: "Ángel Azul Junior H",        pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/24-angel-azul-junior-h.jpg" },
+      { id: 25, brand: "Bigg Boss",              brandGroup: "Otras",        name: "San Judas Tadeo",            pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/25-san-judas-tadeo.jpg" },
+      { id: 26, brand: "Báez x Maestro Shifu",   brandGroup: "Báez x Shifu", name: "LS Samurai",                 pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/26-ls-samurai.jpg" },
+      { id: 27, brand: "Dandy Hats",             brandGroup: "Dandy Hats",   name: "x Tombochio",                pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/27-dandy-x-tombochio.jpg" },
+      { id: 28, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "Koridosu",                   pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/28-koridosu.jpg" },
+      { id: 29, brand: "Innedit Hats",           brandGroup: "Otras",        name: "Muratrabis Electric",        pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/29-muratrabis-electric.jpg" },
+      { id: 30, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "Scream",                     pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/30-scream.jpg" },
+      { id: 31, brand: "31 Hats",                brandGroup: "31 Hats",      name: "Mago Total Black",           pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/31-mago-total-black.jpg" },
+      { id: 32, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "Crime",                      pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/32-crime.jpg" },
+      { id: 33, brand: "Dandy Hats",             brandGroup: "Dandy Hats",   name: "D-Spec Black",               pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/33-d-spec-black.jpg" },
+      { id: 34, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "Tres Cruces Plateadas",      pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/34-tres-cruces-plateadas.jpg" },
+      { id: 35, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "Tres Cruces Doradas",        pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/35-tres-cruces-doradas.jpg" },
+      { id: 36, brand: "Dandy Hats",             brandGroup: "Dandy Hats",   name: "D-Spec",                     pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/36-d-spec.jpg" },
+      { id: 37, brand: "31 Hats",                brandGroup: "31 Hats",      name: "T-Star",                     pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/37-t-star.jpg" },
+      { id: 38, brand: "Dandy Hats",             brandGroup: "Dandy Hats",   name: "Sad Girlz Junior H",         pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/38-sad-girlz-junior-h.jpg" },
+      { id: 39, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "Good & Evil",                pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/39-good-and-evil.jpg" },
+      { id: 40, brand: "JC Hats",                brandGroup: "JC Hats",      name: "Éxodo Rosa",                 pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/40-exodo-rosa.jpg" },
+      { id: 41, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "B Cross Heaven",             pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/41-b-cross-heaven.jpg" },
+      { id: 42, brand: "Sad Boyz x Ed Hardy",    brandGroup: "Otras",        name: "La Virgen",                  pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/42-la-virgen.jpg" },
+      { id: 43, brand: "31 Hats",                brandGroup: "31 Hats",      name: "NY Triple Black",            pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/43-ny-triple-black.jpg" },
+      { id: 44, brand: "Dandy Hats",             brandGroup: "Dandy Hats",   name: "Sad Boyz",                   pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/44-sad-boyz.jpg" },
+      { id: 45, brand: "Dandy Hats x Canelo",    brandGroup: "Dandy Hats",   name: "CA Tiffany",                 pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/45-ca-tiffany.jpg" },
+      { id: 46, brand: "Dandy Hats",             brandGroup: "Dandy Hats",   name: "Clave Ali Junior H",         pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/46-clave-ali-junior-h.jpg" },
+      { id: 47, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "Galaxy",                     pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/47-galaxy.jpg" },
+      { id: 48, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "Galaxy Total Black",         pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/48-galaxy-total-black.jpg" },
+      { id: 49, brand: "Barbas Hats",            brandGroup: "Barbas Hats",  name: "B Camo",                     pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/49-b-camo.jpg" },
+      { id: 50, brand: "31 Hats",                brandGroup: "31 Hats",      name: "NY Diamond",                 pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/50-ny-diamond.jpg" },
+      { id: 51, brand: "Rude Hats x Tombochio",  brandGroup: "Rude Hats",    name: "GAD",                        pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/51-gad.jpg" },
+      { id: 52, brand: "Rude Hats x Tombochio",  brandGroup: "Rude Hats",    name: "Total Black",                pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/52-rude-tombochio-total-black.jpg" },
+      { id: 53, brand: "Dandy Hats x Junior H",  brandGroup: "Dandy Hats",   name: "La Cherry",                  pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/53-la-cherry.jpg" },
+      { id: 54, brand: "Rebel",                  brandGroup: "Otras",        name: "Just Lies Rosa",             pvp: null, pm6: null, pm12: null, agotado: true,  img: "img/gorras/54-just-lies-rosa.jpg" },
+      { id: 55, brand: "Rebel",                  brandGroup: "Otras",        name: "Just Lies Roja",             pvp: null, pm6: null, pm12: null, agotado: true,  img: "img/gorras/55-just-lies-roja.jpg" },
+      { id: 56, brand: "Rude Hats",              brandGroup: "Rude Hats",    name: "Crown of Thorns",            pvp: 40,   pm6: 35,   pm12: 30,   agotado: true,  img: "img/gorras/56-crown-of-thorns.jpg" },
+      { id: 57, brand: "Momm Hats",              brandGroup: "Otras",        name: "La Momm",                    pvp: 40,   pm6: 35,   pm12: 30,   agotado: true,  img: "img/gorras/57-la-momm.jpg" },
+      { id: 58, brand: "Dandy Hats x Lost Hills",brandGroup: "Dandy Hats",   name: "Lost Dandy",                 pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/58-lost-dandy.jpg" },
+      { id: 59, brand: "Dandy Hats",             brandGroup: "Dandy Hats",   name: "DDDAAANNNDDDYYY",            pvp: 40,   pm6: 35,   pm12: 30,   agotado: true,  img: "img/gorras/59-dddaaannndddyyy.jpg" },
+      { id: 60, brand: "Rico Hats",              brandGroup: "Rico Hats",    name: "La Cruz Gold",               pvp: 40,   pm6: 35,   pm12: 30,   agotado: true,  img: "img/gorras/60-la-cruz-gold.jpg" },
+      { id: 61, brand: "Rico Hats",              brandGroup: "Rico Hats",    name: "Lalala Superstar",           pvp: 40,   pm6: 35,   pm12: 30,   agotado: false, img: "img/gorras/61-lalala-superstar.jpg" }
+    ];
+
+    // =========================================================================
+    // 3. ESTADO DE LA APLICACIÓN Y PREVISUALIZACIÓN DE FOTOS LOCALES
+    // =========================================================================
+    let activeTier = "pvp";          // pvp | pm6 | pm12
+    let activeBrand = "Todas";
+    let searchQuery = "";
+    let onlyAvailable = false;
+    let sortMode = "featured";       // featured | price-asc | price-desc
+    let cart = [];
+
+    // Mapa en memoria para pruebas locales (id -> ObjectURL)
+    const localPhotoOverrides = {};
+    let pendingSingleUploadId = null;
+
+    // Estado del Modal Quick View + Pan-Zoom
+    let currentQvCap = null;
+    let qvQty = 1;
+    let zoomLevel = 1;
+    let panX = 0;
+    let panY = 0;
+    let isPanning = false;
+    let panStartX = 0;
+    let panStartY = 0;
+    let panMoved = false;
+
+    try {
+      const savedCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY));
+      if (Array.isArray(savedCart)) cart = savedCart;
+    } catch (e) {
+      cart = [];
+    }
+
+    // =========================================================================
+    // 4. UTILIDADES
+    // =========================================================================
+    let toastTimer = null;
+    function showToast(text) {
+      const el = document.getElementById("toast");
+      if (!el) return;
+      el.textContent = text;
+      el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    function getResolvedImageSrc(cap) {
+      return localPhotoOverrides[cap.id] || cap.img;
+    }
+
+    function getCapPrice(cap, tier) {
+      if (cap.pvp === null) return null;
+      if (tier === "pm12") return cap.pm12;
+      if (tier === "pm6") return cap.pm6;
+      return cap.pvp;
+    }
+
+    function getTierShortLabel(tier) {
+      if (tier === "pm12") return "12+ Distrib.";
+      if (tier === "pm6") return "6+ Mayorista";
+      return "P.V.P";
+    }
+
+    function normalizeText(str) {
+      return String(str || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+    }
+
+    // Ícono minimalista de cámara / contorno limpio para placeholder de estudio
+    function getStudioPlaceholderMarkup(cap) {
+      return `
+        <div class="placeholder-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
+            <circle cx="12" cy="13" r="3"></circle>
+          </svg>
+        </div>
+        <span class="placeholder-label">Foto real pendiente</span>
+        <span class="placeholder-path" title="${cap.img}">${cap.img}</span>
+        <button type="button" class="btn-card-upload-local" data-action="upload-one" data-id="${cap.id}">
+          Cargar foto local
+        </button>
+      `;
+    }
+
+    // =========================================================================
+    // 5. RENDERIZADO DEL CATÁLOGO + TILT SUTIL EN HOVER
+    // =========================================================================
+    function renderCatalog() {
+      const grid = document.getElementById("catalog-grid");
+      const countEl = document.getElementById("results-count");
+      if (!grid) return;
+
+      const q = normalizeText(searchQuery);
+
+      let list = CATALOGO_GORRAS.filter(cap => {
+        const matchBrand = activeBrand === "Todas" || cap.brandGroup === activeBrand;
+        const matchAvail = !onlyAvailable || !cap.agotado;
+        const haystack = normalizeText(`${cap.brand} ${cap.name} ${cap.brandGroup} ${cap.id}`);
+        const matchSearch = !q || haystack.includes(q);
+        return matchBrand && matchAvail && matchSearch;
+      });
+
+      // Ordenamiento
+      if (sortMode === "price-asc") {
+        list = [...list].sort((a, b) => {
+          const pa = getCapPrice(a, activeTier) ?? 9999;
+          const pb = getCapPrice(b, activeTier) ?? 9999;
+          return pa - pb || a.id - b.id;
+        });
+      } else if (sortMode === "price-desc") {
+        list = [...list].sort((a, b) => {
+          const pa = getCapPrice(a, activeTier) ?? -1;
+          const pb = getCapPrice(b, activeTier) ?? -1;
+          return pb - pa || a.id - b.id;
+        });
+      }
+
+      if (countEl) {
+        countEl.innerHTML = `Mostrando <strong>${list.length}</strong> de <strong>${CATALOGO_GORRAS.length}</strong> modelos`;
+      }
+
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <p style="font-size:1rem; font-weight:700; color:var(--text); margin-bottom:6px;">Sin resultados para tu búsqueda</p>
+            <p style="font-size:0.84rem;">Intenta con otro modelo, marca o desactiva el filtro de disponibilidad.</p>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = "";
+
+      list.forEach(cap => {
+        const currentPrice = getCapPrice(cap, activeTier);
+        const imgSrc = getResolvedImageSrc(cap);
+
+        const slot = document.createElement("div");
+        slot.className = "cap-card-slot";
+
+        const priceHtml = currentPrice !== null
+          ? `<span class="price-main">$${currentPrice}</span><span class="price-tier-tag">${getTierShortLabel(activeTier)}</span>`
+          : `<span class="price-main is-consult">Consultar</span><span class="price-tier-tag">Sin stock</span>`;
+
+        const miniTiersHtml = cap.pvp !== null
+          ? `<span class="${activeTier === "pvp" ? "active-tier" : ""}">PVP $${cap.pvp}</span>
+             <span class="${activeTier === "pm6" ? "active-tier" : ""}">6+ $${cap.pm6}</span>
+             <span class="${activeTier === "pm12" ? "active-tier" : ""}">12+ $${cap.pm12}</span>`
+          : `<span>Edición limitada</span><span>Re-stock bajo pedido</span>`;
+
+        slot.innerHTML = `
+          <article class="cap-card ${cap.agotado ? "is-soldout" : ""}" data-id="${cap.id}">
+            <div class="card-sheen"></div>
+
+            <div class="cap-media" data-action="quickview" data-id="${cap.id}">
+              <div class="media-badges">
+                <span class="badge-chip badge-g5">G5 · NFC</span>
+                ${cap.agotado ? `<span class="badge-chip badge-soldout">Agotado</span>` : ""}
+              </div>
+
+              <img src="${imgSrc}" alt="${cap.brand} ${cap.name}" class="cap-photo" loading="lazy">
+              <div class="cap-placeholder oculto">${getStudioPlaceholderMarkup(cap)}</div>
+
+              <div class="badge-zoom-hint" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  <line x1="11" y1="8" x2="11" y2="14"></line>
+                  <line x1="8" y1="11" x2="14" y2="11"></line>
+                </svg>
+              </div>
+            </div>
+
+            <div class="cap-info">
+              <div>
+                <div class="cap-brand">${cap.brand}</div>
+                <h3 class="cap-name">${cap.name}</h3>
+              </div>
+
+              <div class="cap-pricing">
+                <div class="price-primary-row">${priceHtml}</div>
+                <div class="price-tiers-mini">${miniTiersHtml}</div>
+
+                <div class="card-actions">
+                  <button type="button" class="btn-quickview" data-action="quickview" data-id="${cap.id}" title="Ver foto en grande y detalles" aria-label="Inspeccionar ${cap.name}">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                  <button type="button" class="btn-add-cart" data-action="add" data-id="${cap.id}" ${cap.agotado ? "disabled" : ""}>
+                    ${cap.agotado ? "Agotado" : "Añadir"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+
+        // Manejo limpio de fallback si aún no existe el JPG en img/gorras/
+        const imgEl = slot.querySelector(".cap-photo");
+        const phEl = slot.querySelector(".cap-placeholder");
+        imgEl.addEventListener("error", () => {
+          imgEl.classList.add("oculto");
+          phEl.classList.remove("oculto");
+        });
+        imgEl.addEventListener("load", () => {
+          imgEl.classList.remove("oculto");
+          phEl.classList.add("oculto");
+        });
+
+        // Inclinación táctil 3D sutil con brillo metálico
+        bindSubtleTilt(slot.querySelector(".cap-card"));
+        grid.appendChild(slot);
+      });
+    }
+
+    function bindSubtleTilt(card) {
+      if (!card) return;
+      card.addEventListener("pointermove", (e) => {
+        if (e.pointerType === "touch") return;
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const px = (x / rect.width) * 100;
+        const py = (y / rect.height) * 100;
+        const rotY = ((x / rect.width) - 0.5) * 8;
+        const rotX = -((y / rect.height) - 0.5) * 7;
+
+        card.style.setProperty("--mx", `${px}%`);
+        card.style.setProperty("--my", `${py}%`);
+        card.style.transform = `rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) translateY(-3px)`;
+      });
+
+      card.addEventListener("pointerleave", () => {
+        card.style.transform = "rotateX(0deg) rotateY(0deg) translateY(0px)";
+      });
+    }
+
+    // =========================================================================
+    // 6. AUTO-EMPAREJAMIENTO DE FOTOS LOCALES EXTRAÍDAS DEL PDF
+    // =========================================================================
+    function handleBulkLocalPhotos(fileList) {
+      const files = Array.from(fileList || []).filter(f => f.type.startsWith("image/"));
+      if (files.length === 0) return;
+
+      // Ordenar archivos naturalmente (01, 02, ..., 10)
+      files.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }));
+
+      const assignedIds = new Set();
+      const unmatchedFiles = [];
+
+      // Paso 1: Coincidencia por número de prefijo (ej. "01-...", "13.jpg") o slug del nombre
+      files.forEach(file => {
+        const cleanFile = normalizeText(file.name.replace(/\.[^.]+$/, ""));
+        let matchedCap = null;
+
+        // 1a. Buscar prefijo numérico exacto 1..61
+        const numMatch = file.name.match(/^0*(\d{1,2})(?:[^0-9]|$)/);
+        if (numMatch) {
+          const numId = parseInt(numMatch[1], 10);
+          const candidate = CATALOGO_GORRAS.find(c => c.id === numId);
+          if (candidate && !assignedIds.has(candidate.id)) {
+            matchedCap = candidate;
+          }
+        }
+
+        // 1b. Buscar por nombre del modelo en el archivo
+        if (!matchedCap && cleanFile.length >= 3) {
+          matchedCap = CATALOGO_GORRAS.find(c => {
+            if (assignedIds.has(c.id)) return false;
+            const slugName = normalizeText(c.name);
+            return cleanFile.includes(slugName) || slugName.includes(cleanFile);
+          });
+        }
+
+        if (matchedCap) {
+          if (localPhotoOverrides[matchedCap.id]) {
+            URL.revokeObjectURL(localPhotoOverrides[matchedCap.id]);
+          }
+          localPhotoOverrides[matchedCap.id] = URL.createObjectURL(file);
+          assignedIds.add(matchedCap.id);
+        } else {
+          unmatchedFiles.push(file);
+        }
+      });
+
+      // Paso 2: Si sobraron imágenes sin nombre coincidente, asignarlas en orden secuencial
+      let nextIdx = 0;
+      unmatchedFiles.forEach(file => {
+        while (nextIdx < CATALOGO_GORRAS.length && assignedIds.has(CATALOGO_GORRAS[nextIdx].id)) {
+          nextIdx++;
+        }
+        if (nextIdx < CATALOGO_GORRAS.length) {
+          const cap = CATALOGO_GORRAS[nextIdx];
+          if (localPhotoOverrides[cap.id]) {
+            URL.revokeObjectURL(localPhotoOverrides[cap.id]);
+          }
+          localPhotoOverrides[cap.id] = URL.createObjectURL(file);
+          assignedIds.add(cap.id);
+          nextIdx++;
+        }
+      });
+
+      renderCatalog();
+      updateCartUI();
+      showToast(`✔ ${assignedIds.size} foto(s) cargadas en vista previa local`);
+    }
+
+    function handleSingleLocalPhoto(file) {
+      if (!file || !pendingSingleUploadId) return;
+      const id = pendingSingleUploadId;
+      pendingSingleUploadId = null;
+
+      if (localPhotoOverrides[id]) {
+        URL.revokeObjectURL(localPhotoOverrides[id]);
+      }
+      localPhotoOverrides[id] = URL.createObjectURL(file);
+      renderCatalog();
+      updateCartUI();
+
+      // Si el Quick View está abierto en esa misma gorra, refrescar imagen
+      if (currentQvCap && currentQvCap.id === id) {
+        loadQuickViewMedia(currentQvCap);
+      }
+
+      const cap = CATALOGO_GORRAS.find(c => c.id === id);
+      showToast(`✔ Foto cargada en ${cap ? cap.name : "modelo #" + id}`);
+    }
+
+    // =========================================================================
+    // 7. QUICK VIEW MODAL + PAN-ZOOM INTERACTIVO (1x A 2.2x)
+    // =========================================================================
+    function applyZoomTransform() {
+      const img = document.getElementById("qv-zoom-img");
+      const viewport = document.getElementById("qv-zoom-viewport");
+      const slider = document.getElementById("zoom-slider");
+      const valTxt = document.getElementById("zoom-val-txt");
+      if (!img || !viewport) return;
+
+      if (zoomLevel <= 1.01) {
+        zoomLevel = 1;
+        panX = 0;
+        panY = 0;
+      } else {
+        const maxPan = (zoomLevel - 1) * 165;
+        panX = Math.max(-maxPan, Math.min(maxPan, panX));
+        panY = Math.max(-maxPan, Math.min(maxPan, panY));
+      }
+
+      img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+      viewport.classList.toggle("is-zoomed", zoomLevel > 1);
+      if (slider) slider.value = String(zoomLevel.toFixed(1));
+      if (valTxt) valTxt.textContent = `${zoomLevel.toFixed(1)}x`;
+    }
+
+    function resetZoom() {
+      zoomLevel = 1;
+      panX = 0;
+      panY = 0;
+      applyZoomTransform();
+    }
+
+    function loadQuickViewMedia(cap) {
+      const imgEl = document.getElementById("qv-zoom-img");
+      const phEl = document.getElementById("qv-placeholder");
+      const controlsEl = document.getElementById("qv-zoom-controls");
+      resetZoom();
+
+      imgEl.classList.add("oculto");
+      phEl.classList.add("oculto");
+      phEl.innerHTML = getStudioPlaceholderMarkup(cap);
+
+      imgEl.onload = () => {
+        imgEl.classList.remove("oculto");
+        phEl.classList.add("oculto");
+        controlsEl.classList.remove("oculto");
+      };
+      imgEl.onerror = () => {
+        imgEl.classList.add("oculto");
+        phEl.classList.remove("oculto");
+        controlsEl.classList.add("oculto");
+      };
+      imgEl.alt = `${cap.brand} ${cap.name}`;
+      imgEl.src = getResolvedImageSrc(cap);
+    }
+
+    function openQuickView(capId) {
+      const cap = CATALOGO_GORRAS.find(c => c.id === capId);
+      if (!cap) return;
+
+      currentQvCap = cap;
+      qvQty = 1;
+
+      document.getElementById("qv-brand").textContent = cap.brand;
+      document.getElementById("qv-title").textContent = cap.name;
+      document.getElementById("qv-img-path").textContent = cap.img;
+      document.getElementById("qv-qty-val").textContent = "1";
+
+      const statusEl = document.getElementById("qv-status");
+      statusEl.textContent = cap.agotado ? "Agotado" : "Disponible";
+      statusEl.className = `qv-status-pill ${cap.agotado ? "out" : "disp"}`;
+
+      document.getElementById("qv-pvp").textContent = cap.pvp !== null ? `$${cap.pvp}` : "—";
+      document.getElementById("qv-pm6").textContent = cap.pm6 !== null ? `$${cap.pm6}` : "—";
+      document.getElementById("qv-pm12").textContent = cap.pm12 !== null ? `$${cap.pm12}` : "—";
+
+      document.getElementById("qv-cell-pvp").classList.toggle("highlight", activeTier === "pvp");
+      document.getElementById("qv-cell-pm6").classList.toggle("highlight", activeTier === "pm6");
+      document.getElementById("qv-cell-pm12").classList.toggle("highlight", activeTier === "pm12");
+
+      const qtyBar = document.getElementById("qv-qty-bar");
+      const btnAdd = document.getElementById("btn-qv-add");
+      const btnWa = document.getElementById("btn-qv-wa");
+
+      qtyBar.classList.toggle("oculto", cap.agotado);
+      btnAdd.disabled = cap.agotado;
+      btnAdd.textContent = cap.agotado ? "Modelo Agotado" : "Añadir al Carrito";
+      btnWa.textContent = cap.agotado ? "Consultar re-stock por WhatsApp" : "Pedir directo por WhatsApp";
+
+      loadQuickViewMedia(cap);
+      document.getElementById("qv-backdrop").classList.remove("oculto");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeQuickView() {
+      document.getElementById("qv-backdrop").classList.add("oculto");
+      document.body.style.overflow = "";
+    }
+
+    // =========================================================================
+    // 8. CARRITO INTELIGENTE CON TARIFA MAYORISTA AUTOMÁTICA (6+ / 12+)
+    // =========================================================================
+    function saveCart() {
+      try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+      } catch (e) {}
+    }
+
+    function addToCart(capId, qty = 1) {
+      const cap = CATALOGO_GORRAS.find(c => c.id === capId);
+      if (!cap || cap.agotado || cap.pvp === null) return;
+
+      const existing = cart.find(i => i.id === capId);
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        cart.push({ id: capId, qty });
+      }
+      saveCart();
+      updateCartUI();
+
+      const totalUnits = cart.reduce((acc, i) => acc + i.qty, 0);
+      if (totalUnits === 6) {
+        showToast("Tarifa Mayorista 6+ activada automáticamente en tu carrito");
+      } else if (totalUnits === 12) {
+        showToast("Tarifa Distribuidor 12+ activada en todo tu pedido");
+      } else {
+        showToast(`Añadida: ${cap.name} (${totalUnits} en carrito)`);
+      }
+    }
+
+    function updateCartQty(capId, delta) {
+      const idx = cart.findIndex(i => i.id === capId);
+      if (idx === -1) return;
+      cart[idx].qty += delta;
+      if (cart[idx].qty <= 0) {
+        cart.splice(idx, 1);
+      }
+      saveCart();
+      updateCartUI();
+    }
+
+    function calculateCart() {
+      const totalUnits = cart.reduce((acc, i) => acc + i.qty, 0);
+      let appliedTier = "pvp";
+      let tierLabel = "Unitario (P.V.P)";
+
+      if (totalUnits >= 12) {
+        appliedTier = "pm12";
+        tierLabel = "Distribuidor 12+ uds";
+      } else if (totalUnits >= 6) {
+        appliedTier = "pm6";
+        tierLabel = "Mayorista 6+ uds";
+      }
+
+      let pvpTotal = 0;
+      let grandTotal = 0;
+
+      const items = cart.map(entry => {
+        const cap = CATALOGO_GORRAS.find(c => c.id === entry.id);
+        if (!cap || cap.pvp === null) return null;
+        const unitPrice = getCapPrice(cap, appliedTier);
+        pvpTotal += cap.pvp * entry.qty;
+        grandTotal += unitPrice * entry.qty;
+        return { cap, qty: entry.qty, unitPrice, lineTotal: unitPrice * entry.qty };
+      }).filter(Boolean);
+
+      const savings = Math.max(0, pvpTotal - grandTotal);
+      return { totalUnits, appliedTier, tierLabel, pvpTotal, grandTotal, savings, items };
+    }
+
+    function updateCartUI() {
+      const summary = calculateCart();
+      document.getElementById("cart-count-badge").textContent = summary.totalUnits;
+
+      const headerLabel = document.getElementById("header-cart-label");
+      if (headerLabel) {
+        headerLabel.textContent = summary.appliedTier === "pm12" ? "12+ Activo" : (summary.appliedTier === "pm6" ? "6+ Activo" : "Carrito");
+      }
+
+      // Medidor de progreso hacia 6+ y 12+
+      const wmText = document.getElementById("wm-text");
+      const wmBadge = document.getElementById("wm-badge");
+      const wmFill = document.getElementById("wm-fill");
+
+      if (summary.totalUnits === 0) {
+        wmText.textContent = "Combina 6 gorras para activar precio Mayorista";
+        wmBadge.textContent = "0 / 6 uds";
+        wmFill.style.width = "0%";
+      } else if (summary.totalUnits < 6) {
+        const rem = 6 - summary.totalUnits;
+        wmText.textContent = `Te faltan ${rem} gorra${rem === 1 ? "" : "s"} para precio Mayorista 6+`;
+        wmBadge.textContent = `${summary.totalUnits} / 6 uds`;
+        wmFill.style.width = `${(summary.totalUnits / 6) * 50}%`;
+      } else if (summary.totalUnits < 12) {
+        const rem = 12 - summary.totalUnits;
+        wmText.textContent = `Mayorista 6+ activo · Faltan ${rem} para tarifa 12+`;
+        wmBadge.textContent = `${summary.totalUnits} / 12 uds`;
+        wmFill.style.width = `${50 + ((summary.totalUnits - 6) / 6) * 50}%`;
+      } else {
+        wmText.textContent = "Tarifa máxima Distribuidor 12+ desbloqueada";
+        wmBadge.textContent = "MÁXIMO AHORRO";
+        wmFill.style.width = "100%";
+      }
+
+      const listEl = document.getElementById("cart-items-list");
+      const footerEl = document.getElementById("cart-footer");
+
+      if (summary.items.length === 0) {
+        listEl.innerHTML = `
+          <div style="text-align:center; padding:56px 18px; color:var(--text-secondary);">
+            <p style="font-size:0.95rem; font-weight:700; color:var(--text); margin-bottom:6px;">Tu carrito está vacío</p>
+            <p style="font-size:0.8rem;">Puedes combinar distintos modelos para alcanzar los precios de 6+ o 12+ unidades.</p>
+          </div>`;
+        footerEl.classList.add("oculto");
+        return;
+      }
+
+      footerEl.classList.remove("oculto");
+      listEl.innerHTML = "";
+
+      summary.items.forEach(({ cap, qty, unitPrice, lineTotal }) => {
+        const discounted = unitPrice < cap.pvp;
+        const row = document.createElement("div");
+        row.className = "cart-item";
+        row.innerHTML = `
+          <div class="cart-thumb">
+            <img src="${getResolvedImageSrc(cap)}" alt="${cap.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span style="display:none; font-size:0.62rem; font-weight:800; color:#3f3f46;">#${String(cap.id).padStart(2, "0")}</span>
+          </div>
+          <div class="cart-item-body">
+            <div class="cart-item-brand">${cap.brand}</div>
+            <div class="cart-item-title">${cap.name}</div>
+            <div class="cart-item-price">
+              ${discounted ? `<span class="strike">$${cap.pvp}</span>` : ""}
+              <strong>$${unitPrice} c/u</strong>
+              <span>· $${lineTotal}</span>
+            </div>
+          </div>
+          <div class="cart-mini-qty">
+            <button type="button" data-cart-dec="${cap.id}" aria-label="Restar">−</button>
+            <span>${qty}</span>
+            <button type="button" data-cart-inc="${cap.id}" aria-label="Sumar">+</button>
+          </div>
+        `;
+        listEl.appendChild(row);
+      });
+
+      document.getElementById("cart-sum-units").textContent = `${summary.totalUnits} ${summary.totalUnits === 1 ? "gorra" : "gorras"}`;
+      document.getElementById("cart-sum-tier").textContent = summary.tierLabel;
+      document.getElementById("cart-sum-total").textContent = `$${summary.grandTotal.toFixed(2)}`;
+
+      const rowSavings = document.getElementById("cart-row-savings");
+      if (summary.savings > 0) {
+        rowSavings.classList.remove("oculto");
+        document.getElementById("cart-sum-savings").textContent = `-$${summary.savings.toFixed(2)}`;
+      } else {
+        rowSavings.classList.add("oculto");
+      }
+    }
+
+    function sendWhatsAppOrder() {
+      const summary = calculateCart();
+      if (summary.items.length === 0) return;
+
+      const selectedRadio = document.querySelector('input[name="deliveryMode"]:checked');
+      const delivery = selectedRadio ? selectedRadio.value : "Envío Nacional por Servientrega";
+      const sector = (document.getElementById("cart-sector")?.value || "").trim();
+
+      let lines = "";
+      summary.items.forEach(({ cap, qty, unitPrice, lineTotal }) => {
+        lines += `• ${qty}x *${cap.brand} - ${cap.name}* ($${unitPrice} c/u = $${lineTotal})\n`;
+      });
+
+      const savingsLine = summary.savings > 0 ? `• *Ahorro Mayorista:* -$${summary.savings.toFixed(2)}\n` : "";
+      const sectorLine = sector ? `• *Ciudad / Sector:* ${sector}\n` : "";
+
+      const message =
+        `Hola *Chemy Hats* (Tienda Digital Cedeño), quiero realizar este pedido de la *Colección G5 Premium (Chip NFC)*:\n\n` +
+        `*DETALLE DEL PEDIDO:*\n${lines}\n` +
+        `• *Total Unidades:* ${summary.totalUnits} gorra(s)\n` +
+        `• *Tarifa Aplicada:* ${summary.tierLabel}\n` +
+        `${savingsLine}` +
+        `• *TOTAL A PAGAR:* $${summary.grandTotal.toFixed(2)}\n\n` +
+        `• *Entrega:* ${delivery}\n` +
+        `${sectorLine}` +
+        `Quedo atento para coordinar pago y envío.`;
+
+      window.open(`https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+    }
+
+    // =========================================================================
+    // 9. INICIALIZACIÓN Y EVENT LISTENERS
+    // =========================================================================
+    document.addEventListener("DOMContentLoaded", () => {
+      renderCatalog();
+      updateCartUI();
+
+      // Buscador en header
+      const searchInput = document.getElementById("input-search");
+      const btnClearSearch = document.getElementById("btn-clear-search");
+
+      searchInput?.addEventListener("input", (e) => {
+        searchQuery = e.target.value;
+        btnClearSearch.classList.toggle("oculto", !searchQuery);
+        renderCatalog();
+      });
+
+      btnClearSearch?.addEventListener("click", () => {
+        searchQuery = "";
+        searchInput.value = "";
+        btnClearSearch.classList.add("oculto");
+        renderCatalog();
+        searchInput.focus();
+      });
+
+      // Selector de modalidad de precio
+      document.getElementById("tier-pills")?.addEventListener("click", (e) => {
+        const btn = e.target.closest(".tier-pill");
+        if (!btn) return;
+        activeTier = btn.getAttribute("data-tier");
+        document.querySelectorAll("#tier-pills .tier-pill").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderCatalog();
+      });
+
+      // Filtros de marca
+      document.getElementById("brand-pills")?.addEventListener("click", (e) => {
+        const btn = e.target.closest(".brand-pill");
+        if (!btn) return;
+        activeBrand = btn.getAttribute("data-brand");
+        document.querySelectorAll("#brand-pills .brand-pill").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderCatalog();
+      });
+
+      // Toggle Solo disponibles
+      document.getElementById("toggle-only-available")?.addEventListener("change", (e) => {
+        onlyAvailable = e.target.checked;
+        renderCatalog();
+      });
+
+      // Selector de ordenamiento
+      document.getElementById("sort-select")?.addEventListener("change", (e) => {
+        sortMode = e.target.value;
+        renderCatalog();
+      });
+
+      // Carga masiva de fotos locales del PDF
+      const bulkInput = document.getElementById("input-bulk-photos");
+      const singleInput = document.getElementById("input-single-photo");
+
+      document.getElementById("btn-bulk-local-photos")?.addEventListener("click", () => bulkInput?.click());
+      bulkInput?.addEventListener("change", (e) => {
+        handleBulkLocalPhotos(e.target.files);
+        e.target.value = "";
+      });
+
+      singleInput?.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleSingleLocalPhoto(e.target.files[0]);
+        }
+        e.target.value = "";
+      });
+
+      // Delegación de clics en la grilla de productos
+      document.getElementById("catalog-grid")?.addEventListener("click", (e) => {
+        const uploadBtn = e.target.closest("button[data-action='upload-one']");
+        if (uploadBtn) {
+          e.stopPropagation();
+          pendingSingleUploadId = parseInt(uploadBtn.getAttribute("data-id"), 10);
+          singleInput?.click();
+          return;
+        }
+
+        const actionEl = e.target.closest("[data-action]");
+        if (!actionEl) return;
+        const action = actionEl.getAttribute("data-action");
+        const id = parseInt(actionEl.getAttribute("data-id"), 10);
+
+        if (action === "quickview") openQuickView(id);
+        if (action === "add") addToCart(id, 1);
+      });
+
+      // Eventos del Modal Quick View + Pan-Zoom 1x -> 2.2x
+      const qvBackdrop = document.getElementById("qv-backdrop");
+      const qvViewport = document.getElementById("qv-zoom-viewport");
+      const zoomSlider = document.getElementById("zoom-slider");
+
+      document.getElementById("btn-close-qv")?.addEventListener("click", closeQuickView);
+      qvBackdrop?.addEventListener("click", (e) => {
+        if (e.target === qvBackdrop) closeQuickView();
+      });
+
+      // Botón cargar foto local dentro del Quick View si faltara la foto
+      document.getElementById("qv-placeholder")?.addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-action='upload-one']");
+        if (!btn) return;
+        pendingSingleUploadId = parseInt(btn.getAttribute("data-id"), 10);
+        singleInput?.click();
+      });
+
+      document.getElementById("btn-zoom-in")?.addEventListener("click", () => {
+        zoomLevel = Math.min(2.2, +(zoomLevel + 0.3).toFixed(1));
+        applyZoomTransform();
+      });
+
+      document.getElementById("btn-zoom-out")?.addEventListener("click", () => {
+        zoomLevel = Math.max(1, +(zoomLevel - 0.3).toFixed(1));
+        applyZoomTransform();
+      });
+
+      zoomSlider?.addEventListener("input", (e) => {
+        zoomLevel = parseFloat(e.target.value) || 1;
+        applyZoomTransform();
+      });
+
+      // Pan / drag y clic para alternar zoom 1x <-> 1.9x en la foto real
+      qvViewport?.addEventListener("pointerdown", (e) => {
+        if (e.target.closest("button")) return;
+        const imgVisible = !document.getElementById("qv-zoom-img").classList.contains("oculto");
+        if (!imgVisible) return;
+
+        isPanning = true;
+        panMoved = false;
+        panStartX = e.clientX - panX;
+        panStartY = e.clientY - panY;
+        qvViewport.setPointerCapture(e.pointerId);
+      });
+
+      qvViewport?.addEventListener("pointermove", (e) => {
+        if (!isPanning || zoomLevel <= 1) return;
+        const nx = e.clientX - panStartX;
+        const ny = e.clientY - panStartY;
+        if (Math.hypot(nx - panX, ny - panY) > 3) panMoved = true;
+        panX = nx;
+        panY = ny;
+        applyZoomTransform();
+      });
+
+      qvViewport?.addEventListener("pointerup", () => {
+        if (!isPanning) return;
+        isPanning = false;
+        if (!panMoved) {
+          zoomLevel = zoomLevel > 1.1 ? 1 : 1.9;
+          applyZoomTransform();
+        }
+      });
+
+      qvViewport?.addEventListener("wheel", (e) => {
+        const imgVisible = !document.getElementById("qv-zoom-img").classList.contains("oculto");
+        if (!imgVisible) return;
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.15 : -0.15;
+        zoomLevel = Math.max(1, Math.min(2.2, +(zoomLevel + delta).toFixed(2)));
+        applyZoomTransform();
+      }, { passive: false });
+
+      // Cantidad y botones de compra en Quick View
+      document.getElementById("qv-qty-dec")?.addEventListener("click", () => {
+        qvQty = Math.max(1, qvQty - 1);
+        document.getElementById("qv-qty-val").textContent = String(qvQty);
+      });
+
+      document.getElementById("qv-qty-inc")?.addEventListener("click", () => {
+        qvQty += 1;
+        document.getElementById("qv-qty-val").textContent = String(qvQty);
+      });
+
+      document.getElementById("btn-qv-add")?.addEventListener("click", () => {
+        if (!currentQvCap || currentQvCap.agotado) return;
+        addToCart(currentQvCap.id, qvQty);
+        closeQuickView();
+      });
+
+      document.getElementById("btn-qv-wa")?.addEventListener("click", () => {
+        if (!currentQvCap) return;
+        let msg = "";
+        if (currentQvCap.agotado || currentQvCap.pvp === null) {
+          msg = `Hola *Chemy Hats*, quisiera consultar disponibilidad / re-stock de la gorra *${currentQvCap.brand} - ${currentQvCap.name}* (G5 NFC).`;
+        } else {
+          const unit = qvQty >= 12 ? currentQvCap.pm12 : (qvQty >= 6 ? currentQvCap.pm6 : currentQvCap.pvp);
+          msg = `Hola *Chemy Hats*, me interesa pedir *${qvQty}x ${currentQvCap.brand} - ${currentQvCap.name}* (Calidad G5 NFC) · $${unit} c/u · Total: $${unit * qvQty}.`;
+        }
+        window.open(`https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
+      });
+
+      // Eventos del Carrito Lateral
+      const cartOverlay = document.getElementById("cart-overlay");
+      document.getElementById("btn-open-cart")?.addEventListener("click", () => {
+        updateCartUI();
+        cartOverlay.classList.remove("oculto");
+        document.body.style.overflow = "hidden";
+      });
+
+      const closeCart = () => {
+        cartOverlay.classList.add("oculto");
+        document.body.style.overflow = "";
+      };
+
+      document.getElementById("btn-close-cart")?.addEventListener("click", closeCart);
+      cartOverlay?.addEventListener("click", (e) => {
+        if (e.target === cartOverlay) closeCart();
+      });
+
+      document.getElementById("cart-items-list")?.addEventListener("click", (e) => {
+        const inc = e.target.closest("button[data-cart-inc]");
+        const dec = e.target.closest("button[data-cart-dec]");
+        if (inc) updateCartQty(parseInt(inc.getAttribute("data-cart-inc"), 10), 1);
+        if (dec) updateCartQty(parseInt(dec.getAttribute("data-cart-dec"), 10), -1);
+      });
+
+      document.getElementById("delivery-grid")?.addEventListener("click", (e) => {
+        const opt = e.target.closest(".delivery-option");
+        if (!opt) return;
+        document.querySelectorAll("#delivery-grid .delivery-option").forEach(o => o.classList.remove("selected"));
+        opt.classList.add("selected");
+        const radio = opt.querySelector("input[type='radio']");
+        if (radio) radio.checked = true;
+      });
+
+      document.getElementById("btn-checkout-wa")?.addEventListener("click", sendWhatsAppOrder);
+
+      // Tecla Escape cierra modales abiertos
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeQuickView();
+          closeCart();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
